@@ -1,0 +1,28 @@
+[gd_scene load_steps=6 format=3 uid="uid://cplilww3ku4th"]
+
+[ext_resource type="ArrayMesh" uid="uid://dqmyux4jwf01n" path="res://TilemapAssets/centercube.obj" id="1_sj8jv"]
+[ext_resource type="ArrayMesh" uid="uid://chylfwc8wobgx" path="res://TilemapAssets/cornerramp.obj" id="2_on2u1"]
+[ext_resource type="ArrayMesh" uid="uid://cpyqatyqoe882" path="res://TilemapAssets/edgeramp.obj" id="3_gb5mo"]
+[ext_resource type="ArrayMesh" uid="uid://d1fccnco86kc8" path="res://TilemapAssets/sandcube.obj" id="4_ia7k0"]
+[ext_resource type="ArrayMesh" uid="uid://dc77n3klvbhtd" path="res://TilemapAssets/watercube.obj" id="5_0yxeh"]
+
+[node name="TileMapSource" type="Node3D"]
+
+[node name="CenterCube" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_sj8jv")
+
+[node name="CornerRamp" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+mesh = ExtResource("2_on2u1")
+
+[node name="EdgeRamp" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
+mesh = ExtResource("3_gb5mo")
+
+[node name="SandBlock" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
+mesh = ExtResource("4_ia7k0")
+
+[node name="WaterBlock" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
+mesh = ExtResource("5_0yxeh")

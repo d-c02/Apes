@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://b1bslew5hf0jt"]
+
+[ext_resource type="PackedScene" uid="uid://dgkaq81xvvohp" path="res://map.tscn" id="1_v048q"]
+[ext_resource type="Script" path="res://CameraPivot.cs" id="2_cge44"]
+
+[node name="Main" type="Node3D"]
+
+[node name="Map" parent="." instance=ExtResource("1_v048q")]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.274396, 0.961617, 0, -0.961617, 0.274396, 0, 36.923, 0)
+
+[node name="CameraPivot" type="Node3D" parent="."]
+script = ExtResource("2_cge44")
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.738844, 0.673877, 0, -0.673877, 0.738844, 0, 21.3634, 18.4924)
