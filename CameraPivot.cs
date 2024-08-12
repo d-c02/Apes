@@ -12,43 +12,50 @@ public partial class CameraPivot : Node3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-        _PanVelocity = new Vector2(0, 0);
+        Vector3 CameraDir = GlobalPosition - _Camera.GlobalPosition;
+        CameraDir.Y = 0;
+
+        CameraDir = CameraDir.Normalized();
+        Vector3 OrthogCameraDir = new Vector3(-1 * CameraDir.Z, 0, CameraDir.X);
+        _PanVelocity = new Vector3(0, 0, 0);
+        _RotationSpeed = 0;
 		if (Input.IsActionPressed("PanLeft"))
 		{
-            _PanVelocity.X -= _PanSpeed;
+            _PanVelocity -= _PanSpeed * OrthogCameraDir;
 		}
 		if (Input.IsActionPressed("PanRight"))
 		{
-            _PanVelocity.X += _PanSpeed;
+            _PanVelocity += _PanSpeed * OrthogCameraDir;
 		}
         if (Input.IsActionPressed("PanUp"))
         {
-            _PanVelocity.Y += _PanSpeed;
+            _PanVelocity += _PanSpeed * CameraDir;
         }
         if (Input.IsActionPressed("PanDown"))
         {
-            _PanVelocity.Y -= _PanSpeed;
+            _PanVelocity -= _PanSpeed * CameraDir;
         }
-        if (Input.IsActionPressed("TiltLeft"))
+        if (Input.IsActionPressed("RotateLeft"))
         {
             _RotationSpeed -= _TiltSpeed;
         }
-        if (Input.IsActionPressed("TiltRight"))
+        if (Input.IsActionPressed("RotateRight"))
         {
             _RotationSpeed += _TiltSpeed;
         }
-        
+
+        _PanVelocity = _PanVelocity.Normalized() * _PanSpeed;
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        Rotation = new Vector3(Rotation.X + _RotationSpeed * (float) delta, Rotation.Y, Rotation.Z);
-        Position = new Vector3(Position.X + _PanVelocity.X, Position.Y, Position.Z + _PanVelocity.Y);
+        Rotation = new Vector3(Rotation.X, Rotation.Y + _RotationSpeed * (float)delta, Rotation.Z);
+        Position = new Vector3(Position.X + _PanVelocity.X * (float) delta, Position.Y + _PanVelocity.Y * (float) delta, Position.Z + _PanVelocity.Z * (float) delta);
     }
 
     [Export] private Camera3D _Camera;
-    private const float _PanSpeed = 10.0f;
-    private const float _TiltSpeed = 10.0f;
-    private Vector2 _PanVelocity;
+    private const float _PanSpeed = 40.0f;
+    private const float _TiltSpeed = 2.0f;
+    private Vector3 _PanVelocity;
     private float _RotationSpeed;
 }

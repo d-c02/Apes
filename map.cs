@@ -13,11 +13,18 @@ public partial class map : GridMap
 
 		for (int i = 0; i < mapSize; i++)
 		{
-			for (int j = 0; i < mapSize; i++)
+			for (int j = 0; j < mapSize; j++)
 			{
 				int k = 0;
 				Coords = new Vector3I(i, k, j);
-                SetCellItem(Coords, (int)Blocks.Water, 0);
+				if (i < 25 || i > 75 || j < 25 || j > 75)
+				{
+                    SetCellItem(Coords, (int)Blocks.Water, 0);
+                }
+                else
+				{
+                    SetCellItem(Coords, (int)Blocks.Center, 0);
+                }
             }
 		}
         
