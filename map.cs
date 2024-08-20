@@ -6,7 +6,7 @@ using static System.Reflection.Metadata.BlobBuilder;
 
 public partial class map : GridMap
 {
-    enum Blocks { Center, Corner, Ramp, Sand, Water, InnerCorner };
+    enum Blocks { Center, Corner, Ramp, Sand, Water, InnerCorner, DoubleCornerJoin};
 
     const int topLevel = 4;
 
@@ -165,7 +165,6 @@ public partial class map : GridMap
                     }
                 }
 
-                //Fill in ramps and corners
                 for (int x = -mapSize / 2 - maxLevelRadii[y]; x < mapSize / 2 + maxLevelRadii[y]; x++)
                 {
                     for (int z = -mapSize / 2 - maxLevelRadii[y]; z < mapSize / 2 + maxLevelRadii[y]; z++)
@@ -253,6 +252,18 @@ public partial class map : GridMap
                 return;
             }
 
+            if ((CubeMap[0, 0] && CubeMap[2, 2]))
+            {
+                SetCellItem(Coords, (int) Blocks.DoubleCornerJoin, 16);
+                return;
+            }
+
+            if ((CubeMap[2, 0] && CubeMap[0, 2]))
+            {
+                SetCellItem(Coords, (int)Blocks.DoubleCornerJoin);
+                return;
+            }
+
             if (CubeMap[2, 2])
             {
                 SetCellItem(Coords, (int)Blocks.Corner, 16);
@@ -301,11 +312,25 @@ public partial class map : GridMap
 
             Coords.X = inx;
             Coords.Z = inz;
+
+            //Walls
             if ((CubeMap[0, 1] && CubeMap[2, 1]) || (CubeMap[1, 0] && CubeMap[1, 2]))
             {
                 SetCellItem(Coords, (int)Blocks.Center);
                 return;
             }
+
+            if ((CubeMap[0, 0] && CubeMap[2, 2]) && (CubeMap[2, 0] && CubeMap[0, 2]))
+            {
+                SetCellItem(Coords, (int)Blocks.Center, 16);
+                return;
+            }
+            //Corners
+            //if ((CubeMap[0, 0] && CubeMap[2, 2]) || (CubeMap[2, 0] && CubeMap[0, 2]))
+            //{
+            //    SetCellItem(Coords, (int)Blocks.Center);
+            //    return;
+            //}
 
         }
 
