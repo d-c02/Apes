@@ -173,6 +173,17 @@ public partial class map : GridMap
                     }
                 }
             }
+            else
+            {
+                for (int x = -mapSize / 2 - maxLevelRadii[y]; x < mapSize / 2 + maxLevelRadii[y]; x++)
+                {
+                    for (int z = -mapSize / 2 - maxLevelRadii[y]; z < mapSize / 2 + maxLevelRadii[y]; z++)
+                    {
+                        GenerateSandAtPoint(x, y, z);
+                    }
+                }
+
+            }
         }
     }
 
@@ -334,6 +345,28 @@ public partial class map : GridMap
 
         }
 
+    }
+
+    private void GenerateSandAtPoint(int inx, int iny, int inz)
+    {
+        int sandRadius = 7;
+
+        Vector3I Coords = new Vector3I(inx, iny, inz);
+        if (GetCellItem(Coords) == (int) Blocks.Center)
+        {
+            for (int x = inx - sandRadius; x <= inx + sandRadius; x++)
+            {
+                for (int z = inz - sandRadius; z <= inz + sandRadius; z++)
+                {
+                    Coords.X = x;
+                    Coords.Z = z;
+                    if (GetCellItem(Coords) == GridMap.InvalidCellItem)
+                    {
+                        SetCellItem(Coords, (int)Blocks.Sand);
+                    }
+                }
+            }
+        }
     }
 
 }
