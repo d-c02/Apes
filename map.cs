@@ -26,13 +26,33 @@ public partial class map : GridMap
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        GenerateMap();
+        //GenerateMap();
+        int y = 0;
+        for (int x = -mapSize / 2 - maxLevelRadii[y]; x <= mapSize / 2 + maxLevelRadii[y]; x++)
+        {
+            for (int z = -mapSize / 2 - maxLevelRadii[y]; z <= mapSize / 2 + maxLevelRadii[y]; z++)
+            {
+                FillSimpleGaps(x, y, z);
+            }
+        }
+
+        for (int x = -mapSize / 2 - maxLevelRadii[y]; x <= mapSize / 2 + maxLevelRadii[y]; x++)
+        {
+            for (int z = -mapSize / 2 - maxLevelRadii[y]; z <= mapSize / 2 + maxLevelRadii[y]; z++)
+            {
+                CreateRamp(x, y, z);
+            }
+        }
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
-
+        if (Input.IsActionJustPressed("DEBUG_GENERATE_MAP"))
+        {
+            Clear();
+            GenerateMap();
+        }
     }
 
     private void GenerateMap()
@@ -157,17 +177,17 @@ public partial class map : GridMap
             if (y > bottomLevel)
             {
                 //Fill in ramps and corners
-                for (int x = -mapSize / 2 - maxLevelRadii[y]; x < mapSize / 2 + maxLevelRadii[y]; x++)
+                for (int x = -mapSize / 2 - maxLevelRadii[y] - 10; x <= mapSize / 2 + maxLevelRadii[y] + 10; x++)
                 {
-                    for (int z = -mapSize / 2 - maxLevelRadii[y]; z < mapSize / 2 + maxLevelRadii[y]; z++)
+                    for (int z = -mapSize / 2 - maxLevelRadii[y] - 10; z <= mapSize / 2 + maxLevelRadii[y] + 10; z++)
                     {
                         FillSimpleGaps(x, y, z);
                     }
                 }
 
-                for (int x = -mapSize / 2 - maxLevelRadii[y]; x < mapSize / 2 + maxLevelRadii[y]; x++)
+                for (int x = -mapSize / 2 - maxLevelRadii[y] - 10; x <= mapSize / 2 + maxLevelRadii[y] + 10; x++)
                 {
-                    for (int z = -mapSize / 2 - maxLevelRadii[y]; z < mapSize / 2 + maxLevelRadii[y]; z++)
+                    for (int z = -mapSize / 2 - maxLevelRadii[y] - 10; z <= mapSize / 2 + maxLevelRadii[y] + 10; z++)
                     {
                         CreateRamp(x, y, z);
                     }
@@ -175,9 +195,9 @@ public partial class map : GridMap
             }
             else
             {
-                for (int x = -mapSize / 2 - maxLevelRadii[y]; x < mapSize / 2 + maxLevelRadii[y]; x++)
+                for (int x = -mapSize / 2 - maxLevelRadii[y]; x <= mapSize / 2 + maxLevelRadii[y]; x++)
                 {
-                    for (int z = -mapSize / 2 - maxLevelRadii[y]; z < mapSize / 2 + maxLevelRadii[y]; z++)
+                    for (int z = -mapSize / 2 - maxLevelRadii[y]; z <= mapSize / 2 + maxLevelRadii[y]; z++)
                     {
                         GenerateSandAtPoint(x, y, z);
                     }
@@ -238,6 +258,56 @@ public partial class map : GridMap
                 SetCellItem(Coords, (int)Blocks.InnerCorner);
                 return;
             }
+
+            //Weird side and diag handling
+            if (CubeMap[0, 2] && CubeMap[2, 1])
+            {
+                SetCellItem(Coords, (int)Blocks.InnerCorner, 16);
+                return;
+            }
+
+            if (CubeMap[0,1] && CubeMap[2, 0])
+            {
+                SetCellItem(Coords, (int)Blocks.InnerCorner, 22);
+                return;
+            }
+
+            if (CubeMap[0, 0] && CubeMap[1, 2])
+            {
+                SetCellItem(Coords, (int)Blocks.InnerCorner, 0);
+                return;
+            }
+
+            if (CubeMap[1, 0] && CubeMap[0, 2])
+            {
+                SetCellItem(Coords, (int)Blocks.InnerCorner, 22);
+                return;
+            }
+
+            if (CubeMap[0, 1] && CubeMap[2, 2])
+            {
+                SetCellItem(Coords, (int)Blocks.InnerCorner, 0);
+                return;
+            }
+
+            if (CubeMap[0, 0] && CubeMap[2, 1])
+            {
+                SetCellItem(Coords, (int)Blocks.InnerCorner, 10);
+                return;
+            }
+
+            if (CubeMap[1, 0] && CubeMap[2, 2])
+            {
+                SetCellItem(Coords, (int)Blocks.InnerCorner, 10);
+                return;
+            }
+
+            if (CubeMap[2, 0] && CubeMap[1, 2])
+            {
+                SetCellItem(Coords, (int)Blocks.InnerCorner, 16);
+                return;
+            }
+            //Ramps
 
             if (CubeMap[1, 0])
             {
