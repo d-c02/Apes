@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cplilww3ku4th"]
+[gd_scene load_steps=15 format=3 uid="uid://cplilww3ku4th"]
 
 [ext_resource type="ArrayMesh" uid="uid://dqmyux4jwf01n" path="res://TilemapAssets/centercube.obj" id="1_sj8jv"]
 [ext_resource type="ArrayMesh" uid="uid://chylfwc8wobgx" path="res://TilemapAssets/cornerramp.obj" id="2_on2u1"]
@@ -8,31 +8,87 @@
 [ext_resource type="ArrayMesh" uid="uid://dn3icpxcxh6ej" path="res://TilemapAssets/innercornerramp.obj" id="6_2l3eq"]
 [ext_resource type="ArrayMesh" uid="uid://by16d0xkq1jel" path="res://TilemapAssets/doublecornerjoin.obj" id="7_jhlog"]
 
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_s48pt"]
+points = PackedVector3Array(-1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1, 1, -1, 1, -1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_wrwo2"]
+points = PackedVector3Array(0.999761, -1, -1, -0.952233, 1.01587, 1.01587, -0.952233, 1.01587, 0.952232, -0.999804, -1, 1, -1.01567, -0.952232, -1.01587, 1.01563, -0.952232, 1.01587, 1.01563, -0.952232, -1.01587, -1.01567, 1.01587, 1.01587, 0.999761, -1, 1, -0.999804, -1, -1, -1.01567, 1.01587, 0.952232, 0.98401, -0.920411, -0.984052, 0.98401, -0.920411, 1.01587)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_bs5a5"]
+points = PackedVector3Array(1, -1, -1, -0.952232, 1.01587, 1.01587, -0.952232, 1.01587, -1.01587, -1, -1, 1, 1.01587, -0.952232, 1.01587, -1, -1, -1, -1, 1, 1, 1.01587, -0.952232, -1.01587, 1, -1, 1, -1, 1, -1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_2qdlb"]
+points = PackedVector3Array(-1, -1, -1, 0.999988, 1, 1, 1.01586, 1.01587, 0.952232, 0.999988, -1, -1, -0.952232, 1.01587, -1.01587, -1, -1, 1, -1, 1, 1, 0.999988, -1, 1, 1.01586, -0.952232, -1.01587, -1, 1, -1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_y7hkq"]
+points = PackedVector3Array(-1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1, 1, -1, 1, -1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_yp2sj"]
+points = PackedVector3Array(-1, 8, -1, 1, -1, 1, 1, 8, 1, 1, -1, -1, -1, -1, 1, 1, 8, -1, -1, 8, 1, -1, -1, -1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_feynb"]
+points = PackedVector3Array(-1, -1, -1, 0.941046, 0.941046, -0.882093, 0.941046, -0.882093, 0.941046, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1, -1)
+
 [node name="TileMapSource" type="Node3D"]
 
 [node name="CenterCube" type="MeshInstance3D" parent="."]
 mesh = ExtResource("1_sj8jv")
 
+[node name="StaticBody3D" type="StaticBody3D" parent="CenterCube"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CenterCube/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_s48pt")
+
 [node name="CornerRamp" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 mesh = ExtResource("2_on2u1")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="CornerRamp"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CornerRamp/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_wrwo2")
 
 [node name="EdgeRamp" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
 mesh = ExtResource("3_gb5mo")
 
+[node name="StaticBody3D" type="StaticBody3D" parent="EdgeRamp"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EdgeRamp/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_bs5a5")
+
 [node name="InnerCornerBlock" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
 mesh = ExtResource("6_2l3eq")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="InnerCornerBlock"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InnerCornerBlock/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_2qdlb")
 
 [node name="SandBlock" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
 mesh = ExtResource("4_ia7k0")
 
+[node name="StaticBody3D" type="StaticBody3D" parent="SandBlock"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SandBlock/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_y7hkq")
+
 [node name="WaterBlock" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 mesh = ExtResource("5_0yxeh")
 
+[node name="StaticBody3D" type="StaticBody3D" parent="WaterBlock"]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="WaterBlock/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_yp2sj")
+
 [node name="DoubleCornerJoin" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
 mesh = ExtResource("7_jhlog")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="DoubleCornerJoin"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoubleCornerJoin/StaticBody3D"]
+shape = SubResource("ConvexPolygonShape3D_feynb")
