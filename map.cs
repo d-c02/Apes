@@ -202,7 +202,7 @@ public partial class map : GridMap
                         GenerateSandAtPoint(x, y, z);
                     }
                 }
-
+                GenerateWater();
             }
         }
     }
@@ -439,4 +439,24 @@ public partial class map : GridMap
         }
     }
 
+    private void GenerateWater()
+    {
+        int oceanRadius = 10;
+
+        int y = 0;
+        Vector3I Coords = new Vector3I(0, y, 0);
+
+        for (int x = -(mapSize * 2 + oceanRadius); x <= oceanRadius + mapSize * 2; x++)
+        {
+            for (int z = -(mapSize * 2 + oceanRadius) ; z <= oceanRadius + mapSize * 2; z++)
+            {
+                Coords.X = x;
+                Coords.Z = z;
+                if (GetCellItem(Coords) == GridMap.InvalidCellItem)
+                {
+                    SetCellItem(Coords, (int)Blocks.Water);
+                }
+            }
+        }
+    }
 }
