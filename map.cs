@@ -22,27 +22,22 @@ public partial class map : GridMap
     int MinNewPointsPerLevel = 1;
     int MaxNewPointsPerLevel = 4;
 
+    int maxX = int.MinValue;
+    int minX = int.MaxValue;
+    int maxZ = int.MinValue;
+    int minZ = int.MaxValue;
+
+    //Navigation shenanigans
+    AStarGrid2D aStarGrid;
+
+    int aStarGridxOffset;
+    int aStarGridzOffset;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        //GenerateMap();
-        int y = 0;
-        for (int x = -mapSize / 2 - maxLevelRadii[y]; x <= mapSize / 2 + maxLevelRadii[y]; x++)
-        {
-            for (int z = -mapSize / 2 - maxLevelRadii[y]; z <= mapSize / 2 + maxLevelRadii[y]; z++)
-            {
-                FillSimpleGaps(x, y, z);
-            }
-        }
-
-        for (int x = -mapSize / 2 - maxLevelRadii[y]; x <= mapSize / 2 + maxLevelRadii[y]; x++)
-        {
-            for (int z = -mapSize / 2 - maxLevelRadii[y]; z <= mapSize / 2 + maxLevelRadii[y]; z++)
-            {
-                CreateRamp(x, y, z);
-            }
-        }
+        Clear();
+        GenerateMap();
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -63,10 +58,6 @@ public partial class map : GridMap
         List<int> pointRadii = new List<int>();
         Random rnd = new Random();
         Vector3I Coords = new Vector3I(0, 0, 0);
-        int maxX = int.MaxValue;
-        int minX = int.MinValue;
-        int maxZ = int.MinValue;
-        int minZ = int.MaxValue;
 
         int maxPointRadius = maxInitialPointRadius;
         int minPointRadius = minInitialPointRadius;
@@ -203,6 +194,7 @@ public partial class map : GridMap
                     }
                 }
                 GenerateWater();
+                GenerateNavMap();
             }
         }
     }
@@ -430,6 +422,23 @@ public partial class map : GridMap
                 {
                     Coords.X = x;
                     Coords.Z = z;
+                    if (x < minX)
+                    {
+                        minX = x;
+                    }
+                    if (x > maxX)
+                    {
+                        maxX = x;
+                    }
+
+                    if (z < minZ)
+                    {
+                        minZ = z;
+                    }
+                    if (z > maxZ)
+                    {
+                        maxZ = z;
+                    }
                     if (GetCellItem(Coords) == GridMap.InvalidCellItem)
                     {
                         SetCellItem(Coords, (int)Blocks.Sand);
@@ -459,4 +468,55 @@ public partial class map : GridMap
             }
         }
     }
+
+    private void GenerateNavMap()
+    {
+        aStarGrid = new AStarGrid2D();
+
+        aStarGridxOffset = -minX;
+        aStarGridzOffset = -minZ;
+        aStarGrid.Region = new Rect2I(0, 0, maxX + aStarGridxOffset + 1, maxZ + aStarGridzOffset + 1);
+        aStarGrid.Update();
+
+        Vector3I Coords = new Vector3I(0, 0, 0);
+        Vector2I ID = new Vector2I(0, 0);
+        for (int x = minX; x <= maxX; x++)
+        {
+            for (int z = minZ; z <= maxZ; z++)
+            {
+                Coords.X = x;
+                Coords.Z = z;
+                ID.X = x + aStarGridxOffset;
+                ID.Y = z + aStarGridzOffset;
+                if (GetCellItem(Coords) == (int) Blocks.Water)
+                {
+                    aStarGrid.SetPointSolid(ID);
+                }
+            }
+        }
+
+        /////
+
+        //Coords.Y = 5;
+        //for (int x = minX; x <= maxX; x++)
+        //{
+        //    for (int z = minZ; z <= maxZ; z++)
+        //    {
+        //        Coords.X = x;
+        //        Coords.Z = z;
+        //        ID.X = x + aStarGridxOffset;
+        //        ID.Y = z + aStarGridzOffset;
+        //        if (aStarGrid.IsPointSolid(ID))
+        //        {
+        //            SetCellItem(Coords, (int)Blocks.Water);
+        //        }
+        //        else
+        //        {
+        //            SetCellItem(Coords, (int)Blocks.Sand);
+        //        }
+        //    }
+        //}
+        /////
+    }
+
 }
