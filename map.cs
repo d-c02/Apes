@@ -33,6 +33,8 @@ public partial class map : GridMap
     int aStarGridxOffset;
     int aStarGridzOffset;
 
+    Vector2I aStarGridSize;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -48,6 +50,24 @@ public partial class map : GridMap
             Clear();
             GenerateMap();
         }
+    }
+
+    public Vector2I getRandomOpenCoords(bool fillPoint = false)
+    {
+        Random rnd = new Random();
+        Vector2I Coords = Vector2I.Zero;
+        while (aStarGrid.IsPointSolid(Coords))
+        {
+            Coords.X = rnd.Next(0, aStarGridSize.X);
+            Coords.Y = rnd.Next(0, aStarGridSize.Y);
+        }
+
+        if (fillPoint)
+        {
+            aStarGrid.SetPointSolid(Coords);
+        }
+
+        return new Vector2I(Coords.X - aStarGridxOffset, Coords.Y - aStarGridzOffset);
     }
 
     private void GenerateMap()
@@ -472,10 +492,15 @@ public partial class map : GridMap
     private void GenerateNavMap()
     {
         aStarGrid = new AStarGrid2D();
+        aStarGridSize = new Vector2I();
 
         aStarGridxOffset = -minX;
         aStarGridzOffset = -minZ;
         aStarGrid.Region = new Rect2I(0, 0, maxX + aStarGridxOffset + 1, maxZ + aStarGridzOffset + 1);
+
+        aStarGridSize.X = maxX + aStarGridxOffset + 1;
+        aStarGridSize.Y = maxZ + aStarGridzOffset + 1;
+
         aStarGrid.Update();
 
         Vector3I Coords = new Vector3I(0, 0, 0);
@@ -494,29 +519,6 @@ public partial class map : GridMap
                 }
             }
         }
-
-        /////
-
-        //Coords.Y = 5;
-        //for (int x = minX; x <= maxX; x++)
-        //{
-        //    for (int z = minZ; z <= maxZ; z++)
-        //    {
-        //        Coords.X = x;
-        //        Coords.Z = z;
-        //        ID.X = x + aStarGridxOffset;
-        //        ID.Y = z + aStarGridzOffset;
-        //        if (aStarGrid.IsPointSolid(ID))
-        //        {
-        //            SetCellItem(Coords, (int)Blocks.Water);
-        //        }
-        //        else
-        //        {
-        //            SetCellItem(Coords, (int)Blocks.Sand);
-        //        }
-        //    }
-        //}
-        /////
     }
 
 }
