@@ -12,6 +12,10 @@ public partial class ApeManager : Node
 	private List<ape> Apes;
 	public override void _Ready()
 	{
+		for (int i = 0; i < 100; i++)
+		{
+			SpawnApe();
+		}
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

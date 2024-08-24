@@ -99,30 +99,29 @@ public partial class map : GridMap
                 {
                     for (int z = points[i].Y - (pointRadius - 1); z < points[i].Y + pointRadius; z++)
                     {
+                            Coords.X = x + xShift;
+                            Coords.Y = y;
+                            Coords.Z = z + zShift;
 
-                        Coords.X = x + xShift;
-                        Coords.Y = y;
-                        Coords.Z = z + zShift;
+                            if (x < minX)
+                            {
+                                minX = x;
+                            }
+                            if (x > maxX)
+                            {
+                                maxX = x;
+                            }
 
-                        if (x < minX)
-                        {
-                            minX = x;
-                        }
-                        if (x > maxX)
-                        {
-                            maxX = x;
-                        }
+                            if (z < minZ)
+                            {
+                                minZ = z;
+                            }
+                            if (z > maxZ)
+                            {
+                                maxZ = z;
+                            }
 
-                        if (z < minZ)
-                        {
-                            minZ = z;
-                        }
-                        if (z > maxZ)
-                        {
-                            maxZ = z;
-                        }
-
-                        SetCellItem(Coords, (int)Blocks.Center);
+                            SetCellItem(Coords, (int)Blocks.Center);
                     }
                 }
 
@@ -215,6 +214,25 @@ public partial class map : GridMap
                 }
                 GenerateWater();
                 GenerateNavMap();
+            }
+        }
+
+        //Optimiziation stuff - remove unneccessary blocks
+        for (int y = bottomLevel; y < topLevel; y++)
+        {
+            for (int x = -(mapSize * 2 + 10); x <= 10 + mapSize * 2; x++)
+            {
+                for (int z = -(mapSize * 2 + 10); z <= 10 + mapSize * 2; z++)
+                {
+                    Coords.X = x;
+                    Coords.Y = y + 1;
+                    Coords.Z = z;
+                    if (GetCellItem(Coords) != GridMap.InvalidCellItem)
+                    {
+                        Coords.Y = y;
+                        SetCellItem(Coords, (int) GridMap.InvalidCellItem);
+                    }
+                }
             }
         }
     }
