@@ -217,7 +217,7 @@ public partial class map : GridMap
             }
         }
 
-        //Optimiziation stuff - remove unneccessary blocks
+        //Optimization stuff - remove unnecessary blocks
         for (int y = bottomLevel; y < topLevel; y++)
         {
             for (int x = -(mapSize * 2 + 10); x <= 10 + mapSize * 2; x++)

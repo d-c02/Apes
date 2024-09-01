@@ -33,6 +33,7 @@ public partial class ApeManager : Node
 		//ape Ape = new ape();
         var apeScene = GD.Load<PackedScene>("res://ape.tscn");
 		ape Ape = apeScene.Instantiate<ape>();
+		Ape.SetMap(ref Map);
         Ape.Position = new Vector3(Coords.X, 10, Coords.Y);
 		AddChild(Ape);
 		//Apes.Append(Ape);

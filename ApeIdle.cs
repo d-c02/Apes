@@ -8,12 +8,6 @@ public partial class ApeIdle : State
     ape Ape;
 
     [Export]
-    public int IdleSpeed { get; set; } = 14;
-
-    [Export]
-    public int IdleAcceleration { get; set; } = 75;
-
-    [Export]
     private int Gravity { get; set; } = 50;
 
     private Vector3 TargetVelocity = Vector3.Zero;
@@ -54,6 +48,13 @@ public partial class ApeIdle : State
         else
         {
             TargetVelocity.Y = 0;
+        }
+
+        WanderCtr += delta;
+
+        if (WanderCtr > WanderBaseline + NextWanderTime)
+        {
+            EmitSignal(SignalName.Transitioned, this.Name + "", "Wandering");
         }
 
         Ape.Velocity = TargetVelocity;

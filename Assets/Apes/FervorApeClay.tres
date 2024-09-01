@@ -1,0 +1,13 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://c8rgx7ixwmkfa"]
+
+[ext_resource type="Texture2D" uid="uid://qmpc855vnb" path="res://Assets/Apes/ApeClay_normal.png" id="1_6sa7h"]
+[ext_resource type="Texture2D" uid="uid://jl64xtctw7ub" path="res://Assets/Apes/ApeClay_orm.png" id="2_0sh3o"]
+
+[resource]
+albedo_color = Color(1, 0.203922, 0.133333, 1)
+roughness = 0.75
+roughness_texture = ExtResource("2_0sh3o")
+roughness_texture_channel = 1
+normal_enabled = true
+normal_scale = 0.2
+normal_texture = ExtResource("1_6sa7h")

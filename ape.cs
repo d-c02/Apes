@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.ComponentModel.Design;
 
 public partial class ape : CharacterBody3D
 {
@@ -12,10 +13,49 @@ public partial class ape : CharacterBody3D
 
     public bool InSpecialJumpTransition = false;
 
+    private map m_Map;
+
+    int m_Aspect = (int) Aspects.Insight;
+
+    enum Aspects {Insight, Influence, Fervor };
+
+    [Export] Material InsightBody;
+    [Export] Material InsightMouth;
+    [Export] Material InfluenceBody;
+    [Export] Material InfluenceMouth;
+    [Export] Material FervorBody;
+    [Export] Material FervorMouth;
+
     public override void _Ready()
     {
-        _AnimationTree = GetChild<AnimationTree>(0);
+        //_AnimationTree = GetChild<AnimationTree>(0);
         _AnimationNodeStateMachinePlayback = _AnimationTree.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();
+        Random rnd = new Random();
+
+        MeshInstance3D body = GetNode<MeshInstance3D>("Pivot/Character/Ape/Body");
+        MeshInstance3D mouth = GetNode<MeshInstance3D>("Pivot/Character/Ape/Mouth");
+
+
+        int m_Aspect = rnd.Next(0, 3);
+        if (m_Aspect == (int) Aspects.Insight)
+        {
+            body.SetSurfaceOverrideMaterial(0, InsightBody);
+            mouth.SetSurfaceOverrideMaterial(0, InsightMouth);
+            m_Aspect = (int) Aspects.Insight;
+        }
+        else if (m_Aspect == (int) Aspects.Influence)
+        {
+            body.SetSurfaceOverrideMaterial(0, InfluenceBody);
+            mouth.SetSurfaceOverrideMaterial(0, InfluenceMouth);
+            m_Aspect = (int)Aspects.Influence;
+        }
+        else
+        {
+            body.SetSurfaceOverrideMaterial(0, FervorBody);
+            mouth.SetSurfaceOverrideMaterial(0, FervorMouth);
+            m_Aspect = (int)Aspects.Fervor;
+        }
+        
         //_RunTimeScale = _AnimationTree.Get("parameters/Run/TimeScale/scale").As<AnimationNodeTimeScale>();
     }
     public override void _PhysicsProcess(double delta)
@@ -32,5 +72,11 @@ public partial class ape : CharacterBody3D
     public StringName GetAnimState()
     {
         return _AnimationNodeStateMachinePlayback.GetCurrentNode();
+    }
+
+    public void SetMap(ref map Map)
+    {
+        m_Map = Map;
+        GetNode<ApeWandering>("StateMachine/Wandering").SetMap(ref m_Map);
     }
 }
