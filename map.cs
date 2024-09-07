@@ -6,7 +6,7 @@ using static System.Reflection.Metadata.BlobBuilder;
 
 public partial class map : GridMap
 {
-    enum Blocks { Center, Corner, Ramp, Sand, Water, InnerCorner, DoubleCornerJoin};
+    enum Blocks { Center, Corner, Ramp, Sand, Water, InnerCorner, DoubleCornerJoin };
 
     const int topLevel = 4;
 
@@ -52,14 +52,22 @@ public partial class map : GridMap
         }
     }
 
-    public Vector2I getRandomOpenCoords(bool fillPoint = false)
+    //This really sucks, optimize later
+    public Vector2I getRandomOpenNavCoords(bool fillPoint = false)
     {
         Random rnd = new Random();
         Vector2I Coords = Vector2I.Zero;
+        int EscapeCtr = 0;
+        int EscapeLimit = 500;
         while (aStarGrid.IsPointSolid(Coords))
         {
             Coords.X = rnd.Next(0, aStarGridSize.X);
             Coords.Y = rnd.Next(0, aStarGridSize.Y);
+            EscapeCtr++;
+            if (EscapeCtr > EscapeLimit)
+            {
+                return Vector2I.Zero;
+            }
         }
 
         if (fillPoint)
@@ -67,8 +75,43 @@ public partial class map : GridMap
             aStarGrid.SetPointSolid(Coords);
         }
 
-        return new Vector2I(Coords.X - aStarGridxOffset, Coords.Y - aStarGridzOffset);
+        return Coords;
     }
+
+    public Vector2 GetPointPosition(Vector2I id)
+    {
+        return aStarGrid.GetPointPosition(id);
+    }
+
+    public Vector2[] getPointPath(Vector2I fromID, Vector2I toID, bool allowPartialPath)
+    {
+        return aStarGrid.GetPointPath(fromID, toID, allowPartialPath);
+    }
+
+    public Godot.Collections.Array<Vector2I> getIdPath(Vector2I fromID, Vector2I toID, bool allowPartialPath)
+    {
+        return aStarGrid.GetIdPath(fromID, toID, allowPartialPath);
+    }
+
+    public Vector2I GetIDByIndex(Vector2I fromID, Vector2I toID, int index, bool allowPartialPath = false)
+    {
+
+        return aStarGrid.GetIdPath(fromID, toID, allowPartialPath)[index];
+    }
+
+    public bool IsPointSolid(Vector2I id)
+    {
+        return aStarGrid.IsPointSolid(id);
+    }
+
+    public void SetPointSolid(Vector2I id, bool solid = true)
+    {
+        aStarGrid.SetPointSolid(id);
+    }
+
+    /// <summary>
+    /// Private methods
+    /// </summary>
 
     private void GenerateMap()
     {
@@ -511,6 +554,7 @@ public partial class map : GridMap
     {
         aStarGrid = new AStarGrid2D();
         aStarGridSize = new Vector2I();
+        aStarGrid.Offset = new Vector2(minX, minZ);
 
         aStarGridxOffset = -minX;
         aStarGridzOffset = -minZ;

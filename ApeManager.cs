@@ -12,7 +12,7 @@ public partial class ApeManager : Node
 	private List<ape> Apes;
 	public override void _Ready()
 	{
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < 21; i++)
 		{
 			SpawnApe();
 		}
@@ -29,12 +29,16 @@ public partial class ApeManager : Node
 
 	public void SpawnApe()
 	{
-		Vector2I Coords = Map.getRandomOpenCoords(true);
-		//ape Ape = new ape();
-        var apeScene = GD.Load<PackedScene>("res://ape.tscn");
+		Vector2I Coords = Map.getRandomOpenNavCoords(true);
+
+		var apeScene = new PackedScene();
+        apeScene = ResourceLoader.Load<PackedScene>("res://ape.tscn");
 		ape Ape = apeScene.Instantiate<ape>();
 		Ape.SetMap(ref Map);
-        Ape.Position = new Vector3(Coords.X, 10, Coords.Y);
+        Ape.SetNavCoords(Coords);
+		Vector2 PosCoords = Map.GetPointPosition(Coords);
+        Ape.Position = new Vector3(PosCoords.X, 10, PosCoords.Y);
+		Ape.SetMap(ref Map);
 		AddChild(Ape);
 		//Apes.Append(Ape);
 	}

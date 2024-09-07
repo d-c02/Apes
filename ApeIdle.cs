@@ -31,7 +31,7 @@ public partial class ApeIdle : State
 
     public override void Exit()
     {
-        
+        WanderCtr = 0;
     }
 
     public override void Update(double delta)
@@ -52,7 +52,7 @@ public partial class ApeIdle : State
 
         WanderCtr += delta;
 
-        if (WanderCtr > WanderBaseline + NextWanderTime)
+        if (WanderCtr > NextWanderTime)
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "Wandering");
         }

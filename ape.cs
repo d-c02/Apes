@@ -13,6 +13,8 @@ public partial class ape : CharacterBody3D
 
     public bool InSpecialJumpTransition = false;
 
+    private Vector2I m_NavCoords;
+
     private map m_Map;
 
     int m_Aspect = (int) Aspects.Insight;
@@ -78,5 +80,20 @@ public partial class ape : CharacterBody3D
     {
         m_Map = Map;
         GetNode<ApeWandering>("StateMachine/Wandering").SetMap(ref m_Map);
+    }
+
+    public void SetNavCoords(int x, int y)
+    {
+        m_NavCoords = new Vector2I(x, y);
+    }
+
+    public void SetNavCoords(Vector2I Coords)
+    {
+        m_NavCoords = Coords;
+    }
+
+    public Vector2I GetNavCoords()
+    {
+        return m_NavCoords;
     }
 }

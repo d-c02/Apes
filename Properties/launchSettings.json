@@ -5,7 +5,7 @@
     },
     "Apes": {
       "commandName": "Executable",
-      "executablePath": "C:\\Users\\djcas\\Documents\\GodotInstall\\Godot_v4.2.2-stable_mono_win64\\Godot_v4.2.2-stable_mono_win64\\Godot_v4.2.2-stable_mono_win64.exe",
+      "executablePath": "C:\\Users\\djcas\\Documents\\Godot_v4.3-stable_mono_win64\\Godot_v4.3-stable_mono_win64\\Godot_v4.3-stable_mono_win64.exe",
       "commandLineArgs": "--path . --verbose",
       "workingDirectory": ".",
       "nativeDebugging": true
