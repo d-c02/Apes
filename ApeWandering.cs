@@ -64,19 +64,31 @@ public partial class ApeWandering : State
 
         Vector2I FinalPos = new Vector2I(m_Ape.GetNavCoords().X + NextPosDist.X, m_Ape.GetNavCoords().Y + NextPosDist.Y);
 
-        m_IDPath = m_Map.getIdPath(m_Ape.GetNavCoords(), FinalPos, true);
+        if (m_Map.IsInBounds(FinalPos))
+        {
+            //adjust pathfinding for other apes
+            m_Map.SetPointSolid(m_Ape.GetNavCoords(), false);
+            m_IDPath = m_Map.getIdPath(m_Ape.GetNavCoords(), FinalPos, true);
 
-        if (m_IDPath.Count <= 1)
+
+            if (m_IDPath.Count <= 1)
+            {
+                m_Map.SetPointSolid(m_Ape.GetNavCoords(), true);
+                EmitSignal(SignalName.Transitioned, this.Name + "", "ApeIdle");
+            }
+            else
+            {
+                m_Map.SetPointSolid(m_IDPath[m_IDPath.Count - 1], true);
+                m_Ape.SetNavCoords(m_IDPath[m_IDPath.Count - 1]);
+
+                m_NextPosCtr = 1;
+                m_NextPos = m_Map.GetPointPosition(m_IDPath[m_NextPosCtr]);
+            }
+        }
+        else
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "ApeIdle");
         }
-
-        //adjust pathfinding for other apes
-        m_Map.SetPointSolid(m_IDPath[0], false);
-        m_Map.SetPointSolid(m_IDPath[m_IDPath.Count - 1], true);
-
-        m_NextPosCtr = 1;
-        m_NextPos = m_Map.GetPointPosition(m_IDPath[m_NextPosCtr]);
     }
 
     public override void Exit()
@@ -99,8 +111,10 @@ public partial class ApeWandering : State
             {
                 EmitSignal(SignalName.Transitioned, this.Name + "", "ApeIdle");
             }
-
-            m_NextPos = m_Map.GetPointPosition(m_IDPath[m_NextPosCtr]);
+            else
+            {
+                m_NextPos = m_Map.GetPointPosition(m_IDPath[m_NextPosCtr]);
+            }
         }
         else
         {

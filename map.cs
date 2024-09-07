@@ -109,6 +109,11 @@ public partial class map : GridMap
         aStarGrid.SetPointSolid(id);
     }
 
+    public bool IsInBounds(Vector2I id)
+    {
+        return aStarGrid.IsInBoundsv(id);
+    }
+
     /// <summary>
     /// Private methods
     /// </summary>
