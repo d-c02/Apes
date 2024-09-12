@@ -6,7 +6,7 @@ using static System.Reflection.Metadata.BlobBuilder;
 
 public partial class map : GridMap
 {
-    enum Blocks { Center, Corner, Ramp, Sand, Water, InnerCorner, DoubleCornerJoin };
+    enum Blocks { Center, Corner, Ramp, InnerCorner, Sand, Water, DoubleCornerJoin, DebugNavBlue, DebugNavRed};
 
     const int topLevel = 4;
 
@@ -80,7 +80,9 @@ public partial class map : GridMap
 
     public Vector2 GetPointPosition(Vector2I id)
     {
-        return aStarGrid.GetPointPosition(id);
+        //Vector3I pos = new Vector3I((int) aStarGrid.GetPointPosition(id).X, 0, (int)aStarGrid.GetPointPosition(id).Y);
+        Vector3I pos = new Vector3I(id.X - aStarGridxOffset, 0, id.Y - aStarGridzOffset);
+        return new Vector2(ToGlobal(MapToLocal(pos)).X, ToGlobal(MapToLocal(pos)).Z);
     }
 
     public Vector2[] getPointPath(Vector2I fromID, Vector2I toID, bool allowPartialPath)
@@ -106,7 +108,16 @@ public partial class map : GridMap
 
     public void SetPointSolid(Vector2I id, bool solid = true)
     {
-        aStarGrid.SetPointSolid(id);
+        Vector3I debug_pos = new Vector3I(id.X - aStarGridxOffset, 6, id.Y - aStarGridzOffset);
+        if (solid)
+        {
+            SetCellItem(debug_pos, (int)Blocks.DebugNavRed);
+        }
+        else
+        {
+            SetCellItem(debug_pos, (int)Blocks.Water);
+        }
+        aStarGrid.SetPointSolid(id, solid);
     }
 
     public bool IsInBounds(Vector2I id)
@@ -561,6 +572,7 @@ public partial class map : GridMap
         aStarGridSize = new Vector2I();
         aStarGrid.Offset = new Vector2(minX, minZ);
 
+        bool isDirty = aStarGrid.IsDirty();
         aStarGridxOffset = -minX;
         aStarGridzOffset = -minZ;
         aStarGrid.Region = new Rect2I(0, 0, maxX + aStarGridxOffset + 1, maxZ + aStarGridzOffset + 1);
@@ -583,9 +595,15 @@ public partial class map : GridMap
                 if (GetCellItem(Coords) == (int) Blocks.Water)
                 {
                     aStarGrid.SetPointSolid(ID);
+                    SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavRed);
+                }
+                else
+                {
+                    SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavBlue);
                 }
             }
         }
+        //aStarGrid.Offset = new Vector2(aStarGridxOffset, aStarGridzOffset);
     }
 
 }

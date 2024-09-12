@@ -38,24 +38,21 @@ public partial class ape : CharacterBody3D
         MeshInstance3D mouth = GetNode<MeshInstance3D>("Pivot/Character/Ape/Mouth");
 
 
-        int m_Aspect = rnd.Next(0, 3);
+        m_Aspect = rnd.Next(0, 3);
         if (m_Aspect == (int) Aspects.Insight)
         {
             body.SetSurfaceOverrideMaterial(0, InsightBody);
             mouth.SetSurfaceOverrideMaterial(0, InsightMouth);
-            m_Aspect = (int) Aspects.Insight;
         }
         else if (m_Aspect == (int) Aspects.Influence)
         {
             body.SetSurfaceOverrideMaterial(0, InfluenceBody);
             mouth.SetSurfaceOverrideMaterial(0, InfluenceMouth);
-            m_Aspect = (int)Aspects.Influence;
         }
-        else
+        else if (m_Aspect == (int) Aspects.Fervor)
         {
             body.SetSurfaceOverrideMaterial(0, FervorBody);
             mouth.SetSurfaceOverrideMaterial(0, FervorMouth);
-            m_Aspect = (int)Aspects.Fervor;
         }
         
         //_RunTimeScale = _AnimationTree.Get("parameters/Run/TimeScale/scale").As<AnimationNodeTimeScale>();
@@ -95,5 +92,10 @@ public partial class ape : CharacterBody3D
     public Vector2I GetNavCoords()
     {
         return m_NavCoords;
+    }
+
+    public int GetAspect()
+    {
+        return m_Aspect;
     }
 }

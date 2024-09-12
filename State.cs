@@ -13,4 +13,7 @@ public abstract partial class State : Node
     public abstract void Update(double delta);
 
     public abstract void PhysicsUpdate(double delta);
+
+    protected enum Aspects { Insight, Influence, Fervor };
+
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cplilww3ku4th"]
+[gd_scene load_steps=19 format=3 uid="uid://cplilww3ku4th"]
 
 [ext_resource type="ArrayMesh" uid="uid://dqmyux4jwf01n" path="res://TilemapAssets/centercube.obj" id="1_sj8jv"]
 [ext_resource type="ArrayMesh" uid="uid://chylfwc8wobgx" path="res://TilemapAssets/cornerramp.obj" id="2_on2u1"]
@@ -7,6 +7,7 @@
 [ext_resource type="ArrayMesh" uid="uid://dc77n3klvbhtd" path="res://TilemapAssets/watercube.obj" id="5_0yxeh"]
 [ext_resource type="ArrayMesh" uid="uid://dn3icpxcxh6ej" path="res://TilemapAssets/innercornerramp.obj" id="6_2l3eq"]
 [ext_resource type="ArrayMesh" uid="uid://by16d0xkq1jel" path="res://TilemapAssets/doublecornerjoin.obj" id="7_jhlog"]
+[ext_resource type="Material" uid="uid://dlwkoje7s2iax" path="res://debugnavblue.tres" id="8_qtre1"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_s48pt"]
 points = PackedVector3Array(-1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1, 1, -1, 1, -1)
@@ -28,6 +29,18 @@ points = PackedVector3Array(-1, 8, -1, 1, -1, 1, 1, 8, 1, 1, -1, -1, -1, -1, 1, 
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_feynb"]
 points = PackedVector3Array(-1, -1, -1, 0.941046, 0.941046, -0.882093, 0.941046, -0.882093, 0.941046, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1, -1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_jmpxu"]
+material = ExtResource("8_qtre1")
+size = Vector3(2, 2, 2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_is0wu"]
+transparency = 1
+albedo_color = Color(0.670588, 0, 0.168627, 0.207843)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qph1x"]
+material = SubResource("StandardMaterial3D_is0wu")
+size = Vector3(2, 2, 2)
 
 [node name="TileMapSource" type="Node3D"]
 
@@ -92,3 +105,11 @@ mesh = ExtResource("7_jhlog")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DoubleCornerJoin/StaticBody3D"]
 shape = SubResource("ConvexPolygonShape3D_feynb")
+
+[node name="DebugNavBlue" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 14)
+mesh = SubResource("BoxMesh_jmpxu")
+
+[node name="DebugNavRed" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 16)
+mesh = SubResource("BoxMesh_qph1x")

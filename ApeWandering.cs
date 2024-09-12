@@ -31,9 +31,10 @@ public partial class ApeWandering : State
 
     int m_NextPosCtr;
 
-    const float m_MaxNavPointDist = 1.0f;
+    const float m_MaxNavPointDist = 0.5f;
 
     const float m_WanderingVelocity = 1000.0f;
+
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -104,11 +105,12 @@ public partial class ApeWandering : State
     public override void PhysicsUpdate(double delta)
     {
         //Ape.Velocity = new Vector3(0, 100, 0);
-        if (Math.Abs(m_Ape.GlobalPosition.X - m_NextPos.X) < m_MaxNavPointDist && Math.Abs(m_Ape.GlobalPosition.Z - m_NextPos.Y) < m_MaxNavPointDist)
+        if (Math.Abs(m_NextPos.X - m_Ape.GlobalPosition.X) < m_MaxNavPointDist && Math.Abs(m_NextPos.Y - m_Ape.GlobalPosition.Z) < m_MaxNavPointDist)
         {
             m_NextPosCtr += 1;
             if (m_NextPosCtr >= m_IDPath.Count)
             {
+                m_IDPath.Clear();
                 EmitSignal(SignalName.Transitioned, this.Name + "", "ApeIdle");
             }
             else

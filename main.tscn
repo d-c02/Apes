@@ -13,6 +13,7 @@
 transform = Transform3D(1, 0, 0, 0, 0.274396, 0.961617, 0, -0.961617, 0.274396, 0, 36.923, 0)
 
 [node name="CameraPivot" type="Node3D" parent="." node_paths=PackedStringArray("_Camera")]
+physics_interpolation_mode = 1
 transform = Transform3D(1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, 0, 0, 0)
 script = ExtResource("2_cge44")
 _Camera = NodePath("Camera3D")
@@ -20,8 +21,8 @@ _Camera = NodePath("Camera3D")
 [node name="Camera3D" type="Camera3D" parent="CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 30)
 
-[node name="ApeManager" parent="." node_paths=PackedStringArray("Map") instance=ExtResource("3_pgkky")]
-Map = NodePath("../Map")
+[node name="ApeManager" parent="." node_paths=PackedStringArray("m_Map") instance=ExtResource("3_pgkky")]
+m_Map = NodePath("../Map")
 
 [node name="ColorRect" type="ColorRect" parent="." node_paths=PackedStringArray("text")]
 offset_right = 78.0
