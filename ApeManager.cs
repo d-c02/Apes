@@ -30,7 +30,7 @@ public partial class ApeManager : Node
 	public void SpawnApe()
 	{
         //Vector2I Coords = m_Map.getRandomOpenNavCoords(true);
-        Vector2I Coords = m_Map.getRandomOpenNavCoords(false);
+        Vector2I Coords = m_Map.getRandomOpenNavCoords(true);
 
         var apeScene = new PackedScene();
         apeScene = ResourceLoader.Load<PackedScene>("res://ape.tscn");

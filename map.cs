@@ -115,7 +115,7 @@ public partial class map : GridMap
         }
         else
         {
-            SetCellItem(debug_pos, (int)Blocks.Water);
+            SetCellItem(debug_pos, (int)Blocks.DebugNavBlue);
         }
         aStarGrid.SetPointSolid(id, solid);
     }
