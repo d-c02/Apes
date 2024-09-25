@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://r3hdgiktlqj6"]
+
+[ext_resource type="Texture2D" uid="uid://b4dnewwikfadw" path="res://Assets/Projects/WorkTextures/WorkSpriteSheet.png" id="1_tondf"]
+
+[node name="WorkIcon" type="Sprite3D"]
+transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
+pixel_size = 0.0015
+billboard = 1
+texture = ExtResource("1_tondf")
+hframes = 4

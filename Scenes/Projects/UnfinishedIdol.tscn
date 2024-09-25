@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://mr2sk5g8cdl3"]
+
+[ext_resource type="Script" path="res://Scenes/Projects/UnfinishedIdol.cs" id="1_ymk3h"]
+[ext_resource type="ArrayMesh" uid="uid://fol5trmcqb4" path="res://Assets/Projects/Idols/UnfinishedIdol.obj" id="2_8ituk"]
+[ext_resource type="Material" path="res://Assets/Projects/Idols/UnfinishedIdolBody.tres" id="3_s53d5"]
+[ext_resource type="Material" path="res://Assets/Projects/Idols/FervorIdolPedestal.tres" id="4_6drn2"]
+
+[node name="UnfinishedIdol" type="Node3D" node_paths=PackedStringArray("m_WorkAnchor")]
+script = ExtResource("1_ymk3h")
+m_WorkAnchor = NodePath("WorkAnchor")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = ExtResource("2_8ituk")
+surface_material_override/0 = ExtResource("3_s53d5")
+surface_material_override/1 = ExtResource("4_6drn2")
+
+[node name="WorkAnchor" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)

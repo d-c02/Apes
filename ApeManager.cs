@@ -38,9 +38,9 @@ public partial class ApeManager : Node
 		Ape.SetMap(ref m_Map);
         Ape.SetNavCoords(Coords);
 		Vector2 PosCoords = m_Map.GetPointPosition(Coords);
-        Ape.GlobalPosition = new Vector3(PosCoords.X, 10, PosCoords.Y);
 		Ape.SetMap(ref m_Map);
 		AddChild(Ape);
-		//Apes.Append(Ape);
-	}
+        Ape.GlobalPosition = new Vector3(PosCoords.X, 10, PosCoords.Y);
+        //Apes.Append(Ape);
+    }
 }

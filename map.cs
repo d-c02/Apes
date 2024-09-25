@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using static System.Reflection.Metadata.BlobBuilder;
 
 public partial class map : GridMap
@@ -72,6 +73,8 @@ public partial class map : GridMap
 
         if (fillPoint)
         {
+            //Vector3I debug_pos = new Vector3I(Coords.X - aStarGridxOffset, 6, Coords.Y - aStarGridzOffset);
+            //SetCellItem(debug_pos, (int)Blocks.DebugNavRed);
             aStarGrid.SetPointSolid(Coords);
         }
 
@@ -108,6 +111,8 @@ public partial class map : GridMap
 
     public void SetPointSolid(Vector2I id, bool solid = true)
     {
+        /* SHOW DEBUG NAVMAP
+        
         Vector3I debug_pos = new Vector3I(id.X - aStarGridxOffset, 6, id.Y - aStarGridzOffset);
         if (solid)
         {
@@ -117,6 +122,7 @@ public partial class map : GridMap
         {
             SetCellItem(debug_pos, (int)Blocks.DebugNavBlue);
         }
+        */
         aStarGrid.SetPointSolid(id, solid);
     }
 
@@ -595,11 +601,11 @@ public partial class map : GridMap
                 if (GetCellItem(Coords) == (int) Blocks.Water)
                 {
                     aStarGrid.SetPointSolid(ID);
-                    SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavRed);
+                    //SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavRed);
                 }
                 else
                 {
-                    SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavBlue);
+                    //SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavBlue);
                 }
             }
         }

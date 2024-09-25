@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://fol5trmcqb4"
+path="res://.godot/imported/UnfinishedIdol.obj-c44c1c8e4e57981d4492116643a11bb0.mesh"
+
+[deps]
+
+files=["res://.godot/imported/UnfinishedIdol.obj-c44c1c8e4e57981d4492116643a11bb0.mesh"]
+
+source_file="res://Assets/Projects/Idols/UnfinishedIdol.obj"
+dest_files=["res://.godot/imported/UnfinishedIdol.obj-c44c1c8e4e57981d4492116643a11bb0.mesh", "res://.godot/imported/UnfinishedIdol.obj-c44c1c8e4e57981d4492116643a11bb0.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

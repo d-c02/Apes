@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bjw5bv6rd8hud"
+path="res://.godot/imported/FervorIdol.obj-f58bd2d67fd35471dd652252eda1452d.mesh"
+
+[deps]
+
+files=["res://.godot/imported/FervorIdol.obj-f58bd2d67fd35471dd652252eda1452d.mesh"]
+
+source_file="res://Assets/Projects/Idols/FervorIdol.obj"
+dest_files=["res://.godot/imported/FervorIdol.obj-f58bd2d67fd35471dd652252eda1452d.mesh", "res://.godot/imported/FervorIdol.obj-f58bd2d67fd35471dd652252eda1452d.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false
