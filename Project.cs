@@ -13,15 +13,15 @@ public abstract partial class Project : Node3D
 	protected int m_MaxWork = 1;
 	protected int m_NumWorkPerRow = 5;
 	protected float m_DisappearProximity = 3;
-	[Export] protected float m_WorkRadius = 0.5f;
-	[Export] protected float m_VerticalOffset = 1.5f;
+	[Export] protected float m_WorkRadius = 1f;
+	[Export] protected float m_VerticalOffset = 2f;
 
 	[Export] public Node3D m_WorkAnchor;
 	protected Sprite3D[] m_WorkSprites;
 
 
 	protected int m_WorkAspect;
-	enum WorkAspects {Empty, Insight, Influence, Fervor, Any};
+	protected enum WorkAspects {Empty, Insight, Influence, Fervor, Any};
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -44,39 +44,29 @@ public abstract partial class Project : Node3D
 
 		int CurRow = 1;
         bool OddRowSize = m_NumWorkPerRow % 2 == 1;
+		int RowSize = m_NumWorkPerRow;
         for (int i = 0; i < m_MaxWork; i++)
 		{
 			if (i >= CurRow * m_NumWorkPerRow)
 			{
 				if (i > m_MaxWork - m_NumWorkPerRow)
 				{
-					OddRowSize = (m_MaxWork - (m_NumWorkPerRow * CurRow)) % 2 == 1;
+					RowSize = (m_MaxWork - (m_NumWorkPerRow * CurRow));
+                    OddRowSize = (m_MaxWork - (m_NumWorkPerRow * CurRow)) % 2 == 1;
 				}
                 CurRow++;
             }
 
 			int centerOffset = i % m_NumWorkPerRow;
-			if (OddRowSize)
+            int center = (int) Math.Ceiling((double)RowSize / 2);
+            if (OddRowSize)
 			{
-				if (centerOffset % 2 == 0)
-				{
-					m_WorkSprites[i].Position = new Vector3(m_WorkRadius * centerOffset, (CurRow - 1) * m_VerticalOffset, 0);
-				}
-				else
-				{
-                    m_WorkSprites[i].Position = new Vector3(m_WorkRadius * -1 * (centerOffset + 1), (CurRow - 1) * m_VerticalOffset, 0);
-                }
+				m_WorkSprites[i].Position = new Vector3((m_WorkRadius * centerOffset) - center, (CurRow - 1) * m_VerticalOffset, 0);
+
 			}
 			else
 			{
-                if (centerOffset % 2 == 0)
-                {
-                    m_WorkSprites[i].Position = new Vector3((m_WorkRadius * centerOffset) + (m_WorkRadius), (CurRow - 1) * m_VerticalOffset, 0);
-                }
-                else
-                {
-                    m_WorkSprites[i].Position = new Vector3((m_WorkRadius * -1 * (centerOffset - 1)) - (m_WorkRadius), (CurRow - 1) * m_VerticalOffset, 0);
-                }
+                m_WorkSprites[i].Position = new Vector3((m_WorkRadius * centerOffset) - (center + (m_WorkRadius / 2)), (CurRow - 1) * m_VerticalOffset, 0);
             }
 		}
 	}
@@ -92,6 +82,7 @@ public abstract partial class Project : Node3D
 	public int AddWork(int aspect, int amount)
 	{
 		int remainder = 0;
+		int prevWork = m_CurWork;
 		if (amount + m_CurWork < m_MaxWork)
 		{
 			m_CurWork += amount;
