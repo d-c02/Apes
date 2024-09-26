@@ -46,14 +46,14 @@ public abstract partial class Project : Node3D
         bool OddRowSize = m_NumWorkPerRow % 2 == 1;
         for (int i = 0; i < m_MaxWork; i++)
 		{
-			if (i > CurRow * m_NumWorkPerRow)
+			if (i >= CurRow * m_NumWorkPerRow)
 			{
-				CurRow++;
 				if (i > m_MaxWork - m_NumWorkPerRow)
 				{
-					OddRowSize = (m_MaxWork - m_NumWorkPerRow) % 2 == 1;
+					OddRowSize = (m_MaxWork - (m_NumWorkPerRow * CurRow)) % 2 == 1;
 				}
-			}
+                CurRow++;
+            }
 
 			int centerOffset = i % m_NumWorkPerRow;
 			if (OddRowSize)
@@ -71,11 +71,11 @@ public abstract partial class Project : Node3D
 			{
                 if (centerOffset % 2 == 0)
                 {
-                    m_WorkSprites[i].Position = new Vector3((m_WorkRadius * centerOffset) + (m_WorkRadius / 2), (CurRow - 1) * m_VerticalOffset, 0);
+                    m_WorkSprites[i].Position = new Vector3((m_WorkRadius * centerOffset) + (m_WorkRadius), (CurRow - 1) * m_VerticalOffset, 0);
                 }
                 else
                 {
-                    m_WorkSprites[i].Position = new Vector3((m_WorkRadius * -1 * (centerOffset + 1)) + (m_WorkRadius / 2), (CurRow - 1) * m_VerticalOffset, 0);
+                    m_WorkSprites[i].Position = new Vector3((m_WorkRadius * -1 * (centerOffset - 1)) - (m_WorkRadius), (CurRow - 1) * m_VerticalOffset, 0);
                 }
             }
 		}
@@ -128,23 +128,27 @@ public abstract partial class Project : Node3D
 	protected void BillboardWork()
 	{
 
-		Vector3 CameraPos = GetViewport().GetCamera3D().GlobalPosition;
-        //Makes work face camera no matter what
-        m_WorkAnchor.LookAt(CameraPos);
-		Vector2 CameraDist = new Vector2(GlobalPosition.X - CameraPos.X, GlobalPosition.Z - CameraPos.Z);
-		if (CameraDist.Length() < m_DisappearProximity)
-		{
-			m_WorkAnchor.Visible = false;
-		}
-		else
-		{
-			m_WorkAnchor.Visible = true;
-		}
 
-		/*Faces camera rotation but not position
-		Vector3 cameraBasisZ = GetViewport().GetCamera3D().GlobalTransform.Basis.Z;
+        Vector3 CameraPos = GetViewport().GetCamera3D().GlobalPosition;
+
+		//Faces camera no matter what 
+		//m_WorkAnchor.LookAt(CameraPos);
+
+        //Faces camera rotation but not position
+        Vector3 cameraBasisZ = GetViewport().GetCamera3D().GlobalTransform.Basis.Z;
         float cameraPosY = GetViewport().GetCamera3D().GlobalPosition.Y;
-        m_WorkAnchor.LookAt(new Vector3(m_WorkAnchor.GlobalPosition.X - cameraBasisZ.X, 0, m_WorkAnchor.GlobalPosition.Z - cameraBasisZ.Z));
-		*/
+        m_WorkAnchor.LookAt(new Vector3(m_WorkAnchor.GlobalPosition.X - cameraBasisZ.X, m_WorkAnchor.GlobalPosition.Y, m_WorkAnchor.GlobalPosition.Z - cameraBasisZ.Z));
+
+
+		//Makes work disappear when camera comes close
+        Vector2 CameraDist = new Vector2(GlobalPosition.X - CameraPos.X, GlobalPosition.Z - CameraPos.Z);
+        if (CameraDist.Length() < m_DisappearProximity)
+        {
+            m_WorkAnchor.Visible = false;
+        }
+        else
+        {
+            m_WorkAnchor.Visible = true;
+        }
     }
 }
