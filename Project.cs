@@ -58,7 +58,7 @@ public abstract partial class Project : Node3D
             }
 
 			int centerOffset = i % m_NumWorkPerRow;
-            int center = (int) Math.Ceiling((double)RowSize / 2);
+            int center = (int) Math.Floor((double)RowSize / 2);
             if (OddRowSize)
 			{
 				m_WorkSprites[i].Position = new Vector3((m_WorkRadius * centerOffset) - center, (CurRow - 1) * m_VerticalOffset, 0);
@@ -94,12 +94,17 @@ public abstract partial class Project : Node3D
 			m_Complete = true;
 		}
 
+		for (int i = prevWork; i < m_CurWork; i++)
+		{
+			m_WorkSprites[i].Frame = aspect;
+		}
 		return remainder;
 	}
 
 	public int RemoveWork(int amount)
 	{
 		int remainder = 0;
+		int prevWork = m_CurWork;
 		if (m_CurWork - amount >= 0)
 		{
 			m_CurWork -= amount;
@@ -112,6 +117,11 @@ public abstract partial class Project : Node3D
 		if (m_CurWork < m_MaxWork)
 		{
 			m_Complete = false;
+		}
+
+		for (int i = prevWork - 1; i >= m_CurWork; i--)
+		{
+			m_WorkSprites[i].Frame = (int)WorkAspects.Empty;
 		}
 		return remainder;
 	}
