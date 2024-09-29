@@ -2,9 +2,11 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static DeckInterface;
 
 public partial class ApeManager : Node
 {
+
 	// Called when the node enters the scene tree for the first time.
 
 	[Export] private map m_Map;
@@ -16,6 +18,8 @@ public partial class ApeManager : Node
 		{
 			SpawnApe();
 		}
+
+		ConfigureDecks();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -24,6 +28,14 @@ public partial class ApeManager : Node
 		if (Input.IsActionJustPressed("DEBUG_SPAWN_APE"))
 		{
 			SpawnApe();
+		}
+
+		if (Input.IsActionJustPressed("DEBUG_START_NEW_TIME_PHASE"))
+		{
+			for (int i = 0; i < m_Apes.Count; i++)
+			{
+				m_Apes[i].StartNewPhase();
+			}
 		}
 	}
 
@@ -43,4 +55,58 @@ public partial class ApeManager : Node
         Ape.GlobalPosition = new Vector3(PosCoords.X, 10, PosCoords.Y);
         //Apes.Append(Ape);
     }
+
+    //Ape action stuff starts here
+
+    Deck[] m_Decks;
+
+    void ConfigureDecks()
+	{
+		m_Decks = new Deck[Enum.GetNames(typeof(Decks)).Length];
+
+        for (int i = 0; i < Enum.GetNames(typeof(Decks)).Length; i++)
+		{
+			if (i == (int) Decks.Fervor_Default)
+			{
+				int[] actions = {
+					(int) Actions.Idle,
+					(int) Actions.Work_One,
+					(int) Actions.Work_Two,
+					(int) Actions.Work_Three
+				};
+				m_Decks[i] = new Deck(actions);
+			}
+			else if (i == (int) Decks.Insight_Default)
+			{
+                int[] actions = {
+                    (int) Actions.Idle,
+                    (int) Actions.Work_One,
+                    (int) Actions.Work_Two,
+                    (int) Actions.Work_Three
+                };
+                m_Decks[i] = new Deck(actions);
+            }
+			else if (i == (int) Decks.Influence_Default)
+			{
+                int[] actions = {
+                    (int) Actions.Idle,
+                    (int) Actions.Work_One,
+                    (int) Actions.Work_Two,
+                    (int) Actions.Work_Three
+                };
+                m_Decks[i] = new Deck(actions);
+            }
+		}
+	}
+
+	public int GetDeckSize(int deck)
+	{
+		return m_Decks[deck].size;
+	}
+
+	public int GetAction(int deck, int action)
+	{
+		return m_Decks[deck].GetAction(action);
+	}
+
 }

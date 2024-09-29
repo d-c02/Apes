@@ -13,8 +13,8 @@ public abstract partial class Project : Node3D
 	protected int m_MaxWork = 1;
 	protected int m_NumWorkPerRow = 5;
 	protected float m_DisappearProximity = 3;
-	[Export] protected float m_WorkRadius = 1f;
-	[Export] protected float m_VerticalOffset = 2f;
+	[Export] protected float m_WorkRadius = 0.8f;
+	[Export] protected float m_VerticalOffset = 1f;
 
 	[Export] public Node3D m_WorkAnchor;
 	protected Sprite3D[] m_WorkSprites;

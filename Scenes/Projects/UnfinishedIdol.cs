@@ -14,7 +14,6 @@ public partial class UnfinishedIdol : Project
         AddWork((int)WorkAspects.Influence, 2);
         AddWork((int)WorkAspects.Insight, 2);
         AddWork((int)WorkAspects.Fervor, 3);
-        RemoveWork(10);
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

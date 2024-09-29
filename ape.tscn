@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=4 uid="uid://doi8r3guivpp4"]
+[gd_scene load_steps=33 format=4 uid="uid://doi8r3guivpp4"]
 
 [ext_resource type="Script" path="res://ape.cs" id="1_cxu0w"]
 [ext_resource type="Texture2D" uid="uid://dr2n0bbnyf3ga" path="res://Assets/Apes/Apev2_imperfection_0002_color_2k_1.png" id="2_4w3hi"]
@@ -13,6 +13,7 @@
 [ext_resource type="Material" uid="uid://c8rgx7ixwmkfa" path="res://Assets/Apes/FervorApeClay.tres" id="6_7xo7q"]
 [ext_resource type="Material" uid="uid://bsnaegmfljw8e" path="res://Assets/Apes/ApeEyes.tres" id="6_br4ao"]
 [ext_resource type="Material" uid="uid://ci73v1w4mktna" path="res://Assets/Apes/FervorApeMouth.tres" id="7_ed1qj"]
+[ext_resource type="Texture2D" uid="uid://d38ua7pvjn5ju" path="res://Assets/Apes/UI_Icons/ThoughtBubble.png" id="14_kvwtx"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_f1xd8"]
 animation = &"Idle"
@@ -276,3 +277,11 @@ Ape = NodePath("../..")
 [node name="Wandering" type="Node" parent="StateMachine" node_paths=PackedStringArray("m_Ape")]
 script = ExtResource("5_w5kl2")
 m_Ape = NodePath("../..")
+
+[node name="WorkAnchor" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.574, 0)
+
+[node name="ThoughtBubble" type="Sprite3D" parent="WorkAnchor"]
+pixel_size = 0.0005
+billboard = 1
+texture = ExtResource("14_kvwtx")

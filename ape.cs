@@ -1,6 +1,11 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Dynamic;
+using System.Linq;
+using System.Text.Json.Serialization.Metadata;
+using static DeckInterface;
 
 public partial class ape : CharacterBody3D
 {
@@ -28,6 +33,12 @@ public partial class ape : CharacterBody3D
     [Export] Material FervorBody;
     [Export] Material FervorMouth;
 
+    private List<int> m_Decks;
+
+    private ApeManager m_ApeManager;
+
+    private int m_Action = (int) Actions.Idle;
+
     public override void _Ready()
     {
         //_AnimationTree = GetChild<AnimationTree>(0);
@@ -36,7 +47,6 @@ public partial class ape : CharacterBody3D
 
         MeshInstance3D body = GetNode<MeshInstance3D>("Pivot/Character/Ape/Body");
         MeshInstance3D mouth = GetNode<MeshInstance3D>("Pivot/Character/Ape/Mouth");
-
 
         m_Aspect = rnd.Next(0, 3);
         if (m_Aspect == (int) Aspects.Insight)
@@ -79,6 +89,11 @@ public partial class ape : CharacterBody3D
         GetNode<ApeWandering>("StateMachine/Wandering").SetMap(ref m_Map);
     }
 
+    public void SetApeManager(ref ApeManager apeManager)
+    {
+        m_ApeManager = apeManager;
+    }
+
     public void SetNavCoords(int x, int y)
     {
         m_NavCoords = new Vector2I(x, y);
@@ -97,5 +112,65 @@ public partial class ape : CharacterBody3D
     public int GetAspect()
     {
         return m_Aspect;
+    }
+
+    public void AddDeck(int deck)
+    {
+        m_Decks.Append(deck);
+    }
+
+    public bool RemoveDeck(int deck)
+    {
+        return m_Decks.Remove(deck);
+    }
+
+
+    private int DrawAction()
+    {
+        int deckSum = 0;
+        for (int i = 0; i < m_Decks.Count; i++)
+        {
+            deckSum += m_ApeManager.GetDeckSize(m_Decks[i]);
+        }
+
+        Random rnd = new Random();
+        int action = rnd.Next(0, deckSum);
+        int curSum = 0;
+
+        for (int i = 0; i < m_Decks.Count; i++)
+        {
+            curSum += m_ApeManager.GetDeckSize(m_Decks[i]);
+            if (action < curSum)
+            {
+                return m_ApeManager.GetAction(m_Decks[i], action - (curSum - m_ApeManager.GetDeckSize(m_Decks[i])));
+            }
+        }
+
+        return (int) Actions.Idle;
+    }
+
+    private void ProcessAction(int action)
+    {
+        if (action == (int) Actions.Idle)
+        {
+
+        }
+        else if (action == (int) Actions.Work_One)
+        {
+
+        }
+        else if (action == (int)Actions.Work_Two)
+        {
+
+        }
+        else if (action == (int)Actions.Work_Three)
+        {
+
+        }
+    }
+
+    public void StartNewPhase()
+    {
+        m_Action = DrawAction();
     }
 }
