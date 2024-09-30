@@ -24,7 +24,8 @@ public partial class ape : CharacterBody3D
 
     int m_Aspect = (int) Aspects.Insight;
 
-    enum Aspects {Insight, Influence, Fervor };
+    [Export]
+    Sprite3D m_ActionSprite;
 
     [Export] Material InsightBody;
     [Export] Material InsightMouth;
@@ -64,7 +65,8 @@ public partial class ape : CharacterBody3D
             body.SetSurfaceOverrideMaterial(0, FervorBody);
             mouth.SetSurfaceOverrideMaterial(0, FervorMouth);
         }
-        
+
+        m_Decks = new List<int>();
         //_RunTimeScale = _AnimationTree.Get("parameters/Run/TimeScale/scale").As<AnimationNodeTimeScale>();
     }
     public override void _PhysicsProcess(double delta)
@@ -89,7 +91,12 @@ public partial class ape : CharacterBody3D
         GetNode<ApeWandering>("StateMachine/Wandering").SetMap(ref m_Map);
     }
 
-    public void SetApeManager(ref ApeManager apeManager)
+    public int GetAspect()
+    {
+        return m_Aspect;
+    }
+
+    public void SetApeManager(ApeManager apeManager)
     {
         m_ApeManager = apeManager;
     }
@@ -109,14 +116,9 @@ public partial class ape : CharacterBody3D
         return m_NavCoords;
     }
 
-    public int GetAspect()
-    {
-        return m_Aspect;
-    }
-
     public void AddDeck(int deck)
     {
-        m_Decks.Append(deck);
+        m_Decks.Add(deck);
     }
 
     public bool RemoveDeck(int deck)
@@ -128,6 +130,7 @@ public partial class ape : CharacterBody3D
     private int DrawAction()
     {
         int deckSum = 0;
+        int result = (int) Actions.Idle;
         for (int i = 0; i < m_Decks.Count; i++)
         {
             deckSum += m_ApeManager.GetDeckSize(m_Decks[i]);
@@ -142,18 +145,40 @@ public partial class ape : CharacterBody3D
             curSum += m_ApeManager.GetDeckSize(m_Decks[i]);
             if (action < curSum)
             {
-                return m_ApeManager.GetAction(m_Decks[i], action - (curSum - m_ApeManager.GetDeckSize(m_Decks[i])));
+                result = m_ApeManager.GetAction(m_Decks[i], action - (curSum - m_ApeManager.GetDeckSize(m_Decks[i])));
+                break;
             }
         }
 
-        return (int) Actions.Idle;
+        SetActionSprite(result);
+        return result;
+    }
+
+    private void SetActionSprite(int action)
+    {
+        if (action == (int)Actions.Idle)
+        {
+            m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/Idle.png");
+        }
+        else if (action == (int)Actions.Work_One)
+        {
+
+        }
+        else if (action == (int)Actions.Work_Two)
+        {
+
+        }
+        else if (action == (int)Actions.Work_Three)
+        {
+
+        }
     }
 
     private void ProcessAction(int action)
     {
         if (action == (int) Actions.Idle)
         {
-
+            
         }
         else if (action == (int) Actions.Work_One)
         {

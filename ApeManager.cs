@@ -14,6 +14,7 @@ public partial class ApeManager : Node
 	private List<ape> m_Apes;
 	public override void _Ready()
 	{
+		m_Apes = new List<ape>();
 		for (int i = 0; i < 100; i++)
 		{
 			SpawnApe();
@@ -53,7 +54,24 @@ public partial class ApeManager : Node
 		Ape.SetMap(ref m_Map);
 		AddChild(Ape);
         Ape.GlobalPosition = new Vector3(PosCoords.X, 10, PosCoords.Y);
-        //Apes.Append(Ape);
+		Ape.SetApeManager(this);
+
+		//Remove later?
+		if (Ape.GetAspect() == (int) Aspects.Fervor)
+		{
+			Ape.AddDeck((int) Decks.Fervor_Default);
+		}
+		else if (Ape.GetAspect() == (int)Aspects.Influence)
+		{
+            Ape.AddDeck((int)Decks.Influence_Default);
+        }
+        else if (Ape.GetAspect() == (int)Aspects.Insight)
+        {
+            Ape.AddDeck((int)Decks.Insight_Default);
+        }
+        //
+
+        m_Apes.Add(Ape);
     }
 
     //Ape action stuff starts here

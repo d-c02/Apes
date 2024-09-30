@@ -3,6 +3,8 @@ using System;
 
 public interface DeckInterface
 {
+    enum Aspects { Insight, Influence, Fervor };
+
     public enum Actions
     {
         Idle,
