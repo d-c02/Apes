@@ -1,6 +1,7 @@
-[gd_scene load_steps=19 format=3 uid="uid://cplilww3ku4th"]
+[gd_scene load_steps=20 format=3 uid="uid://cplilww3ku4th"]
 
 [ext_resource type="ArrayMesh" uid="uid://dqmyux4jwf01n" path="res://TilemapAssets/centercube.obj" id="1_sj8jv"]
+[ext_resource type="Material" uid="uid://b3gykycyyr4pc" path="res://TilemapAssets/TileMapClay.tres" id="2_43omq"]
 [ext_resource type="ArrayMesh" uid="uid://chylfwc8wobgx" path="res://TilemapAssets/cornerramp.obj" id="2_on2u1"]
 [ext_resource type="ArrayMesh" uid="uid://cpyqatyqoe882" path="res://TilemapAssets/edgeramp.obj" id="3_gb5mo"]
 [ext_resource type="ArrayMesh" uid="uid://d1fccnco86kc8" path="res://TilemapAssets/sandcube.obj" id="4_ia7k0"]
@@ -45,7 +46,9 @@ size = Vector3(2, 2, 2)
 [node name="TileMapSource" type="Node3D"]
 
 [node name="CenterCube" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0341836, 0, 0)
 mesh = ExtResource("1_sj8jv")
+surface_material_override/1 = ExtResource("2_43omq")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="CenterCube"]
 
@@ -55,6 +58,7 @@ shape = SubResource("ConvexPolygonShape3D_s48pt")
 [node name="CornerRamp" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
 mesh = ExtResource("2_on2u1")
+surface_material_override/1 = ExtResource("2_43omq")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="CornerRamp"]
 
@@ -64,6 +68,7 @@ shape = SubResource("ConvexPolygonShape3D_wrwo2")
 [node name="EdgeRamp" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
 mesh = ExtResource("3_gb5mo")
+surface_material_override/1 = ExtResource("2_43omq")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="EdgeRamp"]
 
@@ -73,6 +78,7 @@ shape = SubResource("ConvexPolygonShape3D_bs5a5")
 [node name="InnerCornerBlock" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 6)
 mesh = ExtResource("6_2l3eq")
+surface_material_override/1 = ExtResource("2_43omq")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="InnerCornerBlock"]
 

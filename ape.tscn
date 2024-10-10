@@ -280,14 +280,14 @@ script = ExtResource("5_w5kl2")
 m_Ape = NodePath("../..")
 
 [node name="WorkAnchor" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.574, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.859, 0)
 
 [node name="ActionIcon" type="Sprite3D" parent="WorkAnchor"]
-pixel_size = 0.0005
+pixel_size = 0.0008
 billboard = 1
 render_priority = 1
 
 [node name="ThoughtBubble" type="Sprite3D" parent="WorkAnchor"]
-pixel_size = 0.0005
+pixel_size = 0.0008
 billboard = 1
 texture = ExtResource("14_kvwtx")

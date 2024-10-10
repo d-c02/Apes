@@ -42,6 +42,7 @@ public partial class ape : CharacterBody3D
 
     public override void _Ready()
     {
+
         //_AnimationTree = GetChild<AnimationTree>(0);
         _AnimationNodeStateMachinePlayback = _AnimationTree.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();
         Random rnd = new Random();
@@ -162,15 +163,48 @@ public partial class ape : CharacterBody3D
         }
         else if (action == (int)Actions.Work_One)
         {
-
+            if (m_Aspect == (int) Aspects.Fervor)
+            {
+                m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/FervorOne.png");
+            }
+            if (m_Aspect == (int)Aspects.Influence)
+            {
+                m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InfluenceOne.png");
+            }
+            if (m_Aspect == (int)Aspects.Insight)
+            {
+                m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InsightOne.png");
+            }
         }
         else if (action == (int)Actions.Work_Two)
         {
-
+            if (m_Aspect == (int)Aspects.Fervor)
+            {
+                m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/FervorTwo.png");
+            }
+            if (m_Aspect == (int)Aspects.Influence)
+            {
+                m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InfluenceTwo.png");
+            }
+            if (m_Aspect == (int)Aspects.Insight)
+            {
+                m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InsightTwo.png");
+            }
         }
         else if (action == (int)Actions.Work_Three)
         {
-
+            if (m_Aspect == (int)Aspects.Fervor)
+            {
+                m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/FervorThree.png");
+            }
+            if (m_Aspect == (int)Aspects.Influence)
+            {
+                m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InfluenceThree.png");
+            }
+            if (m_Aspect == (int)Aspects.Insight)
+            {
+                m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InsightThree.png");
+            }
         }
     }
 

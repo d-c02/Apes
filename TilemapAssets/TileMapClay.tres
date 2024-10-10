@@ -1,0 +1,22 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://b3gykycyyr4pc"]
+
+[ext_resource type="Shader" path="res://CenterCube.gdshader" id="1_vssrl"]
+[ext_resource type="Texture2D" uid="uid://dx3prtvah43dw" path="res://Assets/ClayTexture/Clay_normal.png" id="2_58whu"]
+[ext_resource type="Texture2D" uid="uid://d0p7an6vx7w2o" path="res://Assets/ClayTexture/Clay_orm.png" id="3_hax7k"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_vssrl")
+shader_parameter/albedo = Color(0.0952726, 0.307034, 0.0927635, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = 0.75
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = null
+shader_parameter/metallic = null
+shader_parameter/normal_scale = 1.2
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
+shader_parameter/texture_roughness = ExtResource("3_hax7k")
+shader_parameter/texture_normal = ExtResource("2_58whu")

@@ -26,6 +26,7 @@ public partial class ApeManager : Node
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+		/*
 		if (Input.IsActionJustPressed("DEBUG_SPAWN_APE"))
 		{
 			SpawnApe();
@@ -38,6 +39,7 @@ public partial class ApeManager : Node
 				m_Apes[i].StartNewPhase();
 			}
 		}
+		*/
 	}
 
 	public void SpawnApe()
