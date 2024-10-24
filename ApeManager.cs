@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using static DeckInterface;
 
@@ -12,9 +13,12 @@ public partial class ApeManager : Node
 	[Export] private map m_Map;
 
 	private List<ape> m_Apes;
+
+	private List<Project> m_Projects;
 	public override void _Ready()
 	{
 		m_Apes = new List<ape>();
+		m_Projects = new List<Project>();
 		for (int i = 0; i < 100; i++)
 		{
 			SpawnApe();
@@ -26,12 +30,13 @@ public partial class ApeManager : Node
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		/*
+		
 		if (Input.IsActionJustPressed("DEBUG_SPAWN_APE"))
 		{
-			SpawnApe();
+			SpawnProject((int) Projects.Unfinished_Idol);
 		}
-
+		
+		
 		if (Input.IsActionJustPressed("DEBUG_START_NEW_TIME_PHASE"))
 		{
 			for (int i = 0; i < m_Apes.Count; i++)
@@ -39,7 +44,6 @@ public partial class ApeManager : Node
 				m_Apes[i].StartNewPhase();
 			}
 		}
-		*/
 	}
 
 	public void SpawnApe()
@@ -74,6 +78,27 @@ public partial class ApeManager : Node
         //
 
         m_Apes.Add(Ape);
+    }
+
+	public void SpawnProject(int project)
+	{
+		string ProjectPath = "";
+		if (project == (int) Projects.Unfinished_Idol)
+		{
+			ProjectPath = "res://Scenes/Projects/UnfinishedIdol.tscn";
+        }
+
+		Debug.Assert(ProjectPath != "", "Invalid project! ID: " + project.ToString());
+
+        Vector2I Coords = m_Map.getRandomOpenNavCoords(true);
+		var projectScene = new PackedScene();
+		projectScene = ResourceLoader.Load<PackedScene>(ProjectPath);
+		Project projectInstance = projectScene.Instantiate<Project>();
+        Vector2 PosCoords = m_Map.GetPointPosition(Coords);
+        projectInstance.GlobalPosition = new Vector3(PosCoords.X, 10, PosCoords.Y);
+		AddChild(projectInstance);
+
+		m_Projects.Add(projectInstance);
     }
 
     //Ape action stuff starts here

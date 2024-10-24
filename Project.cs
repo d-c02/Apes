@@ -26,8 +26,20 @@ public abstract partial class Project : Node3D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		ConfigureWork();
+
+        ConfigureWork();
 	}
+
+	protected void UpdateVerticalPosition()
+	{
+        PhysicsDirectSpaceState3D spaceState = GetWorld3D().DirectSpaceState;
+        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(GlobalPosition, new Vector3(0, -1, 0));
+        var result = spaceState.IntersectRay(query);
+        if (result.Count > 0)
+        {
+            GlobalPosition = (Vector3)result["position"];
+        }
+    }
 
 	protected void ConfigureWork()
 	{
@@ -77,7 +89,7 @@ public abstract partial class Project : Node3D
 		BillboardWork();
 	}
 
-	public abstract void OnFinish();
+    public abstract void OnFinish();
 
 	public int AddWork(int aspect, int amount)
 	{

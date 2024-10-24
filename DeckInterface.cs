@@ -20,6 +20,17 @@ public interface DeckInterface
         Influence_Default
     };
 
+    public enum Projects
+    {
+        Unfinished_Idol,
+        Fervor_Idol,
+        Insight_Idol,
+        Influence_Idol,
+        Fishery,
+        Temple,
+        Library
+    };
+
     public struct Deck
     {
         public Deck(int[] actions)

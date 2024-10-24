@@ -8,6 +8,8 @@ public partial class UnfinishedIdol : Project
 	{
 		m_MaxWork = 10;
 		m_NumWorkPerRow = 5;
+
+        UpdateVerticalPosition();
         ConfigureWork();
 
         AddWork((int)WorkAspects.Fervor, 2);

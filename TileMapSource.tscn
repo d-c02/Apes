@@ -1,14 +1,14 @@
-[gd_scene load_steps=20 format=3 uid="uid://cplilww3ku4th"]
+[gd_scene load_steps=23 format=4 uid="uid://cplilww3ku4th"]
 
-[ext_resource type="ArrayMesh" uid="uid://dqmyux4jwf01n" path="res://TilemapAssets/centercube.obj" id="1_sj8jv"]
 [ext_resource type="Material" uid="uid://b3gykycyyr4pc" path="res://TilemapAssets/TileMapClay.tres" id="2_43omq"]
 [ext_resource type="ArrayMesh" uid="uid://chylfwc8wobgx" path="res://TilemapAssets/cornerramp.obj" id="2_on2u1"]
-[ext_resource type="ArrayMesh" uid="uid://cpyqatyqoe882" path="res://TilemapAssets/edgeramp.obj" id="3_gb5mo"]
-[ext_resource type="ArrayMesh" uid="uid://d1fccnco86kc8" path="res://TilemapAssets/sandcube.obj" id="4_ia7k0"]
-[ext_resource type="ArrayMesh" uid="uid://dc77n3klvbhtd" path="res://TilemapAssets/watercube.obj" id="5_0yxeh"]
+[ext_resource type="Material" uid="uid://fjkpbbm7fjx1" path="res://TilemapAssets/TileMapClaySand.tres" id="4_04am6"]
+[ext_resource type="Material" uid="uid://bpoo32t12sn8n" path="res://TilemapAssets/TileMapClayWater.tres" id="5_gws23"]
 [ext_resource type="ArrayMesh" uid="uid://dn3icpxcxh6ej" path="res://TilemapAssets/innercornerramp.obj" id="6_2l3eq"]
-[ext_resource type="ArrayMesh" uid="uid://by16d0xkq1jel" path="res://TilemapAssets/doublecornerjoin.obj" id="7_jhlog"]
 [ext_resource type="Material" uid="uid://dlwkoje7s2iax" path="res://debugnavblue.tres" id="8_qtre1"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ga3a3"]
+size = Vector3(2, 2, 2)
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_s48pt"]
 points = PackedVector3Array(-1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1, 1, -1, 1, -1)
@@ -16,17 +16,86 @@ points = PackedVector3Array(-1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_wrwo2"]
 points = PackedVector3Array(0.999761, -1, -1, -0.952233, 1.01587, 1.01587, -0.952233, 1.01587, 0.952232, -0.999804, -1, 1, -1.01567, -0.952232, -1.01587, 1.01563, -0.952232, 1.01587, 1.01563, -0.952232, -1.01587, -1.01567, 1.01587, 1.01587, 0.999761, -1, 1, -0.999804, -1, -1, -1.01567, 1.01587, 0.952232, 0.98401, -0.920411, -0.984052, 0.98401, -0.920411, 1.01587)
 
+[sub_resource type="PrismMesh" id="PrismMesh_q2jx6"]
+left_to_right = 0.0
+size = Vector3(2, 2, 2)
+
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_bs5a5"]
 points = PackedVector3Array(1, -1, -1, -0.952232, 1.01587, 1.01587, -0.952232, 1.01587, -1.01587, -1, -1, 1, 1.01587, -0.952232, 1.01587, -1, -1, -1, -1, 1, 1, 1.01587, -0.952232, -1.01587, 1, -1, 1, -1, 1, -1)
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_2qdlb"]
 points = PackedVector3Array(-1, -1, -1, 0.999988, 1, 1, 1.01586, 1.01587, 0.952232, 0.999988, -1, -1, -0.952232, 1.01587, -1.01587, -1, -1, 1, -1, 1, 1, 0.999988, -1, 1, 1.01586, -0.952232, -1.01587, -1, 1, -1)
 
+[sub_resource type="ArrayMesh" id="ArrayMesh_8chi1"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2.00001, 2.00001),
+"attribute_data": PackedByteArray("/5////9f////n/+//1//v/+f/7//X/+//5//f/9f/3//n/9//1//f/+f/z//X/8//5//P/9f/z//nwAA/18AAP9f/3//H/9//1//P/8f/z//3/9//5//f//f/z//n/8/"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAgABAAMABAAFAAYABgAFAAcACAAJAAoACgAJAAsADAANAA4ADgANAA8AEAARABIAEgARABMAFAAVABYAFgAVABcA"),
+"material": ExtResource("4_04am6"),
+"name": "Cube",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AAD+//7/VNUAAAAA/v9U1QAA/v8AAFTVAAAAAAAAVNUAAP7/AAD//wAAAAAAAP/////+/wAA/////wAAAAD//////v8AAFTV//8AAAAAVNX///7//v9U1f//AAD+/1TV///+//7//7///wAA/v//vwAA/v/+//+/AAAAAP7//7///wAAAAD/vwAAAAAAAP+///8AAP7//78AAAAA/v//vwAA/v8AAP/////+/wAA//8AAP7//v///////v/+////VNVU1VTVVNVU1VTVVNVU1f+//7//v/+//7//v/+//7+qKqoqqiqqKqoqqiqqKqoq/////////////////////wAA/38AAP9/AAD/fwAA/3//f/+//3//v/9//7//f/+/")
+}]
+blend_shape_mode = 0
+
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_y7hkq"]
 points = PackedVector3Array(-1, -1, -1, 1, 1, 1, 1, -1, 1, 1, 1, -1, -1, 1, 1, 1, -1, -1, -1, -1, 1, -1, 1, -1)
 
+[sub_resource type="ArrayMesh" id="ArrayMesh_3e38y"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2, 2.00001, 2.00001),
+"attribute_data": PackedByteArray("/5////9f////n/+//1//v/+f/7//X/+//5//f/9f/3//n/9//1//f/+f/z//X/8//5//P/9f/z//nwAA/18AAP9f/3//H/9//1//P/8f/z//3/9//5//f//f/z//n/8/"),
+"format": 34896613399,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAgABAAMABAAFAAYABgAFAAcACAAJAAoACgAJAAsADAANAA4ADgANAA8AEAARABIAEgARABMAFAAVABYAFgAVABcA"),
+"material": ExtResource("5_gws23"),
+"name": "Cube",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AAD+//7/VNUAAAAA/v9U1QAA/v8AAFTVAAAAAAAAVNUAAP7/AAD//wAAAAAAAP/////+/wAA/////wAAAAD//////v8AAFTV//8AAAAAVNX///7//v9U1f//AAD+/1TV///+//7//7///wAA/v//vwAA/v/+//+/AAAAAP7//7///wAAAAD/vwAAAAAAAP+///8AAP7//78AAAAA/v//vwAA/v8AAP/////+/wAA//8AAP7//v///////v/+////VNVU1VTVVNVU1VTVVNVU1f+//7//v/+//7//v/+//7+qKqoqqiqqKqoqqiqqKqoq/////////////////////wAA/38AAP9/AAD/fwAA/3//f/+//3//v/9//7//f/+/")
+}]
+blend_shape_mode = 0
+
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_yp2sj"]
 points = PackedVector3Array(-1, 8, -1, 1, -1, 1, 1, 8, 1, 1, -1, -1, -1, -1, 1, 1, 8, -1, -1, 8, 1, -1, -1, -1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lc2od"]
+resource_name = "Dirt.004"
+albedo_color = Color(0.187816, 0.041424, 0.00847, 1)
+metallic = 0.5
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_sovqf"]
+_surfaces = [{
+"aabb": AABB(-1, -1, -1, 2.00001, 2.00001, 2),
+"attribute_data": PackedByteArray("/1//f/8f/3//X/8//x//P/9/////X////1//v/9/AAD/f/8//18AAA=="),
+"format": 34896613399,
+"index_count": 12,
+"index_data": PackedByteArray("AAABAAIAAgABAAMABAAFAAYABwAIAAkA"),
+"material": SubResource("StandardMaterial3D_lc2od"),
+"name": "Grass",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 10,
+"vertex_data": PackedByteArray("/v/+/wAAQNwAAAAAAACB0P7/AAD//4HQAAAAAP///78AACXm//9U1QAAAAD//1TVAAAAAAAAVNUAACXm////v/7/AAD///+/AAAAAP///7+NIJdOqRSaXqkUml4AAP9/VNVU1VTVVNVU1VTV////////////////")
+}, {
+"aabb": AABB(-1, -1, -1, 2.00001, 2.00001, 2),
+"attribute_data": PackedByteArray("/1//f/9f/z//nwAA/58AAP+f/z//fwAA/5////9/////f/+//1//f/+fAAD/H/9/"),
+"format": 34896613399,
+"index_count": 12,
+"index_data": PackedByteArray("AAABAAIAAwAEAAUABgAHAAgACQAKAAsA"),
+"material": ExtResource("2_43omq"),
+"name": "Cube.001",
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 12,
+"vertex_data": PackedByteArray("/v/+/wAAc9H+/wAA//9z0QAA/v///3PRAAD+/////7/+/wAA////vwAAJeb///+/AAD+////VNUAACXm//9U1QAAAAAAAFTV/v/+/wAAviMAAP7///++IwAAAAAAAL4jzi9LBs4vSwbOL0sG////////////////VNVU1VTVVNVU1VTVcd9nsXHfZ7Fx32ex")
+}]
+blend_shape_mode = 0
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_feynb"]
 points = PackedVector3Array(-1, -1, -1, 0.941046, 0.941046, -0.882093, 0.941046, -0.882093, 0.941046, -1, 1, 1, -1, -1, 1, 1, -1, 1, 1, 1, -1)
@@ -46,9 +115,9 @@ size = Vector3(2, 2, 2)
 [node name="TileMapSource" type="Node3D"]
 
 [node name="CenterCube" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0341836, 0, 0)
-mesh = ExtResource("1_sj8jv")
-surface_material_override/1 = ExtResource("2_43omq")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0241299, 0, 0)
+mesh = SubResource("BoxMesh_ga3a3")
+surface_material_override/0 = ExtResource("2_43omq")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="CenterCube"]
 
@@ -67,8 +136,8 @@ shape = SubResource("ConvexPolygonShape3D_wrwo2")
 
 [node name="EdgeRamp" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
-mesh = ExtResource("3_gb5mo")
-surface_material_override/1 = ExtResource("2_43omq")
+mesh = SubResource("PrismMesh_q2jx6")
+surface_material_override/0 = ExtResource("2_43omq")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="EdgeRamp"]
 
@@ -87,7 +156,7 @@ shape = SubResource("ConvexPolygonShape3D_2qdlb")
 
 [node name="SandBlock" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
-mesh = ExtResource("4_ia7k0")
+mesh = SubResource("ArrayMesh_8chi1")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="SandBlock"]
 
@@ -96,7 +165,7 @@ shape = SubResource("ConvexPolygonShape3D_y7hkq")
 
 [node name="WaterBlock" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
-mesh = ExtResource("5_0yxeh")
+mesh = SubResource("ArrayMesh_3e38y")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="WaterBlock"]
 
@@ -105,7 +174,7 @@ shape = SubResource("ConvexPolygonShape3D_yp2sj")
 
 [node name="DoubleCornerJoin" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
-mesh = ExtResource("7_jhlog")
+mesh = SubResource("ArrayMesh_sovqf")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="DoubleCornerJoin"]
 
