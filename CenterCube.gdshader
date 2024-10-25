@@ -29,7 +29,7 @@ void vertex() {
   world_normal = NORMAL;
 
   float height = texture(texture_height, world_vertex.xz / 20.0f).g;
-  VERTEX.y += height * 0.3f;
+  //VERTEX.y += height * 0.3f;
 }
 
 void fragment() {

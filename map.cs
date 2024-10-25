@@ -107,8 +107,9 @@ public partial class map : GridMap
 
     public void SetPointSolid(Vector2I id, bool solid = true)
     {
-        /* SHOW DEBUG NAVMAP
-        
+
+        //SHOW DEBUG NAVMAP
+        /*
         Vector3I debug_pos = new Vector3I(id.X - aStarGridxOffset, 6, id.Y - aStarGridzOffset);
         if (solid)
         {

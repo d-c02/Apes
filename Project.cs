@@ -30,10 +30,10 @@ public abstract partial class Project : Node3D
         ConfigureWork();
 	}
 
-	protected void UpdateVerticalPosition()
+	public void UpdateVerticalPosition()
 	{
         PhysicsDirectSpaceState3D spaceState = GetWorld3D().DirectSpaceState;
-        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(GlobalPosition, new Vector3(0, -1, 0));
+        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(GlobalPosition, new Vector3(GlobalPosition.X, -1, GlobalPosition.Z), 1);
         var result = spaceState.IntersectRay(query);
         if (result.Count > 0)
         {

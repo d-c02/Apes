@@ -94,11 +94,11 @@ public partial class ApeManager : Node
 		var projectScene = new PackedScene();
 		projectScene = ResourceLoader.Load<PackedScene>(ProjectPath);
 		Project projectInstance = projectScene.Instantiate<Project>();
+		AddChild(projectInstance);
         Vector2 PosCoords = m_Map.GetPointPosition(Coords);
         projectInstance.GlobalPosition = new Vector3(PosCoords.X, 10, PosCoords.Y);
-		AddChild(projectInstance);
-
-		m_Projects.Add(projectInstance);
+		projectInstance.UpdateVerticalPosition();
+        m_Projects.Add(projectInstance);
     }
 
     //Ape action stuff starts here
