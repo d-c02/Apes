@@ -1,46 +1,50 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using static System.Reflection.Metadata.BlobBuilder;
 
 public partial class map : GridMap
 {
-    enum Blocks { Center, Corner, Ramp, InnerCorner, Sand, Water, DoubleCornerJoin, DebugNavBlue, DebugNavRed};
+    enum Blocks { Center, Corner, Ramp, InnerCorner, Sand, Water, DoubleCornerJoin, DebugNavBlue, DebugNavRed };
 
-    const int topLevel = 4;
+    const int m_TopLevel = 4;
 
-    const int bottomLevel = 0;
+    const int m_BottomLevel = 0;
 
-    int[] maxLevelRadii = { 15, 12, 9, 6, 3 }; //Ascending
+    int[] m_MaxLevelRadii = { 15, 12, 9, 6, 3 }; //Ascending
 
-    const int mapSize = 50;
+    int[,] m_Markers = {{4, 4}, { 3, 3 }};
 
-    int minInitialPointRadius = 1;
-    int maxInitialPointRadius = 2;
+    const int m_MapSize = 50;
 
-    int MinNewPointsPerLevel = 1;
-    int MaxNewPointsPerLevel = 4;
+    int m_MinInitialPointRadius = 1;
+    int m_MaxInitialPointRadius = 2;
 
-    int maxX = int.MinValue;
-    int minX = int.MaxValue;
-    int maxZ = int.MinValue;
-    int minZ = int.MaxValue;
+    int m_MinNewPointsPerLevel = 1;
+    int m_MaxNewPointsPerLevel = 4;
+
+    int m_MaxX = int.MinValue;
+    int m_MinX = int.MaxValue;
+    int m_MaxZ = int.MinValue;
+    int m_MinZ = int.MaxValue;
 
     //Navigation shenanigans
-    AStarGrid2D aStarGrid;
+    AStarGrid2D m_AStarGrid;
 
-    int aStarGridxOffset;
-    int aStarGridzOffset;
+    int m_AStarGridxOffset;
+    int m_AStarGridzOffset;
 
-    Vector2I aStarGridSize;
+    Vector2I m_AStarGridSize;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         Clear();
         GenerateMap();
+        PlaceStructureMarkers();
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -56,10 +60,10 @@ public partial class map : GridMap
         Vector2I Coords = Vector2I.Zero;
         int EscapeCtr = 0;
         int EscapeLimit = 500;
-        while (aStarGrid.IsPointSolid(Coords))
+        while (m_AStarGrid.IsPointSolid(Coords))
         {
-            Coords.X = rnd.Next(0, aStarGridSize.X);
-            Coords.Y = rnd.Next(0, aStarGridSize.Y);
+            Coords.X = rnd.Next(0, m_AStarGridSize.X);
+            Coords.Y = rnd.Next(0, m_AStarGridSize.Y);
             EscapeCtr++;
             if (EscapeCtr > EscapeLimit)
             {
@@ -69,9 +73,9 @@ public partial class map : GridMap
 
         if (fillPoint)
         {
-            //Vector3I debug_pos = new Vector3I(Coords.X - aStarGridxOffset, 6, Coords.Y - aStarGridzOffset);
-            //SetCellItem(debug_pos, (int)Blocks.DebugNavRed);
-            aStarGrid.SetPointSolid(Coords);
+            Vector3I debug_pos = new Vector3I(Coords.X - m_AStarGridxOffset, 6, Coords.Y - m_AStarGridzOffset);
+            SetCellItem(debug_pos, (int)Blocks.DebugNavRed);
+            m_AStarGrid.SetPointSolid(Coords);
         }
 
         return Coords;
@@ -80,37 +84,37 @@ public partial class map : GridMap
     public Vector2 GetPointPosition(Vector2I id)
     {
         //Vector3I pos = new Vector3I((int) aStarGrid.GetPointPosition(id).X, 0, (int)aStarGrid.GetPointPosition(id).Y);
-        Vector3I pos = new Vector3I(id.X - aStarGridxOffset, 0, id.Y - aStarGridzOffset);
+        Vector3I pos = new Vector3I(id.X - m_AStarGridxOffset, 0, id.Y - m_AStarGridzOffset);
         return new Vector2(ToGlobal(MapToLocal(pos)).X, ToGlobal(MapToLocal(pos)).Z);
     }
 
     public Vector2[] getPointPath(Vector2I fromID, Vector2I toID, bool allowPartialPath)
     {
-        return aStarGrid.GetPointPath(fromID, toID, allowPartialPath);
+        return m_AStarGrid.GetPointPath(fromID, toID, allowPartialPath);
     }
 
     public Godot.Collections.Array<Vector2I> getIdPath(Vector2I fromID, Vector2I toID, bool allowPartialPath)
     {
-        return aStarGrid.GetIdPath(fromID, toID, allowPartialPath);
+        return m_AStarGrid.GetIdPath(fromID, toID, allowPartialPath);
     }
 
     public Vector2I GetIDByIndex(Vector2I fromID, Vector2I toID, int index, bool allowPartialPath = false)
     {
 
-        return aStarGrid.GetIdPath(fromID, toID, allowPartialPath)[index];
+        return m_AStarGrid.GetIdPath(fromID, toID, allowPartialPath)[index];
     }
 
     public bool IsPointSolid(Vector2I id)
     {
-        return aStarGrid.IsPointSolid(id);
+        return m_AStarGrid.IsPointSolid(id);
     }
 
     public void SetPointSolid(Vector2I id, bool solid = true)
     {
 
         //SHOW DEBUG NAVMAP
-        /*
-        Vector3I debug_pos = new Vector3I(id.X - aStarGridxOffset, 6, id.Y - aStarGridzOffset);
+        
+        Vector3I debug_pos = new Vector3I(id.X - m_AStarGridxOffset, 6, id.Y - m_AStarGridzOffset);
         if (solid)
         {
             SetCellItem(debug_pos, (int)Blocks.DebugNavRed);
@@ -119,13 +123,13 @@ public partial class map : GridMap
         {
             SetCellItem(debug_pos, (int)Blocks.DebugNavBlue);
         }
-        */
-        aStarGrid.SetPointSolid(id, solid);
+        
+        m_AStarGrid.SetPointSolid(id, solid);
     }
 
     public bool IsInBounds(Vector2I id)
     {
-        return aStarGrid.IsInBoundsv(id);
+        return m_AStarGrid.IsInBoundsv(id);
     }
 
     /// <summary>
@@ -141,12 +145,12 @@ public partial class map : GridMap
         Random rnd = new Random();
         Vector3I Coords = new Vector3I(0, 0, 0);
 
-        int maxPointRadius = maxInitialPointRadius;
-        int minPointRadius = minInitialPointRadius;
-        for (int y = topLevel; y >= bottomLevel; y--)
+        int maxPointRadius = m_MaxInitialPointRadius;
+        int minPointRadius = m_MinInitialPointRadius;
+        for (int y = m_TopLevel; y >= m_BottomLevel; y--)
         {
 
-            maxPointRadius = maxLevelRadii[y];
+            maxPointRadius = m_MaxLevelRadii[y];
             //minPointRadius *= pointRadiusMultiplier
 
             //Place wider points underneath previously placed points
@@ -165,22 +169,22 @@ public partial class map : GridMap
                             Coords.Y = y;
                             Coords.Z = z + zShift;
 
-                            if (x < minX)
+                            if (x < m_MinX)
                             {
-                                minX = x;
+                                m_MinX = x;
                             }
-                            if (x > maxX)
+                            if (x > m_MaxX)
                             {
-                                maxX = x;
+                                m_MaxX = x;
                             }
 
-                            if (z < minZ)
+                            if (z < m_MinZ)
                             {
-                                minZ = z;
+                                m_MinZ = z;
                             }
-                            if (z > maxZ)
+                            if (z > m_MaxZ)
                             {
-                                maxZ = z;
+                                m_MaxZ = z;
                             }
 
                             SetCellItem(Coords, (int)Blocks.Center);
@@ -192,12 +196,12 @@ public partial class map : GridMap
             }
 
             //Generate new points at this level
-            int newPoints = rnd.Next(MinNewPointsPerLevel, MaxNewPointsPerLevel + 1);
+            int newPoints = rnd.Next(m_MinNewPointsPerLevel, m_MaxNewPointsPerLevel + 1);
 
             for (int curPoint = 0; curPoint < newPoints; curPoint++)
             {
-                int pointX = rnd.Next(-mapSize / 2, mapSize / 2); //Centered at 0, 0
-                int pointZ = rnd.Next(-mapSize / 2, mapSize / 2);
+                int pointX = rnd.Next(-m_MapSize / 2, m_MapSize / 2); //Centered at 0, 0
+                int pointZ = rnd.Next(-m_MapSize / 2, m_MapSize / 2);
                 int pointRadius = rnd.Next(minPointRadius, maxPointRadius + 1);
 
                 bool alreadyExists = false;
@@ -220,22 +224,22 @@ public partial class map : GridMap
                             Coords.Y = y;
                             Coords.Z = z;
 
-                            if (x < minX)
+                            if (x < m_MinX)
                             {
-                                minX = x;
+                                m_MinX = x;
                             }
-                            if (x > maxX)
+                            if (x > m_MaxX)
                             {
-                                maxX = x;
+                                m_MaxX = x;
                             }
 
-                            if (z < minZ)
+                            if (z < m_MinZ)
                             {
-                                minZ = z;
+                                m_MinZ = z;
                             }
-                            if (z > maxZ)
+                            if (z > m_MaxZ)
                             {
-                                maxZ = z;
+                                m_MaxZ = z;
                             }
 
                             SetCellItem(Coords, (int)Blocks.Center);
@@ -246,20 +250,20 @@ public partial class map : GridMap
                 }
             }
 
-            if (y > bottomLevel)
+            if (y > m_BottomLevel)
             {
                 //Fill in ramps and corners
-                for (int x = -mapSize / 2 - maxLevelRadii[y] - 10; x <= mapSize / 2 + maxLevelRadii[y] + 10; x++)
+                for (int x = -m_MapSize / 2 - m_MaxLevelRadii[y] - 10; x <= m_MapSize / 2 + m_MaxLevelRadii[y] + 10; x++)
                 {
-                    for (int z = -mapSize / 2 - maxLevelRadii[y] - 10; z <= mapSize / 2 + maxLevelRadii[y] + 10; z++)
+                    for (int z = -m_MapSize / 2 - m_MaxLevelRadii[y] - 10; z <= m_MapSize / 2 + m_MaxLevelRadii[y] + 10; z++)
                     {
                         FillSimpleGaps(x, y, z);
                     }
                 }
 
-                for (int x = -mapSize / 2 - maxLevelRadii[y] - 10; x <= mapSize / 2 + maxLevelRadii[y] + 10; x++)
+                for (int x = -m_MapSize / 2 - m_MaxLevelRadii[y] - 10; x <= m_MapSize / 2 + m_MaxLevelRadii[y] + 10; x++)
                 {
-                    for (int z = -mapSize / 2 - maxLevelRadii[y] - 10; z <= mapSize / 2 + maxLevelRadii[y] + 10; z++)
+                    for (int z = -m_MapSize / 2 - m_MaxLevelRadii[y] - 10; z <= m_MapSize / 2 + m_MaxLevelRadii[y] + 10; z++)
                     {
                         CreateRamp(x, y, z);
                     }
@@ -267,9 +271,9 @@ public partial class map : GridMap
             }
             else
             {
-                for (int x = -mapSize / 2 - maxLevelRadii[y]; x <= mapSize / 2 + maxLevelRadii[y]; x++)
+                for (int x = -m_MapSize / 2 - m_MaxLevelRadii[y]; x <= m_MapSize / 2 + m_MaxLevelRadii[y]; x++)
                 {
-                    for (int z = -mapSize / 2 - maxLevelRadii[y]; z <= mapSize / 2 + maxLevelRadii[y]; z++)
+                    for (int z = -m_MapSize / 2 - m_MaxLevelRadii[y]; z <= m_MapSize / 2 + m_MaxLevelRadii[y]; z++)
                     {
                         GenerateSandAtPoint(x, y, z);
                     }
@@ -280,11 +284,11 @@ public partial class map : GridMap
         }
 
         //Optimization stuff - remove unnecessary blocks
-        for (int y = bottomLevel; y < topLevel; y++)
+        for (int y = m_BottomLevel; y < m_TopLevel; y++)
         {
-            for (int x = -(mapSize * 2 + 10); x <= 10 + mapSize * 2; x++)
+            for (int x = -(m_MapSize * 2 + 10); x <= 10 + m_MapSize * 2; x++)
             {
-                for (int z = -(mapSize * 2 + 10); z <= 10 + mapSize * 2; z++)
+                for (int z = -(m_MapSize * 2 + 10); z <= 10 + m_MapSize * 2; z++)
                 {
                     Coords.X = x;
                     Coords.Y = y + 1;
@@ -295,6 +299,63 @@ public partial class map : GridMap
                         SetCellItem(Coords, (int) GridMap.InvalidCellItem);
                     }
                 }
+            }
+        }
+    }
+
+    private void PlaceStructureMarkers()
+    {
+        Random rnd = new Random();
+
+        for (int curMarker = 0; curMarker < m_Markers.Length; curMarker++)
+        {
+            List<Vector2I> ValidSpaces = new List<Vector2I>();
+            int[] zLevels = new int[m_TopLevel - m_BottomLevel];
+            for (int x = m_MinX; x < m_MaxX - m_Markers[curMarker, 0]; x++)
+            {
+                for (int z = m_MinZ; z < m_MaxZ - m_Markers[curMarker, 1]; z++)
+                {
+                    bool ValidSpace = true;
+                    for (int xOffset = 0; xOffset < m_Markers[curMarker, 0]; xOffset++)
+                    {
+                        if (!ValidSpace)
+                        {
+                            break;
+                        }
+                        for (int zOffset = 0; zOffset < m_Markers[curMarker, 1]; zOffset++)
+                        {
+                            if (GetCellItem(new Vector3I(x + xOffset,0,z + zOffset)) != (int) Blocks.Center || GetCellItem(new Vector3I(x + xOffset, 0 + 1, z + zOffset)) != GridMap.InvalidCellItem)
+                            {
+                                ValidSpace = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (ValidSpace)
+                    {
+                        ValidSpaces.Add(new Vector2I(x, z));
+                    }
+                }
+            }
+
+            //Choose out of potential spaces
+            if (ValidSpaces.Count > 0)
+            {
+                Vector2I tmpPos = ValidSpaces[rnd.Next(0, ValidSpaces.Count)];
+                Vector3I pos = new Vector3I(tmpPos.X, 0, tmpPos.Y);
+                for (int xOffset = 0; xOffset < m_Markers[curMarker, 0]; xOffset++)
+                {
+                    for (int zOffset = 0; zOffset < m_Markers[curMarker, 1]; zOffset++)
+                    {
+                        SetCellItem(pos + new Vector3I(xOffset, 1, zOffset), (int) Blocks.Water);
+                        SetPointSolid(new Vector2I(pos.X + xOffset, pos.Z + zOffset), true);
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("Not enough room for object");
             }
         }
     }
@@ -522,22 +583,22 @@ public partial class map : GridMap
                 {
                     Coords.X = x;
                     Coords.Z = z;
-                    if (x < minX)
+                    if (x < m_MinX)
                     {
-                        minX = x;
+                        m_MinX = x;
                     }
-                    if (x > maxX)
+                    if (x > m_MaxX)
                     {
-                        maxX = x;
+                        m_MaxX = x;
                     }
 
-                    if (z < minZ)
+                    if (z < m_MinZ)
                     {
-                        minZ = z;
+                        m_MinZ = z;
                     }
-                    if (z > maxZ)
+                    if (z > m_MaxZ)
                     {
-                        maxZ = z;
+                        m_MaxZ = z;
                     }
                     if (GetCellItem(Coords) == GridMap.InvalidCellItem)
                     {
@@ -555,9 +616,9 @@ public partial class map : GridMap
         int y = 0;
         Vector3I Coords = new Vector3I(0, y, 0);
 
-        for (int x = -(mapSize * 2 + oceanRadius); x <= oceanRadius + mapSize * 2; x++)
+        for (int x = -(m_MapSize * 2 + oceanRadius); x <= oceanRadius + m_MapSize * 2; x++)
         {
-            for (int z = -(mapSize * 2 + oceanRadius) ; z <= oceanRadius + mapSize * 2; z++)
+            for (int z = -(m_MapSize * 2 + oceanRadius) ; z <= oceanRadius + m_MapSize * 2; z++)
             {
                 Coords.X = x;
                 Coords.Z = z;
@@ -571,38 +632,38 @@ public partial class map : GridMap
 
     private void GenerateNavMap()
     {
-        aStarGrid = new AStarGrid2D();
-        aStarGridSize = new Vector2I();
-        aStarGrid.Offset = new Vector2(minX, minZ);
+        m_AStarGrid = new AStarGrid2D();
+        m_AStarGridSize = new Vector2I();
+        m_AStarGrid.Offset = new Vector2(m_MinX, m_MinZ);
 
-        bool isDirty = aStarGrid.IsDirty();
-        aStarGridxOffset = -minX;
-        aStarGridzOffset = -minZ;
-        aStarGrid.Region = new Rect2I(0, 0, maxX + aStarGridxOffset + 1, maxZ + aStarGridzOffset + 1);
+        bool isDirty = m_AStarGrid.IsDirty();
+        m_AStarGridxOffset = -m_MinX;
+        m_AStarGridzOffset = -m_MinZ;
+        m_AStarGrid.Region = new Rect2I(0, 0, m_MaxX + m_AStarGridxOffset + 1, m_MaxZ + m_AStarGridzOffset + 1);
 
-        aStarGridSize.X = maxX + aStarGridxOffset + 1;
-        aStarGridSize.Y = maxZ + aStarGridzOffset + 1;
+        m_AStarGridSize.X = m_MaxX + m_AStarGridxOffset + 1;
+        m_AStarGridSize.Y = m_MaxZ + m_AStarGridzOffset + 1;
 
-        aStarGrid.Update();
+        m_AStarGrid.Update();
 
         Vector3I Coords = new Vector3I(0, 0, 0);
         Vector2I ID = new Vector2I(0, 0);
-        for (int x = minX; x <= maxX; x++)
+        for (int x = m_MinX; x <= m_MaxX; x++)
         {
-            for (int z = minZ; z <= maxZ; z++)
+            for (int z = m_MinZ; z <= m_MaxZ; z++)
             {
                 Coords.X = x;
                 Coords.Z = z;
-                ID.X = x + aStarGridxOffset;
-                ID.Y = z + aStarGridzOffset;
+                ID.X = x + m_AStarGridxOffset;
+                ID.Y = z + m_AStarGridzOffset;
                 if (GetCellItem(Coords) == (int) Blocks.Water)
                 {
-                    aStarGrid.SetPointSolid(ID);
-                    //SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavRed);
+                    m_AStarGrid.SetPointSolid(ID);
+                    SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavRed);
                 }
                 else
                 {
-                    //SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavBlue);
+                    SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavBlue);
                 }
             }
         }
