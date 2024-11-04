@@ -6,8 +6,10 @@
 [ext_resource type="Material" uid="uid://c0kae1b3o312d" path="res://Assets/Projects/Idols/FervorIdolPedestal.tres" id="4_6drn2"]
 
 [node name="UnfinishedIdol" type="Node3D" node_paths=PackedStringArray("m_WorkAnchor")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 script = ExtResource("1_ymk3h")
 m_WorkAnchor = NodePath("WorkAnchor")
+m_Dimensions = Vector2i(4, 4)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

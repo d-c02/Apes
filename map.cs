@@ -16,7 +16,8 @@ public partial class map : GridMap
 
     int[] m_MaxLevelRadii = { 15, 12, 9, 6, 3 }; //Ascending
 
-    int[,] m_Markers = {{4, 4}, { 3, 3 }};
+    //Sort in descending order with objects with the same dimensions grouped together.
+    int[,] m_Markers = { {4, 4}, { 1, 1} };
 
     const int m_MapSize = 50;
 
@@ -38,6 +39,8 @@ public partial class map : GridMap
     int m_AStarGridzOffset;
 
     Vector2I m_AStarGridSize;
+
+    Dictionary<Vector2I, Stack<Vector3I>> m_ProjectLocations;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -83,7 +86,7 @@ public partial class map : GridMap
 
     public Vector2 GetPointPosition(Vector2I id)
     {
-        //Vector3I pos = new Vector3I((int) aStarGrid.GetPointPosition(id).X, 0, (int)aStarGrid.GetPointPosition(id).Y);
+        //Vector3I pos = new Vector3I((int) m_AStarGrid.GetPointPosition(id).X, 0, (int) m_AStarGrid.GetPointPosition(id).Y);
         Vector3I pos = new Vector3I(id.X - m_AStarGridxOffset, 0, id.Y - m_AStarGridzOffset);
         return new Vector2(ToGlobal(MapToLocal(pos)).X, ToGlobal(MapToLocal(pos)).Z);
     }
@@ -124,12 +127,45 @@ public partial class map : GridMap
             SetCellItem(debug_pos, (int)Blocks.DebugNavBlue);
         }
         
+
         m_AStarGrid.SetPointSolid(id, solid);
     }
 
     public bool IsInBounds(Vector2I id)
     {
         return m_AStarGrid.IsInBoundsv(id);
+    }
+
+    public Vector3I GetProjectLocation(Vector2I Dimensions)
+    {
+        if (m_ProjectLocations.ContainsKey(Dimensions))
+        {
+            if (m_ProjectLocations[Dimensions].Count > 0)
+            {
+                Vector3I Location = m_ProjectLocations[Dimensions].Pop();
+                //Location.X += Dimensions.X / 2;
+                //Location.Y += Dimensions.Y / 2;
+                // /*
+                for (int x = Location.X; x < Location.X + Dimensions.X; x++)
+                {
+                    for (int z = Location.Z; z < Location.Z +  Dimensions.Y; z++)
+                    {
+                        SetCellItem(new Vector3I(x, Location.Y, z), (int)Blocks.Sand);
+                    }
+                }
+
+                // */
+                return Location;
+            }
+            else
+            {
+                throw new Exception("No location for project found!");
+            }
+        }
+        else
+        {
+            throw new Exception("No location for project found!");
+        }
     }
 
     /// <summary>
@@ -305,52 +341,61 @@ public partial class map : GridMap
 
     private void PlaceStructureMarkers()
     {
+        m_ProjectLocations = new Dictionary<Vector2I, Stack<Vector3I>>();
         Random rnd = new Random();
-
-        for (int curMarker = 0; curMarker < m_Markers.Length; curMarker++)
+        int prevN = -1;
+        int prevM = -1;
+        for (int curMarker = 0; curMarker < m_Markers.GetLength(0); curMarker++)
         {
-            List<Vector2I> ValidSpaces = new List<Vector2I>();
-            int[] zLevels = new int[m_TopLevel - m_BottomLevel];
-            for (int x = m_MinX; x < m_MaxX - m_Markers[curMarker, 0]; x++)
-            {
-                for (int z = m_MinZ; z < m_MaxZ - m_Markers[curMarker, 1]; z++)
+            List<Vector3I> ValidSpaces = new List<Vector3I>();
+            for (int y = m_BottomLevel; y <= m_TopLevel; y++)
                 {
-                    bool ValidSpace = true;
-                    for (int xOffset = 0; xOffset < m_Markers[curMarker, 0]; xOffset++)
+                    for (int x = m_MinX; x < m_MaxX - m_Markers[curMarker, 0]; x++)
                     {
-                        if (!ValidSpace)
+                        for (int z = m_MinZ; z < m_MaxZ - m_Markers[curMarker, 1]; z++)
                         {
-                            break;
-                        }
-                        for (int zOffset = 0; zOffset < m_Markers[curMarker, 1]; zOffset++)
-                        {
-                            if (GetCellItem(new Vector3I(x + xOffset,0,z + zOffset)) != (int) Blocks.Center || GetCellItem(new Vector3I(x + xOffset, 0 + 1, z + zOffset)) != GridMap.InvalidCellItem)
+                            bool ValidSpace = true;
+                            for (int xOffset = 0; xOffset < m_Markers[curMarker, 0]; xOffset++)
                             {
-                                ValidSpace = false;
-                                break;
+                                if (!ValidSpace)
+                                {
+                                    break;
+                                }
+                                for (int zOffset = 0; zOffset < m_Markers[curMarker, 1]; zOffset++)
+                                {
+                                    if (GetCellItem(new Vector3I(x + xOffset, y, z + zOffset)) != (int)Blocks.Center || GetCellItem(new Vector3I(x + xOffset, y + 1, z + zOffset)) != GridMap.InvalidCellItem)
+                                    {
+                                        ValidSpace = false;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (ValidSpace)
+                            {
+                                ValidSpaces.Add(new Vector3I(x, y + 1, z));
                             }
                         }
                     }
-
-                    if (ValidSpace)
-                    {
-                        ValidSpaces.Add(new Vector2I(x, z));
-                    }
                 }
-            }
+            
+            
 
             //Choose out of potential spaces
             if (ValidSpaces.Count > 0)
             {
-                Vector2I tmpPos = ValidSpaces[rnd.Next(0, ValidSpaces.Count)];
-                Vector3I pos = new Vector3I(tmpPos.X, 0, tmpPos.Y);
-                for (int xOffset = 0; xOffset < m_Markers[curMarker, 0]; xOffset++)
+                int space = rnd.Next(0, ValidSpaces.Count);
+                Vector3I pos = ValidSpaces[space];
+                ValidSpaces.RemoveAt(space);
+                Vector2I Dimensions = new Vector2I(m_Markers[curMarker, 0], m_Markers[curMarker, 1]);
+                if (m_ProjectLocations.ContainsKey(Dimensions))
                 {
-                    for (int zOffset = 0; zOffset < m_Markers[curMarker, 1]; zOffset++)
-                    {
-                        SetCellItem(pos + new Vector3I(xOffset, 1, zOffset), (int) Blocks.Water);
-                        SetPointSolid(new Vector2I(pos.X + xOffset, pos.Z + zOffset), true);
-                    }
+                    m_ProjectLocations[Dimensions].Push(pos);
+                }
+                else
+                {
+                    m_ProjectLocations[Dimensions] = new Stack<Vector3I>();
+                    m_ProjectLocations[Dimensions].Push(pos);
                 }
             }
             else

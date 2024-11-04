@@ -18,6 +18,7 @@ public abstract partial class Project : Node3D
 
 	[Export] public Node3D m_WorkAnchor;
 	protected Sprite3D[] m_WorkSprites;
+	[Export] protected Vector2I m_Dimensions;
 
 
 	protected int m_WorkAspect;
@@ -40,6 +41,11 @@ public abstract partial class Project : Node3D
             GlobalPosition = (Vector3)result["position"];
         }
     }
+
+	public Vector2I GetDimensions()
+	{
+		return m_Dimensions;
+	}
 
 	protected void ConfigureWork()
 	{
