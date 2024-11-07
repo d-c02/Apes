@@ -17,7 +17,7 @@ public partial class map : GridMap
     int[] m_MaxLevelRadii = { 15, 12, 9, 6, 3 }; //Ascending
 
     //Sort in descending order with objects with the same dimensions grouped together.
-    int[,] m_Markers = { {4, 4}, { 1, 1} };
+    int[,] m_Markers = { { 1, 1}, { 1, 1 }, { 1, 1 }, { 1, 1 } };
 
     const int m_MapSize = 50;
 
@@ -47,6 +47,11 @@ public partial class map : GridMap
     {
         Clear();
         GenerateMap();
+        //m_MinX = -4;
+        //m_MaxX = 4;
+        //m_MinZ = -4;
+        //m_MaxZ = 4;
+        GenerateNavMap();
         PlaceStructureMarkers();
     }
 
@@ -88,7 +93,14 @@ public partial class map : GridMap
     {
         //Vector3I pos = new Vector3I((int) m_AStarGrid.GetPointPosition(id).X, 0, (int) m_AStarGrid.GetPointPosition(id).Y);
         Vector3I pos = new Vector3I(id.X - m_AStarGridxOffset, 0, id.Y - m_AStarGridzOffset);
+        //Vector3I pos = new Vector3I(id.X, 0, id.Y);
         return new Vector2(ToGlobal(MapToLocal(pos)).X, ToGlobal(MapToLocal(pos)).Z);
+        //return new Vector2I(pos.X, pos.Z);
+    }
+
+    public Vector2I PosCoordsToNavCoords(Vector2I id)
+    {
+        return new Vector2I(id.X - m_MinX, id.Y - m_MinZ);
     }
 
     public Vector2[] getPointPath(Vector2I fromID, Vector2I toID, bool allowPartialPath)

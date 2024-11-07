@@ -19,7 +19,7 @@ public partial class ApeManager : Node
 	{
 		m_Apes = new List<ape>();
 		m_Projects = new List<Project>();
-		for (int i = 0; i < 100; i++)
+		for (int i = 0; i < 0; i++)
 		{
 			SpawnApe();
 		}
@@ -95,11 +95,13 @@ public partial class ApeManager : Node
 		Project projectInstance = projectScene.Instantiate<Project>();
 		AddChild(projectInstance);
         Vector3I Coords = m_Map.GetProjectLocation(projectInstance.GetDimensions());
-		
-		
-        Vector2 PosCoords = m_Map.GetPointPosition(new Vector2I(Coords.X,  Coords.Z));
-        projectInstance.GlobalPosition = new Vector3(Coords.X, 10, Coords.Z);
-        //projectInstance.GlobalPosition = new Vector3(PosCoords.X, 8, PosCoords.Y);
+		Vector2I NavCoords = m_Map.PosCoordsToNavCoords(new Vector2I(Coords.X, Coords.Z));
+		//Vector2I xCoords = m_Map.getRandomOpenNavCoords();
+		//Vector3I Coords = new Vector3I(xCoords.X, 10, xCoords.Y);
+		m_Map.SetPointSolid(NavCoords);
+        Vector2 PosCoords = m_Map.GetPointPosition(NavCoords);
+        //projectInstance.GlobalPosition = new Vector3(Coords.X, 10, Coords.Z);
+        projectInstance.GlobalPosition = new Vector3(PosCoords.X, 8, PosCoords.Y);
         projectInstance.UpdateVerticalPosition();
         m_Projects.Add(projectInstance);
     }
