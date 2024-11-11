@@ -17,7 +17,7 @@ public partial class map : GridMap
     int[] m_MaxLevelRadii = { 15, 12, 9, 6, 3 }; //Ascending
 
     //Sort in descending order with objects with the same dimensions grouped together.
-    int[,] m_Markers = { { 1, 1}, { 1, 1 }, { 1, 1 }, { 1, 1 } };
+    int[,] m_Markers = { { 8, 8}, { 6, 6 }, { 4, 4}, { 3, 3}, {2, 2}, { 2, 2 }, { 2, 2 }, { 2, 2 } };
 
     const int m_MapSize = 50;
 
@@ -157,7 +157,7 @@ public partial class map : GridMap
                 Vector3I Location = m_ProjectLocations[Dimensions].Pop();
                 //Location.X += Dimensions.X / 2;
                 //Location.Y += Dimensions.Y / 2;
-                // /*
+                /*
                 for (int x = Location.X; x < Location.X + Dimensions.X; x++)
                 {
                     for (int z = Location.Z; z < Location.Z +  Dimensions.Y; z++)
@@ -166,7 +166,7 @@ public partial class map : GridMap
                     }
                 }
 
-                // */
+                */
                 return Location;
             }
             else

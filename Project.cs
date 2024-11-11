@@ -27,7 +27,6 @@ public abstract partial class Project : Node3D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-
         ConfigureWork();
 	}
 
@@ -49,6 +48,9 @@ public abstract partial class Project : Node3D
 
 	protected void ConfigureWork()
 	{
+		//Change?
+		m_WorkAnchor.SetDisableScale(true);
+        
 		m_WorkSprites = new Sprite3D[m_MaxWork];
 		for (int i = 0; i < m_MaxWork; i++)
 		{
