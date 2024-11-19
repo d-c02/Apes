@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,12 +15,21 @@ public partial class ApeManager : Node
 
 	private List<ape> m_Apes;
 
-	private List<Project> m_Projects;
-	public override void _Ready()
+	private System.Collections.Generic.Dictionary<int, Project> m_Projects;
+
+	private int m_IdolStatueProjectIndex;
+
+	private int m_InfluenceProjectIndex;
+
+    private int m_InsightProjectIndex;
+
+    private int m_FervorProjectIndex;
+
+    public override void _Ready()
 	{
 		m_Apes = new List<ape>();
-		m_Projects = new List<Project>();
-		for (int i = 0; i < 0; i++)
+		m_Projects = new System.Collections.Generic.Dictionary<int, Project>();
+		for (int i = 0; i < 1; i++)
 		{
 			SpawnApe();
 		}
@@ -80,21 +90,37 @@ public partial class ApeManager : Node
         m_Apes.Add(Ape);
     }
 
-	public void SpawnProject(int project)
+	public void SpawnProject(int project, Vector3I? ProjCoords = null)
 	{
 		string ProjectPath = "";
+
+		
+		//Big AWFUL if statement chain you need to fix later or you will DIE in REAL LIFE
 		if (project == (int) Projects.Unfinished_Idol)
 		{
 			ProjectPath = "res://Scenes/Projects/UnfinishedIdol.tscn";
         }
 
+		else if (project == (int) Projects.Fervor_Idol)
+		{
+            ProjectPath = "res://Scenes/Projects/FervorIdol.tscn";
+        }
+
 		Debug.Assert(ProjectPath != "", "Invalid project! ID: " + project.ToString());
 
-		var projectScene = new PackedScene();
+        var projectScene = new PackedScene();
 		projectScene = ResourceLoader.Load<PackedScene>(ProjectPath);
 		Project projectInstance = projectScene.Instantiate<Project>();
 		AddChild(projectInstance);
-        Vector3I Coords = m_Map.GetProjectLocation(projectInstance.GetDimensions());
+		Vector3I Coords;
+		if (ProjCoords == null)
+		{
+            Coords = m_Map.GetProjectLocation(projectInstance.GetDimensions());
+        }
+		else
+		{
+			Coords = (Vector3I) ProjCoords;
+		}
 		Vector2I NavCoords = m_Map.PosCoordsToNavCoords(new Vector2I(Coords.X, Coords.Z));
 		for (int xOffset = 0; xOffset < projectInstance.GetDimensions().X; xOffset++)
 		{
@@ -107,19 +133,25 @@ public partial class ApeManager : Node
         m_Map.SetPointSolid(NavCoords);
         Vector2 PosCoords = m_Map.GetPointPosition(NavCoords);
 
+		projectInstance.SetID(project);
+
+		projectInstance.SetCoords(Coords);
+
         projectInstance.GlobalPosition = new Vector3(PosCoords.X, 8, PosCoords.Y);
 
         projectInstance.GlobalPosition = new Vector3(projectInstance.GlobalPosition.X + projectInstance.GetDimensions().X - 1, projectInstance.GlobalPosition.Y, projectInstance.GlobalPosition.Z + projectInstance.GetDimensions().Y - 1);
 
         projectInstance.UpdateVerticalPosition();
-        m_Projects.Add(projectInstance);
+
+		projectInstance.SetApeManager(this);
+        m_Projects[project] = projectInstance;
     }
 
     //Ape action stuff starts here
 
     Deck[] m_Decks;
 
-    void ConfigureDecks()
+    private void ConfigureDecks()
 	{
 		m_Decks = new Deck[Enum.GetNames(typeof(Decks)).Length];
 
@@ -158,6 +190,14 @@ public partial class ApeManager : Node
 		}
 	}
 
+	public void ProcessWork(int aspect, int amount)
+	{
+		foreach (KeyValuePair<int, Project> entry in m_Projects)
+		{
+			m_Projects[entry.Key].AddWork(aspect, amount);
+		}
+	}
+
 	public int GetDeckSize(int deck)
 	{
 		return m_Decks[deck].size;
@@ -168,4 +208,8 @@ public partial class ApeManager : Node
 		return m_Decks[deck].GetAction(action);
 	}
 
+	public void RemoveProject(int ID)
+	{
+		m_Projects.Remove(ID);
+	}
 }

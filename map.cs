@@ -17,7 +17,12 @@ public partial class map : GridMap
     int[] m_MaxLevelRadii = { 15, 12, 9, 6, 3 }; //Ascending
 
     //Sort in descending order with objects with the same dimensions grouped together.
-    int[,] m_Markers = { { 8, 8}, { 6, 6 }, { 4, 4}, { 3, 3}, {2, 2}, { 2, 2 }, { 2, 2 }, { 2, 2 } };
+    int[,] m_Markers = { 
+        {7, 7}, //Player Statue
+        {5, 5}, //Insight Project Site
+        {5, 5}, //Influence Project Site
+        {5, 5} //Fervor Project Site
+    };
 
     const int m_MapSize = 50;
 

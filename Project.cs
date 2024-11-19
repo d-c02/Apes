@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Linq;
+using static DeckInterface;
 
 public abstract partial class Project : Node3D
 {
@@ -10,11 +11,15 @@ public abstract partial class Project : Node3D
     protected int m_CurStage = 0;
     protected int m_MaxStage = 1;
     protected int m_CurWork = 0;
-	protected int m_MaxWork = 1;
-	protected int m_NumWorkPerRow = 5;
+
+	[Export] protected int m_MaxWork = 1;
+	[Export] protected int m_NumWorkPerRow = 5;
 	protected float m_DisappearProximity = 3;
 	[Export] protected float m_WorkRadius = 0.8f;
 	[Export] protected float m_VerticalOffset = 1f;
+	protected Vector3I m_Coords;
+	protected ApeManager m_ApeManager;
+	protected int m_ID;
 
 	[Export] public Node3D m_WorkAnchor;
 	protected Sprite3D[] m_WorkSprites;
@@ -116,7 +121,12 @@ public abstract partial class Project : Node3D
 
 		for (int i = prevWork; i < m_CurWork; i++)
 		{
-			m_WorkSprites[i].Frame = aspect;
+			m_WorkSprites[i].Frame = aspect + 1;
+		}
+
+		if (m_CurWork == m_MaxWork)
+		{
+			OnFinish();
 		}
 		return remainder;
 	}
@@ -144,6 +154,31 @@ public abstract partial class Project : Node3D
 			m_WorkSprites[i].Frame = (int)WorkAspects.Empty;
 		}
 		return remainder;
+	}
+
+	public void SetCoords(Vector3I Coords)
+	{
+		m_Coords = Coords;
+	}
+
+	public Vector3I GetCoords()
+	{
+		return m_Coords;
+	}
+
+	public void SetID(int ID)
+	{
+		m_ID = ID;
+	}
+
+	public int GetID()
+	{
+		return m_ID;
+	}
+
+	public void SetApeManager(ApeManager apeManager)
+	{
+		m_ApeManager = apeManager;
 	}
 
 	protected void BillboardWork()

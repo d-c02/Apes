@@ -216,20 +216,21 @@ public partial class ape : CharacterBody3D
         }
         else if (action == (int) Actions.Work_One)
         {
-
+            m_ApeManager.ProcessWork(m_Aspect, 1);
         }
         else if (action == (int)Actions.Work_Two)
         {
-
+            m_ApeManager.ProcessWork(m_Aspect, 2);
         }
         else if (action == (int)Actions.Work_Three)
         {
-
+            m_ApeManager.ProcessWork(m_Aspect, 3);
         }
     }
 
     public void StartNewPhase()
     {
+        ProcessAction(m_Action);
         m_Action = DrawAction();
     }
 }

@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=3 uid="uid://b6dttdhscmske"]
+
+[ext_resource type="Script" path="res://Scenes/Projects/FervorIdol.cs" id="1_p3af6"]
+[ext_resource type="ArrayMesh" uid="uid://bjw5bv6rd8hud" path="res://Assets/Projects/Idols/FervorIdol.obj" id="2_aspqc"]
+[ext_resource type="Material" path="res://Assets/ClayTexture/Clay.tres" id="3_ykjn1"]
+[ext_resource type="Material" path="res://Assets/Projects/Idols/FervorIdolBody.tres" id="4_tygd6"]
+[ext_resource type="Material" path="res://Assets/Projects/Idols/FervorIdolEyes.tres" id="5_qb03f"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1dnua"]
+size = Vector3(2, 4, 2)
+
+[node name="FervorIdol" type="Node3D" node_paths=PackedStringArray("m_WorkAnchor")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+script = ExtResource("1_p3af6")
+m_MaxWork = 10
+m_WorkAnchor = NodePath("WorkAnchor")
+m_Dimensions = Vector2i(7, 7)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = ExtResource("2_aspqc")
+surface_material_override/0 = ExtResource("3_ykjn1")
+surface_material_override/1 = ExtResource("4_tygd6")
+surface_material_override/2 = ExtResource("5_qb03f")
+
+[node name="WorkAnchor" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+shape = SubResource("BoxShape3D_1dnua")
