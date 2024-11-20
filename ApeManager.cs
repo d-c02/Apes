@@ -198,6 +198,11 @@ public partial class ApeManager : Node
 		}
 	}
 
+	public void QueueActions()
+	{
+
+	}
+
 	public int GetDeckSize(int deck)
 	{
 		return m_Decks[deck].size;

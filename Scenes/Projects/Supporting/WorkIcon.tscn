@@ -1,6 +1,7 @@
-[gd_scene load_steps=24 format=3 uid="uid://r3hdgiktlqj6"]
+[gd_scene load_steps=25 format=3 uid="uid://r3hdgiktlqj6"]
 
 [ext_resource type="Texture2D" uid="uid://cefphiok11on0" path="res://Assets/Projects/WorkTextures/AnimatedWorkTextures/Empty.png" id="1_22gu6"]
+[ext_resource type="Texture2D" uid="uid://crx2x260iwgb1" path="res://Assets/Projects/WorkTextures/AnimatedWorkTextures/Any.png" id="1_eqw0q"]
 [ext_resource type="Texture2D" uid="uid://b10hgteks1lux" path="res://Assets/Projects/WorkTextures/AnimatedWorkTextures/Fervor/0001.png" id="2_w7ycv"]
 [ext_resource type="Texture2D" uid="uid://bm7406fdpwnpc" path="res://Assets/Projects/WorkTextures/AnimatedWorkTextures/Fervor/0002.png" id="3_648ja"]
 [ext_resource type="Texture2D" uid="uid://33slwx5n81jg" path="res://Assets/Projects/WorkTextures/AnimatedWorkTextures/Fervor/0003.png" id="4_c8slg"]
@@ -25,6 +26,14 @@
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_psufa"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_eqw0q")
+}],
+"loop": true,
+"name": &"any",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("1_22gu6")
@@ -141,7 +150,5 @@ transform = Transform3D(0.25, 0, 0, 0, 0.25, 0, 0, 0, 0.25, 0, 0, 0)
 pixel_size = 0.005
 billboard = 1
 sprite_frames = SubResource("SpriteFrames_psufa")
-animation = &"fervor_queued"
+animation = &"any"
 autoplay = "empty"
-frame = 4
-frame_progress = 0.498919

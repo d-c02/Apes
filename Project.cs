@@ -1,16 +1,17 @@
 using Godot;
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using static DeckInterface;
 
 public abstract partial class Project : Node3D
 {
-    protected bool m_Complete = false;
     protected bool m_Persists = false;
     protected bool m_Destructible = false;
     protected int m_CurStage = 0;
     protected int m_MaxStage = 1;
-    protected int m_CurWork = 0;
+    protected int m_QueuedWork = 0;
+	protected int m_Work = 0;
 
 	[Export] protected int m_MaxWork = 1;
 	[Export] protected int m_NumWorkPerRow = 5;
@@ -25,7 +26,7 @@ public abstract partial class Project : Node3D
 	protected AnimatedSprite3D[] m_WorkSprites;
 	[Export] protected Vector2I m_Dimensions;
 
-
+	[Export]
 	protected int m_WorkAspect;
 	protected enum WorkAspects {Empty, Insight, Influence, Fervor, Any};
 
@@ -107,19 +108,18 @@ public abstract partial class Project : Node3D
 	public int AddWork(int aspect, int amount)
 	{
 		int remainder = 0;
-		int prevWork = m_CurWork;
-		if (amount + m_CurWork < m_MaxWork)
+		int prevWork = m_QueuedWork;
+		if (amount + m_QueuedWork < m_MaxWork)
 		{
-			m_CurWork += amount;
+            m_QueuedWork += amount;
 		}
 		else
 		{
-			remainder = amount + m_CurWork - m_MaxWork;
-            m_CurWork = m_MaxWork;
-			m_Complete = true;
+			remainder = amount + m_QueuedWork - m_MaxWork;
+            m_QueuedWork = m_MaxWork;
 		}
 
-		for (int i = prevWork; i < m_CurWork; i++)
+		for (int i = prevWork; i < m_QueuedWork; i++)
 		{
 			string animation = "";
 			if (aspect == (int) Aspects.Fervor)
@@ -138,36 +138,84 @@ public abstract partial class Project : Node3D
             m_WorkSprites[i].Animation = animation;
         }
 
-		if (m_CurWork == m_MaxWork)
-		{
-			OnFinish();
-		}
 		return remainder;
 	}
 
-	public int RemoveWork(int amount)
+	public int RemoveWork(int aspect, int amount)
 	{
 		int remainder = 0;
-		int prevWork = m_CurWork;
-		if (m_CurWork - amount >= 0)
+		int prevWork = m_QueuedWork;
+		if (m_QueuedWork - amount >= 0)
 		{
-			m_CurWork -= amount;
+            m_QueuedWork -= amount;
 		}
 		else
 		{
-			remainder = amount - m_CurWork;
-			m_CurWork = 0;
-		}
-		if (m_CurWork < m_MaxWork)
-		{
-			m_Complete = false;
+			remainder = amount - m_QueuedWork;
+            m_QueuedWork = 0;
 		}
 
-		for (int i = prevWork - 1; i >= m_CurWork; i--)
+		for (int i = prevWork - 1; i >= m_QueuedWork; i--)
 		{
 			m_WorkSprites[i].Frame = (int)WorkAspects.Empty;
 		}
 		return remainder;
+	}
+
+	public void ClearQueuedWork()
+	{
+
+	}
+
+	public void ProcessQueuedWork()
+	{
+		if (m_QueuedWork >= m_MaxWork)
+		{
+			OnFinish();
+		}
+		else
+		{
+			if (m_QueuedWork > m_Work)
+			{
+                for (int i = m_Work; i < m_QueuedWork; i++)
+                {
+					//Create generic work texture for generic work instance, and have global work texture int corresponding to insight, influence, fervor, any
+                    if (m_WorkAspect == (int) WorkAspects.Any)
+					{
+						m_WorkSprites[i].Animation = "any";
+                    }
+					else if (m_WorkAspect == (int) WorkAspects.Insight)
+					{
+                        m_WorkSprites[i].Animation = "insight";
+                    }
+                    else if (m_WorkAspect == (int)WorkAspects.Influence)
+                    {
+                        m_WorkSprites[i].Animation = "influence";
+                    }
+                    else if (m_WorkAspect == (int)WorkAspects.Fervor)
+                    {
+                        m_WorkSprites[i].Animation = "fervor";
+                    }
+                }
+            }
+			else if (m_QueuedWork < m_Work)
+			{
+				for (int i = m_QueuedWork; i < m_Work; i++)
+				{
+					m_WorkSprites[i].Animation = "empty";
+				}
+			}
+		}
+	}
+
+	public bool IsWorkEmpty()
+	{
+		return m_QueuedWork == 0;
+	}
+
+	public bool IsWorkFull()
+	{
+		return m_QueuedWork >= m_MaxWork;
 	}
 
 	public void SetCoords(Vector3I Coords)

@@ -208,6 +208,11 @@ public partial class ape : CharacterBody3D
         }
     }
 
+    private void QueueAction(int action)
+    {
+        
+    }
+
     private void ProcessAction(int action)
     {
         if (action == (int) Actions.Idle)
