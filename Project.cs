@@ -22,7 +22,7 @@ public abstract partial class Project : Node3D
 	protected int m_ID;
 
 	[Export] public Node3D m_WorkAnchor;
-	protected Sprite3D[] m_WorkSprites;
+	protected AnimatedSprite3D[] m_WorkSprites;
 	[Export] protected Vector2I m_Dimensions;
 
 
@@ -56,15 +56,15 @@ public abstract partial class Project : Node3D
 		//Change?
 		m_WorkAnchor.SetDisableScale(true);
         
-		m_WorkSprites = new Sprite3D[m_MaxWork];
+		m_WorkSprites = new AnimatedSprite3D[m_MaxWork];
 		for (int i = 0; i < m_MaxWork; i++)
 		{
 			//Instantiate
             var workIcon = new PackedScene();
             workIcon = ResourceLoader.Load<PackedScene>("res://Scenes/Projects/Supporting/WorkIcon.tscn");
-			m_WorkSprites[i] = workIcon.Instantiate<Sprite3D>();
+			m_WorkSprites[i] = workIcon.Instantiate<AnimatedSprite3D>();
             m_WorkAnchor.AddChild(m_WorkSprites[i]);
-            m_WorkSprites[i].Frame = (int)WorkAspects.Empty;
+            m_WorkSprites[i].Animation = "empty";
         }
 
 		int CurRow = 1;
@@ -121,8 +121,22 @@ public abstract partial class Project : Node3D
 
 		for (int i = prevWork; i < m_CurWork; i++)
 		{
-			m_WorkSprites[i].Frame = aspect + 1;
-		}
+			string animation = "";
+			if (aspect == (int) Aspects.Fervor)
+			{
+				animation = "fervor_queued";
+			}
+			else if (aspect == (int) Aspects.Influence)
+			{
+                animation = "influence_queued";
+            }
+            else if (aspect == (int)Aspects.Insight)
+            {
+                animation = "insight_queued";
+            }
+
+            m_WorkSprites[i].Animation = animation;
+        }
 
 		if (m_CurWork == m_MaxWork)
 		{
