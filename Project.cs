@@ -18,8 +18,8 @@ public abstract partial class Project : Node3D
 	[Export] protected int m_MaxWork = 1;
 	[Export] protected int m_NumWorkPerRow = 5;
 	protected float m_DisappearProximity = 3;
-	[Export] protected float m_WorkRadius = 0.8f;
-	[Export] protected float m_VerticalOffset = 1f;
+	[Export] protected float m_WorkRadius = 1.05f;
+	[Export] protected float m_VerticalOffset = 1.2f;
 	protected Vector3I m_Coords;
 	protected ProjectEnum m_ID;
 

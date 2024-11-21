@@ -12,9 +12,11 @@ size = Vector3(2, 4, 2)
 [node name="FervorIdol" type="Node3D" node_paths=PackedStringArray("m_WorkAnchor")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 script = ExtResource("1_p3af6")
+m_NextProject = 1
 m_MaxWork = 10
 m_WorkAnchor = NodePath("WorkAnchor")
 m_Dimensions = Vector2i(7, 7)
+m_WorkAspect = 3
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)

@@ -68,6 +68,7 @@ public partial class ApeManager : Node
         }
 
 		PruneProjects();
+		m_DeadProjectIDs.Clear();
 
         for (int i = 0; i < m_Apes.Count; i++)
         {
@@ -247,11 +248,15 @@ public partial class ApeManager : Node
 
 	public void RemoveProject(ProjectEnum ID)
 	{
+		bool persists = m_Projects[ID].Persists();
+		ProjectEnum nextProject = m_Projects[ID].GetNextProject();
+		Vector3I Coords = m_Projects[ID].GetCoords();
+
 		m_Projects[ID].QueueFree();
         bool remove = m_Projects.Remove(ID);
-		if (m_Projects[ID].Persists())
+		if (persists)
 		{
-			SpawnProject(m_Projects[ID].GetNextProject(), m_Projects[ID].GetCoords());
+			SpawnProject(nextProject, Coords);
 		}
 	}
 }

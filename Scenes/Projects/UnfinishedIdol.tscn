@@ -12,9 +12,11 @@ size = Vector3(2, 3, 2)
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 script = ExtResource("1_ymk3h")
 m_Persists = true
+m_NextProject = 1
 m_MaxWork = 10
 m_WorkAnchor = NodePath("WorkAnchor")
 m_Dimensions = Vector2i(7, 7)
+m_WorkAspect = 4
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
