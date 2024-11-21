@@ -3,9 +3,9 @@ using System;
 
 public interface DeckInterface
 {
-    enum Aspects { Insight, Influence, Fervor };
+    enum AspectEnum { Insight, Influence, Fervor };
 
-    public enum Actions
+    public enum ActionEnum
     {
         Idle,
         Work_One,
@@ -13,14 +13,14 @@ public interface DeckInterface
         Work_Three
     };
 
-    public enum Decks
+    public enum DeckEnum
     {
         Fervor_Default,
         Insight_Default,
         Influence_Default
     };
 
-    public enum Projects
+    public enum ProjectEnum
     {
         Unfinished_Idol,
         Fervor_Idol,
@@ -33,18 +33,18 @@ public interface DeckInterface
 
     public struct Deck
     {
-        public Deck(int[] actions)
+        public Deck(ActionEnum[] actions)
         {
             Actions = actions;
             size = Actions.Length;
         }
 
-        public int GetAction(int action)
+        public ActionEnum GetAction(int action)
         {
             return Actions[action];
         }
 
-        int[] Actions;
+        ActionEnum[] Actions;
 
         public int size;
     }

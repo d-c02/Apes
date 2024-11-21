@@ -22,7 +22,7 @@ public partial class ape : CharacterBody3D
 
     private map m_Map;
 
-    int m_Aspect = (int) Aspects.Insight;
+    AspectEnum m_Aspect = AspectEnum.Insight;
 
     [Export]
     Sprite3D m_ActionSprite;
@@ -34,11 +34,11 @@ public partial class ape : CharacterBody3D
     [Export] Material FervorBody;
     [Export] Material FervorMouth;
 
-    private List<int> m_Decks;
+    private List<DeckEnum> m_Decks;
 
     private ApeManager m_ApeManager;
 
-    private int m_Action = (int) Actions.Idle;
+    private ActionEnum m_Action = ActionEnum.Idle;
 
     public override void _Ready()
     {
@@ -50,24 +50,37 @@ public partial class ape : CharacterBody3D
         MeshInstance3D body = GetNode<MeshInstance3D>("Pivot/Character/Ape/Body");
         MeshInstance3D mouth = GetNode<MeshInstance3D>("Pivot/Character/Ape/Mouth");
 
-        m_Aspect = rnd.Next(0, 3);
-        if (m_Aspect == (int) Aspects.Insight)
+        int aspectInt = rnd.Next(0, 3);
+        if (aspectInt == 0)
+        {
+            m_Aspect = AspectEnum.Insight;
+        }
+        else if (aspectInt == 1)
+        {
+            m_Aspect = AspectEnum.Influence;
+        }
+        else if (aspectInt == 2)
+        {
+            m_Aspect = AspectEnum.Fervor;
+        }
+
+        if (m_Aspect == AspectEnum.Insight)
         {
             body.SetSurfaceOverrideMaterial(0, InsightBody);
             mouth.SetSurfaceOverrideMaterial(0, InsightMouth);
         }
-        else if (m_Aspect == (int) Aspects.Influence)
+        else if (m_Aspect == AspectEnum.Influence)
         {
             body.SetSurfaceOverrideMaterial(0, InfluenceBody);
             mouth.SetSurfaceOverrideMaterial(0, InfluenceMouth);
         }
-        else if (m_Aspect == (int) Aspects.Fervor)
+        else if (m_Aspect == AspectEnum.Fervor)
         {
             body.SetSurfaceOverrideMaterial(0, FervorBody);
             mouth.SetSurfaceOverrideMaterial(0, FervorMouth);
         }
 
-        m_Decks = new List<int>();
+        m_Decks = new List<DeckEnum>();
         //_RunTimeScale = _AnimationTree.Get("parameters/Run/TimeScale/scale").As<AnimationNodeTimeScale>();
     }
     public override void _PhysicsProcess(double delta)
@@ -92,7 +105,7 @@ public partial class ape : CharacterBody3D
         GetNode<ApeWandering>("StateMachine/Wandering").SetMap(ref m_Map);
     }
 
-    public int GetAspect()
+    public AspectEnum GetAspect()
     {
         return m_Aspect;
     }
@@ -117,21 +130,21 @@ public partial class ape : CharacterBody3D
         return m_NavCoords;
     }
 
-    public void AddDeck(int deck)
+    public void AddDeck(DeckEnum deck)
     {
         m_Decks.Add(deck);
     }
 
-    public bool RemoveDeck(int deck)
+    public bool RemoveDeck(DeckEnum deck)
     {
         return m_Decks.Remove(deck);
     }
 
 
-    private int DrawAction()
+    private ActionEnum DrawAction()
     {
         int deckSum = 0;
-        int result = (int) Actions.Idle;
+        ActionEnum result = ActionEnum.Idle;
         for (int i = 0; i < m_Decks.Count; i++)
         {
             deckSum += m_ApeManager.GetDeckSize(m_Decks[i]);
@@ -155,87 +168,84 @@ public partial class ape : CharacterBody3D
         return result;
     }
 
-    private void SetActionSprite(int action)
+    private void SetActionSprite(ActionEnum action)
     {
-        if (action == (int)Actions.Idle)
+        if (action == ActionEnum.Idle)
         {
             m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/Idle.png");
         }
-        else if (action == (int)Actions.Work_One)
+        else if (action == ActionEnum.Work_One)
         {
-            if (m_Aspect == (int) Aspects.Fervor)
+            if (m_Aspect == AspectEnum.Fervor)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/FervorOne.png");
             }
-            if (m_Aspect == (int)Aspects.Influence)
+            if (m_Aspect == AspectEnum.Influence)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InfluenceOne.png");
             }
-            if (m_Aspect == (int)Aspects.Insight)
+            if (m_Aspect == AspectEnum.Insight)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InsightOne.png");
             }
         }
-        else if (action == (int)Actions.Work_Two)
+        else if (action == ActionEnum.Work_Two)
         {
-            if (m_Aspect == (int)Aspects.Fervor)
+            if (m_Aspect == AspectEnum.Fervor)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/FervorTwo.png");
             }
-            if (m_Aspect == (int)Aspects.Influence)
+            if (m_Aspect == AspectEnum.Influence)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InfluenceTwo.png");
             }
-            if (m_Aspect == (int)Aspects.Insight)
+            if (m_Aspect == AspectEnum.Insight)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InsightTwo.png");
             }
         }
-        else if (action == (int)Actions.Work_Three)
+        else if (action == ActionEnum.Work_Three)
         {
-            if (m_Aspect == (int)Aspects.Fervor)
+            if (m_Aspect == AspectEnum.Fervor)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/FervorThree.png");
             }
-            if (m_Aspect == (int)Aspects.Influence)
+            if (m_Aspect == AspectEnum.Influence)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InfluenceThree.png");
             }
-            if (m_Aspect == (int)Aspects.Insight)
+            if (m_Aspect == AspectEnum.Insight)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InsightThree.png");
             }
         }
     }
 
-    private void QueueAction(int action)
-    {
-        
-    }
 
-    private void ProcessAction(int action)
+    //Clean up eventually - maybe move logic into apemanager checking for int?
+    private void QueueAction(ActionEnum action)
     {
-        if (action == (int) Actions.Idle)
+        if (action == ActionEnum.Idle)
         {
             
         }
-        else if (action == (int) Actions.Work_One)
+        else if (action == ActionEnum.Work_One)
         {
-            m_ApeManager.ProcessWork(m_Aspect, 1);
+            m_ApeManager.QueueWork(m_Aspect, 1);
         }
-        else if (action == (int)Actions.Work_Two)
+        else if (action == ActionEnum.Work_Two)
         {
-            m_ApeManager.ProcessWork(m_Aspect, 2);
+            m_ApeManager.QueueWork(m_Aspect, 2);
         }
-        else if (action == (int)Actions.Work_Three)
+        else if (action == ActionEnum.Work_Three)
         {
-            m_ApeManager.ProcessWork(m_Aspect, 3);
+            m_ApeManager.QueueWork(m_Aspect, 3);
         }
     }
 
     public void StartNewPhase()
     {
-        ProcessAction(m_Action);
         m_Action = DrawAction();
+        QueueAction(m_Action);
     }
 }

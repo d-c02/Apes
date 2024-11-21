@@ -15,7 +15,9 @@ public partial class ApeManager : Node
 
 	private List<ape> m_Apes;
 
-	private System.Collections.Generic.Dictionary<int, Project> m_Projects;
+	private System.Collections.Generic.Dictionary<ProjectEnum, Project> m_Projects;
+
+	private List<ProjectEnum> m_DeadProjectIDs;
 
 	private int m_IdolStatueProjectIndex;
 
@@ -28,8 +30,9 @@ public partial class ApeManager : Node
     public override void _Ready()
 	{
 		m_Apes = new List<ape>();
-		m_Projects = new System.Collections.Generic.Dictionary<int, Project>();
-		for (int i = 0; i < 1; i++)
+		m_Projects = new System.Collections.Generic.Dictionary<ProjectEnum, Project>();
+		m_DeadProjectIDs = new List<ProjectEnum>();
+		for (int i = 0; i < 3; i++)
 		{
 			SpawnApe();
 		}
@@ -43,18 +46,43 @@ public partial class ApeManager : Node
 		
 		if (Input.IsActionJustPressed("DEBUG_SPAWN_APE"))
 		{
-			SpawnProject((int) Projects.Unfinished_Idol);
+			SpawnProject((int) ProjectEnum.Unfinished_Idol);
 		}
 		
 		
 		if (Input.IsActionJustPressed("DEBUG_START_NEW_TIME_PHASE"))
 		{
-			for (int i = 0; i < m_Apes.Count; i++)
-			{
-				m_Apes[i].StartNewPhase();
-			}
+			StartNewPhase();
 		}
 	}
+
+	private void StartNewPhase()
+	{
+        foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)
+        {
+            m_Projects[entry.Key].ProcessQueuedWork();
+			if (m_Projects[entry.Key].IsFinished())
+			{
+				m_DeadProjectIDs.Add(entry.Key);
+			}
+        }
+
+		PruneProjects();
+
+        for (int i = 0; i < m_Apes.Count; i++)
+        {
+            m_Apes[i].StartNewPhase();
+        }
+    }
+
+	private void PruneProjects()
+	{
+
+		for (int i = 0; i < m_DeadProjectIDs.Count; i++)
+		{
+			RemoveProject(m_DeadProjectIDs[i]);
+        }
+    }
 
 	public void SpawnApe()
 	{
@@ -73,35 +101,35 @@ public partial class ApeManager : Node
 		Ape.SetApeManager(this);
 
 		//Remove later?
-		if (Ape.GetAspect() == (int) Aspects.Fervor)
+		if (Ape.GetAspect() == AspectEnum.Fervor)
 		{
-			Ape.AddDeck((int) Decks.Fervor_Default);
+			Ape.AddDeck(DeckEnum.Fervor_Default);
 		}
-		else if (Ape.GetAspect() == (int)Aspects.Influence)
+		else if (Ape.GetAspect() == AspectEnum.Influence)
 		{
-            Ape.AddDeck((int)Decks.Influence_Default);
+            Ape.AddDeck(DeckEnum.Influence_Default);
         }
-        else if (Ape.GetAspect() == (int)Aspects.Insight)
+        else if (Ape.GetAspect() == AspectEnum.Insight)
         {
-            Ape.AddDeck((int)Decks.Insight_Default);
+            Ape.AddDeck(DeckEnum.Insight_Default);
         }
         //
 
         m_Apes.Add(Ape);
     }
 
-	public void SpawnProject(int project, Vector3I? ProjCoords = null)
+	public void SpawnProject(ProjectEnum project, Vector3I? ProjCoords = null)
 	{
 		string ProjectPath = "";
 
 		
 		//Big AWFUL if statement chain you need to fix later or you will DIE in REAL LIFE
-		if (project == (int) Projects.Unfinished_Idol)
+		if (project == ProjectEnum.Unfinished_Idol)
 		{
 			ProjectPath = "res://Scenes/Projects/UnfinishedIdol.tscn";
         }
 
-		else if (project == (int) Projects.Fervor_Idol)
+		else if (project == ProjectEnum.Fervor_Idol)
 		{
             ProjectPath = "res://Scenes/Projects/FervorIdol.tscn";
         }
@@ -143,58 +171,62 @@ public partial class ApeManager : Node
 
         projectInstance.UpdateVerticalPosition();
 
-		projectInstance.SetApeManager(this);
         m_Projects[project] = projectInstance;
     }
 
     //Ape action stuff starts here
 
-    Deck[] m_Decks;
+    //Deck[] m_Decks;
+	System.Collections.Generic.Dictionary<DeckEnum, Deck> m_Decks;
+
 
     private void ConfigureDecks()
 	{
-		m_Decks = new Deck[Enum.GetNames(typeof(Decks)).Length];
+		m_Decks = new System.Collections.Generic.Dictionary<DeckEnum, Deck>();
 
-        for (int i = 0; i < Enum.GetNames(typeof(Decks)).Length; i++)
+        //for (int i = 0; i < Enum.GetNames(typeof(DeckEnum)).Length; i++)
+		foreach (DeckEnum deck in Enum.GetValues(typeof(DeckEnum)))
 		{
-			if (i == (int) Decks.Fervor_Default)
+			if (deck == DeckEnum.Fervor_Default)
 			{
-				int[] actions = {
-					(int) Actions.Idle,
-					(int) Actions.Work_One,
-					(int) Actions.Work_Two,
-					(int) Actions.Work_Three
+				ActionEnum[] actions = {
+					ActionEnum.Idle,
+					ActionEnum.Work_One,
+					ActionEnum.Work_Two,
+					ActionEnum.Work_Three
 				};
-				m_Decks[i] = new Deck(actions);
+				m_Decks[deck] = new Deck(actions);
 			}
-			else if (i == (int) Decks.Insight_Default)
+			else if (deck == DeckEnum.Insight_Default)
 			{
-                int[] actions = {
-                    (int) Actions.Idle,
-                    (int) Actions.Work_One,
-                    (int) Actions.Work_Two,
-                    (int) Actions.Work_Three
+                ActionEnum[] actions = {
+                    ActionEnum.Idle,
+                    ActionEnum.Work_One,
+                    ActionEnum.Work_Two,
+                    ActionEnum.Work_Three
                 };
-                m_Decks[i] = new Deck(actions);
+                m_Decks[deck] = new Deck(actions);
             }
-			else if (i == (int) Decks.Influence_Default)
+			else if (deck == DeckEnum.Influence_Default)
 			{
-                int[] actions = {
-                    (int) Actions.Idle,
-                    (int) Actions.Work_One,
-                    (int) Actions.Work_Two,
-                    (int) Actions.Work_Three
+                ActionEnum[] actions = {
+                    ActionEnum.Idle,
+                    ActionEnum.Work_One,
+                    ActionEnum.Work_Two,
+                    ActionEnum.Work_Three
                 };
-                m_Decks[i] = new Deck(actions);
+                m_Decks[deck] = new Deck(actions);
             }
 		}
 	}
 
-	public void ProcessWork(int aspect, int amount)
+	public void QueueWork(AspectEnum aspect, int amount)
 	{
-		foreach (KeyValuePair<int, Project> entry in m_Projects)
+
+		//Temporary. Bias logic needed
+		foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)
 		{
-			m_Projects[entry.Key].AddWork(aspect, amount);
+			m_Projects[entry.Key].QueueWork(aspect, amount);
 		}
 	}
 
@@ -203,18 +235,23 @@ public partial class ApeManager : Node
 
 	}
 
-	public int GetDeckSize(int deck)
+	public int GetDeckSize(DeckEnum deck)
 	{
 		return m_Decks[deck].size;
 	}
 
-	public int GetAction(int deck, int action)
+	public ActionEnum GetAction(DeckEnum deck, int action)
 	{
 		return m_Decks[deck].GetAction(action);
 	}
 
-	public void RemoveProject(int ID)
+	public void RemoveProject(ProjectEnum ID)
 	{
-		m_Projects.Remove(ID);
+		m_Projects[ID].QueueFree();
+        bool remove = m_Projects.Remove(ID);
+		if (m_Projects[ID].Persists())
+		{
+			SpawnProject(m_Projects[ID].GetNextProject(), m_Projects[ID].GetCoords());
+		}
 	}
 }

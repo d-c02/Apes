@@ -8,9 +8,8 @@ public partial class UnfinishedIdol : Project
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		//m_MaxWork = 10;
-		//m_NumWorkPerRow = 5;
-
+        //m_MaxWork = 10;
+        //m_NumWorkPerRow = 5;
         ConfigureWork();
     }
 
@@ -27,15 +26,15 @@ public partial class UnfinishedIdol : Project
         int influenceCount = 0;
         for (int i = 0; i < m_MaxWork; i++)
         {
-            if (m_WorkSprites[i].Frame == (int) WorkAspects.Fervor)
+            if (m_WorkSprites[i].Frame == (int) WorkAspectEnum.Fervor)
             {
                 fervorCount++;
             }
-            else if (m_WorkSprites[i].Frame == (int)WorkAspects.Insight)
+            else if (m_WorkSprites[i].Frame == (int)WorkAspectEnum.Insight)
             {
                 insightCount++;
             }
-            else if (m_WorkSprites[i].Frame == (int)WorkAspects.Influence)
+            else if (m_WorkSprites[i].Frame == (int)WorkAspectEnum.Influence)
             {
                 influenceCount++;
             }
@@ -75,8 +74,6 @@ public partial class UnfinishedIdol : Project
             }
         }
 
-        this.QueueFree();
-        m_ApeManager.RemoveProject(m_ID);
-        m_ApeManager.SpawnProject((int) Projects.Fervor_Idol, m_Coords);
+        m_NextProject = ProjectEnum.Fervor_Idol;
     }
 }

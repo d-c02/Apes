@@ -6,8 +6,10 @@ using static DeckInterface;
 
 public abstract partial class Project : Node3D
 {
-    protected bool m_Persists = false;
-    protected bool m_Destructible = false;
+    [Export] protected bool m_Persists = false;
+	[Export] protected ProjectEnum m_NextProject;
+    [Export] protected bool m_Destructible = false;
+	protected bool m_Finished = false;
     protected int m_CurStage = 0;
     protected int m_MaxStage = 1;
     protected int m_QueuedWork = 0;
@@ -19,16 +21,15 @@ public abstract partial class Project : Node3D
 	[Export] protected float m_WorkRadius = 0.8f;
 	[Export] protected float m_VerticalOffset = 1f;
 	protected Vector3I m_Coords;
-	protected ApeManager m_ApeManager;
-	protected int m_ID;
+	protected ProjectEnum m_ID;
 
 	[Export] public Node3D m_WorkAnchor;
 	protected AnimatedSprite3D[] m_WorkSprites;
 	[Export] protected Vector2I m_Dimensions;
 
 	[Export]
-	protected int m_WorkAspect;
-	protected enum WorkAspects {Empty, Insight, Influence, Fervor, Any};
+	protected WorkAspectEnum m_WorkAspect;
+	protected enum WorkAspectEnum {Empty, Insight, Influence, Fervor, Any};
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -103,9 +104,7 @@ public abstract partial class Project : Node3D
 		BillboardWork();
 	}
 
-    public abstract void OnFinish();
-
-	public int AddWork(int aspect, int amount)
+	public int QueueWork(AspectEnum aspect, int amount)
 	{
 		int remainder = 0;
 		int prevWork = m_QueuedWork;
@@ -122,15 +121,15 @@ public abstract partial class Project : Node3D
 		for (int i = prevWork; i < m_QueuedWork; i++)
 		{
 			string animation = "";
-			if (aspect == (int) Aspects.Fervor)
+			if (aspect == AspectEnum.Fervor)
 			{
 				animation = "fervor_queued";
 			}
-			else if (aspect == (int) Aspects.Influence)
+			else if (aspect == AspectEnum.Influence)
 			{
                 animation = "influence_queued";
             }
-            else if (aspect == (int)Aspects.Insight)
+            else if (aspect == AspectEnum.Insight)
             {
                 animation = "insight_queued";
             }
@@ -157,21 +156,50 @@ public abstract partial class Project : Node3D
 
 		for (int i = prevWork - 1; i >= m_QueuedWork; i--)
 		{
-			m_WorkSprites[i].Frame = (int)WorkAspects.Empty;
+			m_WorkSprites[i].Frame = (int)WorkAspectEnum.Empty;
 		}
 		return remainder;
 	}
 
 	public void ClearQueuedWork()
 	{
-
-	}
+        if (m_QueuedWork > m_Work)
+        {
+            for (int i = m_Work; i < m_QueuedWork; i++)
+            {
+				m_WorkSprites[i].Animation = "empty";
+            }
+        }
+        else if (m_QueuedWork < m_Work)
+        {
+            for (int i = m_QueuedWork; i < m_Work; i++)
+            {
+                if (m_WorkAspect == WorkAspectEnum.Any)
+                {
+                    m_WorkSprites[i].Animation = "any";
+                }
+                else if (m_WorkAspect == WorkAspectEnum.Insight)
+                {
+                    m_WorkSprites[i].Animation = "insight";
+                }
+                else if (m_WorkAspect == WorkAspectEnum.Influence)
+                {
+                    m_WorkSprites[i].Animation = "influence";
+                }
+                else if (m_WorkAspect == WorkAspectEnum.Fervor)
+                {
+                    m_WorkSprites[i].Animation = "fervor";
+                }
+            }
+        }
+		m_QueuedWork = m_Work;
+    }
 
 	public void ProcessQueuedWork()
 	{
 		if (m_QueuedWork >= m_MaxWork)
 		{
-			OnFinish();
+			m_Finished = true;
 		}
 		else
 		{
@@ -180,19 +208,19 @@ public abstract partial class Project : Node3D
                 for (int i = m_Work; i < m_QueuedWork; i++)
                 {
 					//Create generic work texture for generic work instance, and have global work texture int corresponding to insight, influence, fervor, any
-                    if (m_WorkAspect == (int) WorkAspects.Any)
+                    if (m_WorkAspect == WorkAspectEnum.Any)
 					{
 						m_WorkSprites[i].Animation = "any";
                     }
-					else if (m_WorkAspect == (int) WorkAspects.Insight)
+					else if (m_WorkAspect == WorkAspectEnum.Insight)
 					{
                         m_WorkSprites[i].Animation = "insight";
                     }
-                    else if (m_WorkAspect == (int)WorkAspects.Influence)
+                    else if (m_WorkAspect == WorkAspectEnum.Influence)
                     {
                         m_WorkSprites[i].Animation = "influence";
                     }
-                    else if (m_WorkAspect == (int)WorkAspects.Fervor)
+                    else if (m_WorkAspect == WorkAspectEnum.Fervor)
                     {
                         m_WorkSprites[i].Animation = "fervor";
                     }
@@ -205,6 +233,8 @@ public abstract partial class Project : Node3D
 					m_WorkSprites[i].Animation = "empty";
 				}
 			}
+
+			m_Work = m_QueuedWork;
 		}
 	}
 
@@ -228,19 +258,35 @@ public abstract partial class Project : Node3D
 		return m_Coords;
 	}
 
-	public void SetID(int ID)
+	public void SetID(ProjectEnum ID)
 	{
 		m_ID = ID;
 	}
 
-	public int GetID()
+	public ProjectEnum GetID()
 	{
 		return m_ID;
 	}
 
-	public void SetApeManager(ApeManager apeManager)
+	public virtual void OnFinish()
 	{
-		m_ApeManager = apeManager;
+
+	}
+
+
+	public bool IsFinished()
+	{
+		return m_Finished;
+	}
+
+	public bool Persists()
+	{
+		return m_Persists;
+	}
+
+	public ProjectEnum GetNextProject()
+	{
+		return m_NextProject;
 	}
 
 	protected void BillboardWork()

@@ -8,6 +8,8 @@ using static System.Reflection.Metadata.BlobBuilder;
 
 public partial class map : GridMap
 {
+
+    //Change enum conversion logic at some point
     enum Blocks { Center, Corner, Ramp, InnerCorner, Sand, Water, DoubleCornerJoin, DebugNavBlue, DebugNavRed };
 
     const int m_TopLevel = 4;
@@ -86,8 +88,8 @@ public partial class map : GridMap
 
         if (fillPoint)
         {
-            Vector3I debug_pos = new Vector3I(Coords.X - m_AStarGridxOffset, 6, Coords.Y - m_AStarGridzOffset);
-            SetCellItem(debug_pos, (int)Blocks.DebugNavRed);
+            //Vector3I debug_pos = new Vector3I(Coords.X - m_AStarGridxOffset, 6, Coords.Y - m_AStarGridzOffset);
+            //SetCellItem(debug_pos, (int)Blocks.DebugNavRed);
             m_AStarGrid.SetPointSolid(Coords);
         }
 
@@ -133,7 +135,7 @@ public partial class map : GridMap
     {
 
         //SHOW DEBUG NAVMAP
-        
+        /*
         Vector3I debug_pos = new Vector3I(id.X - m_AStarGridxOffset, 6, id.Y - m_AStarGridzOffset);
         if (solid)
         {
@@ -143,7 +145,7 @@ public partial class map : GridMap
         {
             SetCellItem(debug_pos, (int)Blocks.DebugNavBlue);
         }
-        
+        */
 
         m_AStarGrid.SetPointSolid(id, solid);
     }
@@ -721,11 +723,11 @@ public partial class map : GridMap
                 if (GetCellItem(Coords) == (int) Blocks.Water)
                 {
                     m_AStarGrid.SetPointSolid(ID);
-                    SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavRed);
+                    //SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavRed);
                 }
                 else
                 {
-                    SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavBlue);
+                    //SetCellItem(new Vector3I(Coords.X, 6, Coords.Z), (int)Blocks.DebugNavBlue);
                 }
             }
         }
