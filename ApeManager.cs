@@ -155,11 +155,16 @@ public partial class ApeManager : Node
 		{
 			for (int zOffset = 0; zOffset < projectInstance.GetDimensions().Y; zOffset++)
 			{
-				m_Map.SetPointSolid(NavCoords + new Vector2I(xOffset, zOffset), true);
-			}
+				Vector2I offset = new Vector2I(xOffset, zOffset);
+                if (!projectInstance.IsSlot(offset))
+				{
+                    m_Map.SetPointSolid(NavCoords + offset, true);
+                }
+            }
 		}
 
-        m_Map.SetPointSolid(NavCoords);
+        //m_Map.SetPointSolid(NavCoords);
+
         Vector2 PosCoords = m_Map.GetPointPosition(NavCoords);
 
 		projectInstance.SetID(project);

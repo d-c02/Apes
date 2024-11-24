@@ -5,19 +5,20 @@ using static DeckInterface;
 
 public partial class UnfinishedIdol : Project
 {
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
-        //m_MaxWork = 10;
-        //m_NumWorkPerRow = 5;
-        ConfigureWork();
-    }
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-		BillboardWork();
-	}
+    public override void ConfigureSlots()
+    {
+        for (int x = 0; x < m_Dimensions.X; x++)
+        {
+            for (int z = 0; z < m_Dimensions.Y; z++)
+            {
+                if (x == 0 || x == m_Dimensions.X - 1 || z == 0 || z == m_Dimensions.Y - 1)
+                {
+                    m_ApeSlots[new Vector2I(x, z)] = true;
+                }
+            }
+        }
+    }
 
     public override void OnFinish()
     {

@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using static DeckInterface;
+using System.Collections.Generic;
 
 public abstract partial class Project : Node3D
 {
@@ -31,11 +32,15 @@ public abstract partial class Project : Node3D
 	protected WorkAspectEnum m_WorkAspect;
 	protected enum WorkAspectEnum {Empty, Insight, Influence, Fervor, Any};
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+    protected Dictionary<Vector2I, bool> m_ApeSlots;
+
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
 	{
         ConfigureWork();
-	}
+        m_ApeSlots = new Dictionary<Vector2I, bool>();
+		ConfigureSlots();
+    }
 
 	public void UpdateVerticalPosition()
 	{
@@ -51,6 +56,11 @@ public abstract partial class Project : Node3D
 	public Vector2I GetDimensions()
 	{
 		return m_Dimensions;
+	}
+
+	public bool IsSlot(Vector2I Coords)
+	{
+		return m_ApeSlots.ContainsKey(Coords);
 	}
 
 	protected void ConfigureWork()
@@ -97,6 +107,11 @@ public abstract partial class Project : Node3D
             }
 		}
 	}
+
+	public virtual void ConfigureSlots()
+	{
+
+    }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
