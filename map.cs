@@ -357,6 +357,7 @@ public partial class map : GridMap
     private void PlaceStructureMarkers()
     {
         m_ProjectLocations = new Dictionary<Vector2I, Stack<Vector3I>>();
+        Dictionary<Vector2I, bool> OpenCoords = new Dictionary<Vector2I, bool>();
         Random rnd = new Random();
         int prevN = -1;
         int prevM = -1;
@@ -382,6 +383,19 @@ public partial class map : GridMap
                                     {
                                         ValidSpace = false;
                                         break;
+                                    }
+                                    Vector2I pos = new Vector2I(x + xOffset, z + zOffset);
+                                    if (OpenCoords.ContainsKey(pos))
+                                    {
+                                        if (!OpenCoords[pos])
+                                        {
+                                            ValidSpace = false;
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        OpenCoords[pos] = ValidSpace;
                                     }
                                 }
                             }
@@ -411,6 +425,14 @@ public partial class map : GridMap
                 {
                     m_ProjectLocations[Dimensions] = new Stack<Vector3I>();
                     m_ProjectLocations[Dimensions].Push(pos);
+                }
+
+                for (int x = pos.X - 1; x < pos.X + Dimensions.X + 1; x++)
+                {
+                    for (int z = pos.Z - 1; z < pos.Z + Dimensions.Y + 1; z++)
+                    {
+                        OpenCoords[new Vector2I(x, z)] = false;
+                    }
                 }
             }
             else

@@ -63,6 +63,18 @@ public abstract partial class Project : Node3D
 		return m_ApeSlots.ContainsKey(Coords);
 	}
 
+	public Vector2I GetOpenSlot(bool fillSlot)
+	{
+		foreach (KeyValuePair<Vector2I, bool> entry in m_ApeSlots)
+		{
+			if (entry.Value)
+			{
+				return entry.Key;
+			}
+		}
+		return new Vector2I(-1, -1);
+	}
+
 	protected void ConfigureWork()
 	{
 		//Change?
