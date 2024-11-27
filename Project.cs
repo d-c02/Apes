@@ -63,7 +63,7 @@ public abstract partial class Project : Node3D
 		return m_ApeSlots.ContainsKey(Coords);
 	}
 
-	public Vector2I GetOpenSlot(bool fillSlot)
+	public Vector2I GetOpenSlot()
 	{
 		foreach (KeyValuePair<Vector2I, bool> entry in m_ApeSlots)
 		{
@@ -73,6 +73,11 @@ public abstract partial class Project : Node3D
 			}
 		}
 		return new Vector2I(-1, -1);
+	}
+
+	public void SetOpenSlot(Vector2I slot, bool open)
+	{
+		m_ApeSlots[slot] = open;
 	}
 
 	protected void ConfigureWork()

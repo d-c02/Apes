@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using static DeckInterface;
 
 public partial class ApeIdle : State
 {
@@ -51,6 +52,11 @@ public partial class ApeIdle : State
         }
 
         WanderCtr += delta;
+
+        if (Ape.GetAction() == ActionEnum.Work_One || Ape.GetAction() == ActionEnum.Work_Two || Ape.GetAction() == ActionEnum.Work_Three)
+        {
+            EmitSignal(SignalName.Transitioned, this.Name + "", "ApeWorkingTransit");
+        }
 
         if (WanderCtr > NextWanderTime)
         {

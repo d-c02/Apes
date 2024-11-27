@@ -20,6 +20,10 @@ public partial class ape : CharacterBody3D
 
     private Vector2I m_NavCoords;
 
+    private Vector2I m_PrevNavCoords;
+
+    private Vector2I m_Slot;
+
     private map m_Map;
 
     AspectEnum m_Aspect = AspectEnum.Insight;
@@ -39,6 +43,8 @@ public partial class ape : CharacterBody3D
     private ApeManager m_ApeManager;
 
     private ActionEnum m_Action = ActionEnum.Idle;
+
+    private ProjectEnum m_TargetProject;
 
     public override void _Ready()
     {
@@ -82,6 +88,8 @@ public partial class ape : CharacterBody3D
 
         m_Decks = new List<DeckEnum>();
         //_RunTimeScale = _AnimationTree.Get("parameters/Run/TimeScale/scale").As<AnimationNodeTimeScale>();
+        m_TargetProject = ProjectEnum.Unfinished_Idol;
+
     }
     public override void _PhysicsProcess(double delta)
     {
@@ -103,6 +111,8 @@ public partial class ape : CharacterBody3D
     {
         m_Map = Map;
         GetNode<ApeWandering>("StateMachine/Wandering").SetMap(ref m_Map);
+        GetNode<ApeWorkingTransit>("StateMachine/ApeWorkingTransit").SetMap(ref m_Map);
+        GetNode<ApeWorkingExit>("StateMachine/ApeWorkingExit").SetMap(ref m_Map);
     }
 
     public AspectEnum GetAspect()
@@ -113,6 +123,7 @@ public partial class ape : CharacterBody3D
     public void SetApeManager(ApeManager apeManager)
     {
         m_ApeManager = apeManager;
+        GetNode<ApeWorkingTransit>("StateMachine/ApeWorkingTransit").SetApeManager(ref m_ApeManager);
     }
 
     public void SetNavCoords(int x, int y)
@@ -243,9 +254,44 @@ public partial class ape : CharacterBody3D
         }
     }
 
+    public ActionEnum GetAction()
+    {
+        return m_Action;
+    }
+
+    public ProjectEnum GetTargetProject()
+    {
+        return m_TargetProject;
+    }
+
+    public void SetTargetProject(ProjectEnum project)
+    {
+        m_TargetProject = project;
+    }
+
     public void StartNewPhase()
     {
         m_Action = DrawAction();
         QueueAction(m_Action);
+    }
+
+    public Vector2I GetPrevNavCoords()
+    {
+        return m_PrevNavCoords;
+    }
+
+    public void SetPrevNavCoords(Vector2I PrevNavCoords)
+    {
+        m_PrevNavCoords = PrevNavCoords;
+    }
+
+    public void SetSlot(Vector2I Slot)
+    {
+        m_Slot = Slot;
+    }
+
+    public Vector2I GetSlot()
+    {
+        return m_Slot;
     }
 }

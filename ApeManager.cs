@@ -32,7 +32,7 @@ public partial class ApeManager : Node
 		m_Apes = new List<ape>();
 		m_Projects = new System.Collections.Generic.Dictionary<ProjectEnum, Project>();
 		m_DeadProjectIDs = new List<ProjectEnum>();
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < 15; i++)
 		{
 			SpawnApe();
 		}
@@ -263,5 +263,30 @@ public partial class ApeManager : Node
 		{
 			SpawnProject(nextProject, Coords);
 		}
+	}
+
+	public Vector2I GetProjectLocation(ProjectEnum project)
+	{
+		return new Vector2I(m_Projects[project].GetCoords().X, m_Projects[project].GetCoords().Z);
+	}
+
+	public Vector2I GetOpenSlot(ProjectEnum project)
+	{
+		return m_Projects[project].GetOpenSlot();
+	}
+
+	public void SetOpenSlot(ProjectEnum project, Vector2I slot, bool open)
+	{
+		m_Projects[project].SetOpenSlot(slot, open);
+	}
+
+	public Vector3 GetGlobalPosition(ProjectEnum project)
+	{
+		return m_Projects[project].GlobalPosition;
+	}
+
+	public Vector2I GetProjectDimensions(ProjectEnum project)
+	{
+		return m_Projects[project].GetDimensions();
 	}
 }

@@ -1,13 +1,12 @@
 using Godot;
 using System;
-using System.Runtime.CompilerServices;
 
-public partial class ApeWandering : State
+
+public partial class ApeWorkingExit : State
 {
-    [Export]
-    ape m_Ape;
 
-    map m_Map;
+    [Export] private ape m_Ape;
+    private map m_Map;
 
     [Export]
     public int m_IdleSpeed { get; set; } = 14;
@@ -34,71 +33,39 @@ public partial class ApeWandering : State
 
     const float m_WanderingVelocity = 1000.0f;
 
-
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
-	{
-
-    }
-
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-	}
-
     public override void Enter()
     {
-        Random rnd = new Random();
-        int wanderRange = rnd.Next(m_MinWanderRange, m_MaxWanderRange);
-        Vector2I NextPosDist = new Vector2I();
-        NextPosDist.X = rnd.Next(0, wanderRange + 1);
-        NextPosDist.Y = wanderRange - NextPosDist.X;
-        if (rnd.Next(0, 2) == 0)
+
+        //adjust pathfinding for other apes
+        m_Map.SetPointSolid(m_Ape.GetPrevNavCoords(), false);
+        m_Map.SetPointSolid(m_Ape.GetNavCoords(), false);
+        m_IDPath = m_Map.getIdPath(m_Ape.GetNavCoords(), m_Ape.GetPrevNavCoords(), true);
+        m_Map.SetPointSolid(m_Ape.GetNavCoords(), true);
+        m_Map.SetPointSolid(m_Ape.GetPrevNavCoords(), true);
+
+        if (m_IDPath.Count <= 1)
         {
-            NextPosDist.X *= -1;
-        }
-        if (rnd.Next(0, 2) == 0)
-        {
-            NextPosDist.Y *= -1;
-        }
-
-        Vector2I FinalPos = new Vector2I(m_Ape.GetNavCoords().X + NextPosDist.X, m_Ape.GetNavCoords().Y + NextPosDist.Y);
-
-        if (m_Map.IsInBounds(FinalPos))
-        {
-            //adjust pathfinding for other apes
-            m_Map.SetPointSolid(m_Ape.GetNavCoords(), false);
-            m_IDPath = m_Map.getIdPath(m_Ape.GetNavCoords(), FinalPos, true);
-
-
-            if (m_IDPath.Count <= 1)
-            {
-                m_Map.SetPointSolid(m_Ape.GetNavCoords(), true);
-                EmitSignal(SignalName.Transitioned, this.Name + "", "ApeIdle");
-            }
-            else
-            {
-                m_Map.SetPointSolid(m_IDPath[m_IDPath.Count - 1], true);
-                m_Ape.SetNavCoords(m_IDPath[m_IDPath.Count - 1]);
-
-                m_NextPosCtr = 1;
-                m_NextPos = m_Map.GetPointPosition(m_IDPath[m_NextPosCtr]);
-            }
+            m_Map.SetPointSolid(m_Ape.GetNavCoords(), true);
+            EmitSignal(SignalName.Transitioned, this.Name + "", "ApeIdle");
         }
         else
         {
-            EmitSignal(SignalName.Transitioned, this.Name + "", "ApeIdle");
+            m_Map.SetPointSolid(m_IDPath[m_IDPath.Count - 1], true);
+            m_Ape.SetNavCoords(m_IDPath[m_IDPath.Count - 1]);
+
+            m_NextPosCtr = 1;
+            m_NextPos = m_Map.GetPointPosition(m_IDPath[m_NextPosCtr]);
         }
     }
 
     public override void Exit()
     {
-        m_TargetVelocity = Vector3.Zero;
+        m_Ape.Velocity = Vector3.Zero;
     }
 
     public override void Update(double delta)
     {
-        
+
     }
 
     public override void PhysicsUpdate(double delta)

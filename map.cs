@@ -21,9 +21,9 @@ public partial class map : GridMap
     //Sort in descending order with objects with the same dimensions grouped together.
     int[,] m_Markers = { 
         {7, 7}, //Player Statue
-        {5, 5}, //Insight Project Site
-        {5, 5}, //Influence Project Site
-        {5, 5} //Fervor Project Site
+        //{5, 5}, //Insight Project Site
+        //{5, 5}, //Influence Project Site
+        //{5, 5} //Fervor Project Site
     };
 
     const int m_MapSize = 50;
