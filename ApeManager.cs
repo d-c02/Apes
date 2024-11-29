@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using static DeckInterface;
+using System.Collections.Generic;
 
 public partial class ApeManager : Node
 {
@@ -70,11 +71,87 @@ public partial class ApeManager : Node
 		PruneProjects();
 		m_DeadProjectIDs.Clear();
 
+
         for (int i = 0; i < m_Apes.Count; i++)
         {
             m_Apes[i].StartNewPhase();
         }
+		DrawTargetProjects();
+        QueueActions();
     }
+
+	//This function REALLY REALLY sucks. Fix it later
+	private void DrawTargetProjects()
+	{
+		System.Collections.Generic.Dictionary<AspectEnum, List<ProjectEnum>> ProjectDict = new System.Collections.Generic.Dictionary<AspectEnum, List<ProjectEnum>>();
+
+		foreach (AspectEnum value in Enum.GetValues(typeof(AspectEnum)))
+		{
+			ProjectDict[value] = new List<ProjectEnum>();
+		}
+
+        foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)
+		{
+			WorkAspectEnum workAspect = entry.Value.GetWorkAspect();
+            if (workAspect == WorkAspectEnum.Any)
+            {
+                ProjectDict[AspectEnum.Fervor].Add(entry.Key);
+                ProjectDict[AspectEnum.Insight].Add(entry.Key);
+                ProjectDict[AspectEnum.Influence].Add(entry.Key);
+            }
+			else if (workAspect == WorkAspectEnum.Fervor)
+			{
+                ProjectDict[AspectEnum.Fervor].Add(entry.Key);
+            }
+            else if (workAspect == WorkAspectEnum.Insight)
+            {
+                ProjectDict[AspectEnum.Insight].Add(entry.Key);
+            }
+            else if (workAspect == WorkAspectEnum.Influence)
+            {
+                ProjectDict[AspectEnum.Influence].Add(entry.Key);
+            }
+        }
+
+		Random rnd = new Random();
+		for (int i = 0; i < m_Apes.Count; i++)
+		{
+			if (m_Apes[i].IsWorking())
+			{
+				List<int> SpiteProjects = new List<int>();
+				List<ProjectEnum> Projects = new List<ProjectEnum>();
+				int projectCount = 0;
+
+				int numAvailableProjects = ProjectDict[m_Apes[i].GetAspect()].Count;
+				if (numAvailableProjects > 0)
+				{
+                    for (int j = 0; j < numAvailableProjects; j++)
+                    {
+                        int projectSpite = m_Projects[ProjectDict[m_Apes[i].GetAspect()][j]].GetSpite(); //Sickening line of code
+
+                        projectCount += (10 - Math.Abs((m_Apes[i].GetSpite() - projectSpite)));
+                        SpiteProjects.Add(projectCount);
+                        Projects.Add(ProjectDict[m_Apes[i].GetAspect()][j]);
+                    }
+
+                    int projectSelection = rnd.Next(1, projectCount + 1);
+
+                    for (int j = 0; j < SpiteProjects.Count; j++)
+                    {
+                        if (projectSelection <= SpiteProjects[j])
+                        {
+                            m_Apes[i].SetTargetProject(Projects[j]);
+                            break;
+                        }
+                    }
+                }
+				else
+				{
+					m_Apes[i].SetAction(ActionEnum.Idle);
+				}
+			}
+		}
+	}
 
 	private void PruneProjects()
 	{
@@ -226,19 +303,9 @@ public partial class ApeManager : Node
 		}
 	}
 
-	public void QueueWork(AspectEnum aspect, int amount)
+	public void QueueWork(AspectEnum aspect, int amount, ProjectEnum targetProject)
 	{
-
-		//Temporary. Bias logic needed
-		foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)
-		{
-			m_Projects[entry.Key].QueueWork(aspect, amount);
-		}
-	}
-
-	public void QueueActions()
-	{
-
+			m_Projects[targetProject].QueueWork(aspect, amount);
 	}
 
 	public int GetDeckSize(DeckEnum deck)
@@ -277,7 +344,7 @@ public partial class ApeManager : Node
 
 	public void SetOpenSlot(ProjectEnum project, Vector2I slot, bool open)
 	{
-		m_Projects[project].SetOpenSlot(slot, open);
+            m_Projects[project].SetOpenSlot(slot, open);
 	}
 
 	public Vector3 GetGlobalPosition(ProjectEnum project)
@@ -289,4 +356,40 @@ public partial class ApeManager : Node
 	{
 		return m_Projects[project].GetDimensions();
 	}
+
+	public bool IsProjectActive(ProjectEnum project)
+	{
+		return m_Projects.ContainsKey(project);
+	}
+
+    public void QueueActions()
+    {
+        for (int i = 0; i < m_Apes.Count; i++)
+        {
+            ActionEnum action = m_Apes[i].GetAction();
+            AspectEnum aspect = m_Apes[i].GetAspect();
+
+			if (m_Apes[i].IsWorking())
+			{
+				m_Apes[i].WorkTransition();
+			}
+
+            if (action == ActionEnum.Idle)
+            {
+
+            }
+            else if (action == ActionEnum.Work_One)
+            {
+                QueueWork(aspect, 1, m_Apes[i].GetTargetProject());
+            }
+            else if (action == ActionEnum.Work_Two)
+            {
+                QueueWork(aspect, 2, m_Apes[i].GetTargetProject());
+            }
+            else if (action == ActionEnum.Work_Three)
+            {
+                QueueWork(aspect, 3, m_Apes[i].GetTargetProject());
+            }
+        }
+    }
 }

@@ -30,9 +30,12 @@ public abstract partial class Project : Node3D
 
 	[Export]
 	protected WorkAspectEnum m_WorkAspect;
-	protected enum WorkAspectEnum {Empty, Insight, Influence, Fervor, Any};
 
     protected Dictionary<Vector2I, bool> m_ApeSlots;
+
+	//In range of 1-10
+	[Export(PropertyHint.Range, "1,10,")] 
+	protected int m_Spite = 5;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -347,4 +350,14 @@ public abstract partial class Project : Node3D
             m_WorkAnchor.Visible = true;
         }
     }
+
+	public WorkAspectEnum GetWorkAspect()
+	{
+		return m_WorkAspect;
+	}
+
+	public int GetSpite()
+	{
+		return m_Spite;
+	}
 }

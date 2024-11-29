@@ -15,7 +15,14 @@ public partial class ApeWorking : State
     public override void Exit()
     {
         //Check if project is null or not!!!
-        m_ApeManager.SetOpenSlot(m_Ape.GetTargetProject(), m_Ape.GetSlot(), true);
+        if (m_ApeManager.IsProjectActive(m_Ape.GetTargetProject()))
+        {
+            m_ApeManager.SetOpenSlot(m_Ape.GetTargetProject(), m_Ape.GetSlot(), true);
+        }
+        else
+        {
+            throw new Exception("No active project available!");
+        }
     }
 
     public override void Update(double delta)
@@ -25,7 +32,7 @@ public partial class ApeWorking : State
 
     public override void PhysicsUpdate(double delta)
     {
-        if (m_Ape.GetAction() != ActionEnum.Work_One && m_Ape.GetAction() != ActionEnum.Work_Two && m_Ape.GetAction() != ActionEnum.Work_Three)
+        if (m_Ape.IsWorking())
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "ApeWorkingExit");
         }

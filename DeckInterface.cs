@@ -3,7 +3,9 @@ using System;
 
 public interface DeckInterface
 {
-    enum AspectEnum { Insight, Influence, Fervor };
+    public enum AspectEnum { Insight, Influence, Fervor };
+
+    public enum WorkAspectEnum { Empty, Insight, Influence, Fervor, Any };
 
     public enum ActionEnum
     {

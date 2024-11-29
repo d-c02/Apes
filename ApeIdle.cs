@@ -53,7 +53,7 @@ public partial class ApeIdle : State
 
         WanderCtr += delta;
 
-        if (Ape.GetAction() == ActionEnum.Work_One || Ape.GetAction() == ActionEnum.Work_Two || Ape.GetAction() == ActionEnum.Work_Three)
+        if (Ape.CanWorkTransition())
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "ApeWorkingTransit");
         }

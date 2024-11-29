@@ -46,6 +46,10 @@ public partial class ape : CharacterBody3D
 
     private ProjectEnum m_TargetProject;
 
+    private int m_Spite = 5;
+
+    bool m_WorkTransition = false;
+
     public override void _Ready()
     {
 
@@ -233,30 +237,15 @@ public partial class ape : CharacterBody3D
     }
 
 
-    //Clean up eventually - maybe move logic into apemanager checking for int?
-    private void QueueAction(ActionEnum action)
-    {
-        if (action == ActionEnum.Idle)
-        {
-            
-        }
-        else if (action == ActionEnum.Work_One)
-        {
-            m_ApeManager.QueueWork(m_Aspect, 1);
-        }
-        else if (action == ActionEnum.Work_Two)
-        {
-            m_ApeManager.QueueWork(m_Aspect, 2);
-        }
-        else if (action == ActionEnum.Work_Three)
-        {
-            m_ApeManager.QueueWork(m_Aspect, 3);
-        }
-    }
-
     public ActionEnum GetAction()
     {
         return m_Action;
+    }
+    
+    public void SetAction(ActionEnum action)
+    {
+        m_Action = action;
+        SetActionSprite(m_Action);
     }
 
     public ProjectEnum GetTargetProject()
@@ -272,7 +261,6 @@ public partial class ape : CharacterBody3D
     public void StartNewPhase()
     {
         m_Action = DrawAction();
-        QueueAction(m_Action);
     }
 
     public Vector2I GetPrevNavCoords()
@@ -293,5 +281,35 @@ public partial class ape : CharacterBody3D
     public Vector2I GetSlot()
     {
         return m_Slot;
+    }
+
+    public int GetSpite()
+    {
+        return m_Spite;
+    }
+
+    public void SetSpite(int Spite)
+    {
+        m_Spite = Spite;
+    }
+
+    public bool IsWorking()
+    {
+        return (m_Action != ActionEnum.Work_One && m_Action != ActionEnum.Work_Two && m_Action != ActionEnum.Work_Three);
+    }
+
+    public bool CanWorkTransition()
+    {
+        if (m_WorkTransition)
+        {
+            m_WorkTransition = false;
+            return true;
+        }
+        return false;
+    }
+
+    public void WorkTransition()
+    {
+        m_WorkTransition = true;
     }
 }

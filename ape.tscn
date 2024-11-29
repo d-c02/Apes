@@ -221,7 +221,7 @@ height = 2.05
 [node name="Ape" type="CharacterBody3D" node_paths=PackedStringArray("_AnimationTree", "m_ActionSprite")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
 collision_layer = 2
-floor_max_angle = 1.22173
+floor_max_angle = 1.48353
 floor_snap_length = 1.0
 script = ExtResource("1_cxu0w")
 _AnimationTree = NodePath("AnimationTree")
