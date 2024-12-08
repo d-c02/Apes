@@ -369,10 +369,11 @@ public abstract partial class Project : Node3D
 	{
 		m_Finished = false;
 		m_Work = 0;
+		m_QueuedWork = 0;
         for (int i = 0; i < m_MaxWork; i++)
 		{
-			m_WorkSprites[i].Frame = (int) WorkAspectEnum.Empty;
-		}
+            m_WorkSprites[i].Animation = "empty";
+        }
 
     }
 }

@@ -19,10 +19,10 @@ public partial class ApeWorking : State
         {
             m_ApeManager.SetOpenSlot(m_Ape.GetTargetProject(), m_Ape.GetSlot(), true);
         }
-        else
-        {
-            m_Ape.SetTargetProject(ProjectEnum.None);
-        }
+        //else
+        //{
+        //    m_Ape.SetTargetProject(ProjectEnum.None);
+        //}
 
         m_Ape.SetWorkTransition(false);
     }

@@ -325,7 +325,22 @@ public partial class ApeManager : Node
 		ProjectEnum nextProject = m_Projects[ID].GetNextProject();
 		Vector3I Coords = m_Projects[ID].GetCoords();
 
-		m_Projects[ID].QueueFree();
+        for (int i = 0; i < m_Apes.Count; i++)
+        {
+            if (m_Apes[i].GetTargetProject() == ID)
+            {
+				if (hasNextProject)
+				{
+                    m_Apes[i].SetTargetProject(nextProject);
+                }
+				else
+				{
+					m_Apes[i].SetTargetProject(ProjectEnum.None);
+				}
+            }
+        }
+
+        m_Projects[ID].QueueFree();
         bool remove = m_Projects.Remove(ID);
 		if (hasNextProject)
 		{
