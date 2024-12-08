@@ -222,6 +222,10 @@ public partial class ApeManager : Node
 		{
             ProjectPath = "res://Scenes/Projects/FervorIdol.tscn";
         }
+		else if (project == ProjectEnum.Fishery)
+		{
+			ProjectPath = "res://Scenes/Projects/Supporting/work_site_marker.tscn";
+		}
 
 		Debug.Assert(ProjectPath != "", "Invalid project! ID: " + project.ToString());
 
@@ -259,7 +263,7 @@ public partial class ApeManager : Node
 
 		projectInstance.SetCoords(Coords);
 
-        projectInstance.GlobalPosition = new Vector3(PosCoords.X, Coords.Y + projectInstance.Scale.Y, PosCoords.Y);
+        projectInstance.GlobalPosition = new Vector3(PosCoords.X, Coords.Y * 2, PosCoords.Y);
 
         projectInstance.GlobalPosition = new Vector3(projectInstance.GlobalPosition.X + projectInstance.GetDimensions().X - 1, projectInstance.GlobalPosition.Y, projectInstance.GlobalPosition.Z + projectInstance.GetDimensions().Y - 1);
 
@@ -416,5 +420,7 @@ public partial class ApeManager : Node
     private void SpawnInitialProjects()
     {
         SpawnProject(ProjectEnum.Unfinished_Idol);
+
+		SpawnProject(ProjectEnum.Fishery);
     }
 }
