@@ -128,6 +128,7 @@ public partial class ape : CharacterBody3D
     {
         m_ApeManager = apeManager;
         GetNode<ApeWorkingTransit>("StateMachine/ApeWorkingTransit").SetApeManager(ref m_ApeManager);
+        GetNode<ApeWorking>("StateMachine/ApeWorking").SetApeManager(ref m_ApeManager);
     }
 
     public void SetNavCoords(int x, int y)
@@ -295,7 +296,7 @@ public partial class ape : CharacterBody3D
 
     public bool IsWorking()
     {
-        return (m_Action != ActionEnum.Work_One && m_Action != ActionEnum.Work_Two && m_Action != ActionEnum.Work_Three);
+        return (m_Action == ActionEnum.Work_One || m_Action == ActionEnum.Work_Two || m_Action == ActionEnum.Work_Three);
     }
 
     public bool CanWorkTransition()
@@ -308,8 +309,8 @@ public partial class ape : CharacterBody3D
         return false;
     }
 
-    public void WorkTransition()
+    public void SetWorkTransition(bool workTransition)
     {
-        m_WorkTransition = true;
+        m_WorkTransition = workTransition;
     }
 }

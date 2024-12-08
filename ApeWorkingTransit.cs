@@ -37,7 +37,8 @@ public partial class ApeWorkingTransit : State
         Vector2I SlotOffset = m_ApeManager.GetOpenSlot(m_Ape.GetTargetProject());
         if (SlotOffset.X == -1 || SlotOffset.Y == -1)
         {
-            throw new Exception("No slots available!");
+            m_Ape.SetAction(DeckInterface.ActionEnum.Idle);
+            EmitSignal(SignalName.Transitioned, this.Name + "", "ApeIdle");
         }
 
         m_Ape.SetSlot(SlotOffset);

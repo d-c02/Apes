@@ -33,7 +33,7 @@ public partial class ApeManager : Node
 		m_Apes = new List<ape>();
 		m_Projects = new System.Collections.Generic.Dictionary<ProjectEnum, Project>();
 		m_DeadProjectIDs = new List<ProjectEnum>();
-		for (int i = 0; i < 15; i++)
+		for (int i = 0; i < 6; i++)
 		{
 			SpawnApe();
 		}
@@ -47,7 +47,7 @@ public partial class ApeManager : Node
 		
 		if (Input.IsActionJustPressed("DEBUG_SPAWN_APE"))
 		{
-			SpawnProject((int) ProjectEnum.Unfinished_Idol);
+			SpawnProject(ProjectEnum.Unfinished_Idol);
 		}
 		
 		
@@ -64,7 +64,14 @@ public partial class ApeManager : Node
             m_Projects[entry.Key].ProcessQueuedWork();
 			if (m_Projects[entry.Key].IsFinished())
 			{
-				m_DeadProjectIDs.Add(entry.Key);
+				if (!m_Projects[entry.Key].Persists())
+				{
+                    m_DeadProjectIDs.Add(entry.Key);
+                }
+				else
+				{
+					m_Projects[entry.Key].ResetPhase();
+				}
 			}
         }
 
@@ -274,9 +281,7 @@ public partial class ApeManager : Node
 			{
 				ActionEnum[] actions = {
 					ActionEnum.Idle,
-					ActionEnum.Work_One,
-					ActionEnum.Work_Two,
-					ActionEnum.Work_Three
+					ActionEnum.Work_One
 				};
 				m_Decks[deck] = new Deck(actions);
 			}
@@ -284,9 +289,7 @@ public partial class ApeManager : Node
 			{
                 ActionEnum[] actions = {
                     ActionEnum.Idle,
-                    ActionEnum.Work_One,
-                    ActionEnum.Work_Two,
-                    ActionEnum.Work_Three
+                    ActionEnum.Work_One
                 };
                 m_Decks[deck] = new Deck(actions);
             }
@@ -294,9 +297,7 @@ public partial class ApeManager : Node
 			{
                 ActionEnum[] actions = {
                     ActionEnum.Idle,
-                    ActionEnum.Work_One,
-                    ActionEnum.Work_Two,
-                    ActionEnum.Work_Three
+                    ActionEnum.Work_One
                 };
                 m_Decks[deck] = new Deck(actions);
             }
@@ -320,13 +321,13 @@ public partial class ApeManager : Node
 
 	public void RemoveProject(ProjectEnum ID)
 	{
-		bool persists = m_Projects[ID].Persists();
+		bool hasNextProject = m_Projects[ID].HasNextProject();
 		ProjectEnum nextProject = m_Projects[ID].GetNextProject();
 		Vector3I Coords = m_Projects[ID].GetCoords();
 
 		m_Projects[ID].QueueFree();
         bool remove = m_Projects.Remove(ID);
-		if (persists)
+		if (hasNextProject)
 		{
 			SpawnProject(nextProject, Coords);
 		}
@@ -371,7 +372,7 @@ public partial class ApeManager : Node
 
 			if (m_Apes[i].IsWorking())
 			{
-				m_Apes[i].WorkTransition();
+				m_Apes[i].SetWorkTransition(true);
 			}
 
             if (action == ActionEnum.Idle)

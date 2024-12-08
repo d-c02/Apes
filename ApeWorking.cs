@@ -21,8 +21,10 @@ public partial class ApeWorking : State
         }
         else
         {
-            throw new Exception("No active project available!");
+            m_Ape.SetTargetProject(ProjectEnum.None);
         }
+
+        m_Ape.SetWorkTransition(false);
     }
 
     public override void Update(double delta)
@@ -32,9 +34,14 @@ public partial class ApeWorking : State
 
     public override void PhysicsUpdate(double delta)
     {
-        if (m_Ape.IsWorking())
+        if (!m_Ape.IsWorking())
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "ApeWorkingExit");
         }
+    }
+
+    public void SetApeManager(ref ApeManager apeManager)
+    {
+        m_ApeManager = apeManager;
     }
 }

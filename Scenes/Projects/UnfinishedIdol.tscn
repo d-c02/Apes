@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Scenes/Projects/UnfinishedIdol.cs" id="1_ymk3h"]
 [ext_resource type="ArrayMesh" uid="uid://fol5trmcqb4" path="res://Assets/Projects/Idols/UnfinishedIdol.obj" id="2_8ituk"]
 [ext_resource type="Material" uid="uid://r6ycqgwsmkbc" path="res://Assets/Projects/Idols/UnfinishedIdolBody.tres" id="3_s53d5"]
-[ext_resource type="Material" uid="uid://c0kae1b3o312d" path="res://Assets/Projects/Idols/FervorIdolPedestal.tres" id="4_6drn2"]
+[ext_resource type="Material" uid="uid://doi6jeai8gy13" path="res://Assets/ClayTexture/Clay.tres" id="4_nwfjn"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kkutb"]
 size = Vector3(2, 3, 2)
@@ -11,18 +11,16 @@ size = Vector3(2, 3, 2)
 [node name="UnfinishedIdol" type="Node3D" node_paths=PackedStringArray("m_WorkAnchor")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
 script = ExtResource("1_ymk3h")
-m_Persists = true
-m_NextProject = 1
 m_MaxWork = 10
 m_WorkAnchor = NodePath("WorkAnchor")
 m_Dimensions = Vector2i(7, 7)
 m_WorkAspect = 4
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0434177, 1, 0)
 mesh = ExtResource("2_8ituk")
 surface_material_override/0 = ExtResource("3_s53d5")
-surface_material_override/1 = ExtResource("4_6drn2")
+surface_material_override/1 = ExtResource("4_nwfjn")
 
 [node name="WorkAnchor" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.69988, 0)

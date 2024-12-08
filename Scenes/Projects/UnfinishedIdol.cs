@@ -75,6 +75,7 @@ public partial class UnfinishedIdol : Project
             }
         }
 
+        m_Persists = false;
         m_NextProject = ProjectEnum.Fervor_Idol;
     }
 }

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 public abstract partial class Project : Node3D
 {
     [Export] protected bool m_Persists = false;
-	[Export] protected ProjectEnum m_NextProject;
+	[Export] protected ProjectEnum m_NextProject = ProjectEnum.None;
     [Export] protected bool m_Destructible = false;
 	protected bool m_Finished = false;
     protected int m_CurStage = 0;
@@ -68,7 +68,8 @@ public abstract partial class Project : Node3D
 
 	public Vector2I GetOpenSlot()
 	{
-		foreach (KeyValuePair<Vector2I, bool> entry in m_ApeSlots)
+		Random rnd = new Random();
+		foreach (KeyValuePair<Vector2I, bool> entry in m_ApeSlots.OrderBy(x => rnd.Next()))
 		{
 			if (entry.Value)
 			{
@@ -235,6 +236,7 @@ public abstract partial class Project : Node3D
 		if (m_QueuedWork >= m_MaxWork)
 		{
 			m_Finished = true;
+			OnFinish();
 		}
 		else
 		{
@@ -303,10 +305,7 @@ public abstract partial class Project : Node3D
 		return m_ID;
 	}
 
-	public virtual void OnFinish()
-	{
-
-	}
+	public abstract void OnFinish();
 
 
 	public bool IsFinished()
@@ -317,6 +316,11 @@ public abstract partial class Project : Node3D
 	public bool Persists()
 	{
 		return m_Persists;
+	}
+
+	public bool HasNextProject()
+	{
+		return m_NextProject != ProjectEnum.None;
 	}
 
 	public ProjectEnum GetNextProject()
@@ -360,4 +364,15 @@ public abstract partial class Project : Node3D
 	{
 		return m_Spite;
 	}
+
+	public virtual void ResetPhase()
+	{
+		m_Finished = false;
+		m_Work = 0;
+        for (int i = 0; i < m_MaxWork; i++)
+		{
+			m_WorkSprites[i].Frame = (int) WorkAspectEnum.Empty;
+		}
+
+    }
 }

@@ -24,6 +24,7 @@ public interface DeckInterface
 
     public enum ProjectEnum
     {
+        None,
         Unfinished_Idol,
         Fervor_Idol,
         Insight_Idol,

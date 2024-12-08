@@ -1,0 +1,28 @@
+[gd_scene load_steps=6 format=3 uid="uid://c6xik4ab2n3o7"]
+
+[ext_resource type="ArrayMesh" uid="uid://dai4mov0jc8am" path="res://Assets/Projects/UnimprovedSites/Rocks.obj" id="1_3l0p3"]
+[ext_resource type="Material" uid="uid://b1nb4ifenge4w" path="res://Assets/Projects/UnimprovedSites/PalmFrondClay.tres" id="3_1htud"]
+[ext_resource type="Material" uid="uid://cpljhettks1k0" path="res://Assets/Projects/UnimprovedSites/PalmTreeBaseClay.tres" id="3_d1wdb"]
+[ext_resource type="Material" uid="uid://yue38noshixp" path="res://Assets/Projects/UnimprovedSites/RockClay.tres" id="4_0rhdl"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_316t7"]
+size = Vector3(1, 1.5, 1)
+
+[node name="WorkSiteMarker" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+mesh = ExtResource("1_3l0p3")
+surface_material_override/0 = ExtResource("3_d1wdb")
+surface_material_override/1 = ExtResource("3_1htud")
+surface_material_override/2 = ExtResource("4_0rhdl")
+surface_material_override/3 = ExtResource("4_0rhdl")
+surface_material_override/4 = ExtResource("4_0rhdl")
+surface_material_override/5 = ExtResource("4_0rhdl")
+surface_material_override/6 = ExtResource("4_0rhdl")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.758696, 0)
+shape = SubResource("BoxShape3D_316t7")
