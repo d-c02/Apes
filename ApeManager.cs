@@ -33,6 +33,10 @@ public partial class ApeManager : Node
 		m_Apes = new List<ape>();
 		m_Projects = new System.Collections.Generic.Dictionary<ProjectEnum, Project>();
 		m_DeadProjectIDs = new List<ProjectEnum>();
+		m_Map.Generate();
+
+		SpawnInitialProjects();
+
 		for (int i = 0; i < 6; i++)
 		{
 			SpawnApe();
@@ -41,13 +45,13 @@ public partial class ApeManager : Node
 		ConfigureDecks();
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(double delta)
 	{
 		
 		if (Input.IsActionJustPressed("DEBUG_SPAWN_APE"))
 		{
-			SpawnProject(ProjectEnum.Unfinished_Idol);
+
 		}
 		
 		
@@ -255,11 +259,11 @@ public partial class ApeManager : Node
 
 		projectInstance.SetCoords(Coords);
 
-        projectInstance.GlobalPosition = new Vector3(PosCoords.X, 8, PosCoords.Y);
+        projectInstance.GlobalPosition = new Vector3(PosCoords.X, Coords.Y + projectInstance.Scale.Y, PosCoords.Y);
 
         projectInstance.GlobalPosition = new Vector3(projectInstance.GlobalPosition.X + projectInstance.GetDimensions().X - 1, projectInstance.GlobalPosition.Y, projectInstance.GlobalPosition.Z + projectInstance.GetDimensions().Y - 1);
 
-        projectInstance.UpdateVerticalPosition();
+        //projectInstance.UpdateVerticalPosition();
 
         m_Projects[project] = projectInstance;
     }
@@ -407,5 +411,10 @@ public partial class ApeManager : Node
                 QueueWork(aspect, 3, m_Apes[i].GetTargetProject());
             }
         }
+    }
+
+    private void SpawnInitialProjects()
+    {
+        SpawnProject(ProjectEnum.Unfinished_Idol);
     }
 }
