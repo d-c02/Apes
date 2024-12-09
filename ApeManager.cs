@@ -53,11 +53,22 @@ public partial class ApeManager : Node
 		{
 
 		}
-		
-		
+
+
 		if (Input.IsActionJustPressed("DEBUG_START_NEW_TIME_PHASE"))
 		{
-			StartNewPhase();
+			bool canStart = true;
+			for (int i = 0; i < m_Apes.Count; i++)
+			{
+				if (!m_Apes[i].IsReadyForNextPhase())
+				{
+					canStart = false;
+				}
+			}
+			if (canStart)
+			{
+                StartNewPhase();
+            }
 		}
 	}
 
@@ -222,10 +233,6 @@ public partial class ApeManager : Node
 		{
             ProjectPath = "res://Scenes/Projects/FervorIdol.tscn";
         }
-		else if (project == ProjectEnum.Fishery)
-		{
-			ProjectPath = "res://Scenes/Projects/Supporting/work_site_marker.tscn";
-		}
 
 		Debug.Assert(ProjectPath != "", "Invalid project! ID: " + project.ToString());
 
@@ -420,7 +427,5 @@ public partial class ApeManager : Node
     private void SpawnInitialProjects()
     {
         SpawnProject(ProjectEnum.Unfinished_Idol);
-
-		SpawnProject(ProjectEnum.Fishery);
     }
 }

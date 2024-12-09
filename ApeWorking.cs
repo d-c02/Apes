@@ -9,7 +9,7 @@ public partial class ApeWorking : State
 
     public override void Enter()
     {
-        
+        m_Ape.SetReadyForNextPhase(true);
     }
 
     public override void Exit()

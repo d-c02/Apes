@@ -50,6 +50,8 @@ public partial class ape : CharacterBody3D
 
     bool m_WorkTransition = false;
 
+    bool m_ReadyForNextPhase = false;
+
     public override void _Ready()
     {
 
@@ -93,6 +95,9 @@ public partial class ape : CharacterBody3D
         m_Decks = new List<DeckEnum>();
         //_RunTimeScale = _AnimationTree.Get("parameters/Run/TimeScale/scale").As<AnimationNodeTimeScale>();
         m_TargetProject = ProjectEnum.Unfinished_Idol;
+
+        SetAction(ActionEnum.Idle);
+        m_ReadyForNextPhase = true;
 
     }
     public override void _PhysicsProcess(double delta)
@@ -261,7 +266,14 @@ public partial class ape : CharacterBody3D
 
     public void StartNewPhase()
     {
+        m_ReadyForNextPhase = false;
         m_Action = DrawAction();
+        
+        //Eventually refactor to have a list of actionenums in a dict that are ready to work
+        if (m_Action == ActionEnum.Idle)
+        {
+            m_ReadyForNextPhase = true;
+        }
     }
 
     public Vector2I GetPrevNavCoords()
@@ -312,5 +324,15 @@ public partial class ape : CharacterBody3D
     public void SetWorkTransition(bool workTransition)
     {
         m_WorkTransition = workTransition;
+    }
+
+    public void SetReadyForNextPhase(bool ready)
+    {
+        m_ReadyForNextPhase = ready;
+    }
+
+    public bool IsReadyForNextPhase()
+    {
+        return m_ReadyForNextPhase;
     }
 }
