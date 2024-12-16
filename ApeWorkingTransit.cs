@@ -56,7 +56,10 @@ public partial class ApeWorkingTransit : State
 
         if (m_IDPath.Count > 2)
         {
+            //Makes ape exit closer to target project
+            m_Map.SetPointSolid(m_Ape.GetNavCoords(), false);
             m_Ape.SetPrevNavCoords(m_IDPath[m_IDPath.Count - 2]);
+            m_Map.SetPointSolid(m_Ape.GetPrevNavCoords());
         }
         else
         {

@@ -69,6 +69,14 @@ public partial class ApeWorkingExit : State
             }
             else
             {
+                if (m_IDPath.Count > 2)
+                {
+                    //Makes ape exit closer to target project
+                    m_Map.SetPointSolid(m_Ape.GetPrevNavCoords(), false);
+                    m_Ape.SetPrevNavCoords(m_IDPath[m_IDPath.Count - 2]);
+                    m_Map.SetPointSolid(m_Ape.GetPrevNavCoords());
+                }
+
                 m_NextPosCtr = 1;
                 m_NextPos = m_Map.GetPointPosition(m_IDPath[m_NextPosCtr]);
                 //Vector2 v2Pos = m_Map.GetPointPosition(FinalPos);
