@@ -38,6 +38,10 @@ public partial class ApeWorking : State
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "ApeWorkingExit");
         }
+        if (!m_Ape.GetTargetProjectChanged() && !m_Ape.IsReadyForNextPhase())
+        {
+            m_Ape.SetReadyForNextPhase(true);
+        }
     }
 
     public void SetApeManager(ref ApeManager apeManager)

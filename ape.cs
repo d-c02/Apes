@@ -49,6 +49,8 @@ public partial class ape : CharacterBody3D
     private int m_Spite = 5;
 
     bool m_WorkTransition = false;
+    bool m_TargetProjectChanged = false;
+
 
     bool m_ReadyForNextPhase = false;
 
@@ -261,19 +263,24 @@ public partial class ape : CharacterBody3D
 
     public void SetTargetProject(ProjectEnum project)
     {
+        if (!(m_TargetProject == project))
+        {
+            m_TargetProjectChanged = true;
+        }
         m_TargetProject = project;
     }
 
     public void StartNewPhase()
     {
         m_ReadyForNextPhase = false;
-        m_Action = DrawAction();
         
-        //Eventually refactor to have a list of actionenums in a dict that are ready to work
-        if (m_Action == ActionEnum.Idle)
-        {
-            m_ReadyForNextPhase = true;
-        }
+        m_Action = DrawAction();
+
+        ////Eventually refactor to have a list of actionenums in a dict that are ready to work
+        //if (m_Action == ActionEnum.Idle)
+        //{
+        //    m_ReadyForNextPhase = true;
+        //}
     }
 
     public Vector2I GetPrevNavCoords()
@@ -334,5 +341,15 @@ public partial class ape : CharacterBody3D
     public bool IsReadyForNextPhase()
     {
         return m_ReadyForNextPhase;
+    }
+
+    public bool GetTargetProjectChanged()
+    {
+        return m_TargetProjectChanged;
+    }
+
+    public void SetTargetProjectChanged(bool targetProjectChanged)
+    {
+        m_TargetProjectChanged = targetProjectChanged;
     }
 }

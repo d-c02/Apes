@@ -27,6 +27,10 @@ public partial class ApeIdle : State
 
     public override void Enter()
     {
+        if (!Ape.IsWorking())
+        {
+            Ape.SetReadyForNextPhase(true);
+        }
         GenerateNextWanderTime();
     }
 

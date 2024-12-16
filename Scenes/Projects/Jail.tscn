@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://dyn7nkq7chtld"]
+
+[ext_resource type="ArrayMesh" uid="uid://bncn56f8qlwip" path="res://Assets/Projects/Jail/Jail.obj" id="1_bt222"]
+[ext_resource type="Material" uid="uid://doi6jeai8gy13" path="res://Assets/ClayTexture/Clay.tres" id="2_0p7mb"]
+[ext_resource type="Material" uid="uid://i3pxgugn2hpt" path="res://Assets/Projects/Lab/WoodClay.tres" id="3_nhnw6"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k38i3"]
+size = Vector3(2, 2.00482, 2)
+
+[node name="Jail" type="Node3D"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_bt222")
+surface_material_override/0 = ExtResource("2_0p7mb")
+surface_material_override/1 = ExtResource("3_nhnw6")
+
+[node name="WorkAnchor" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00241, 0)
+shape = SubResource("BoxShape3D_k38i3")

@@ -1,0 +1,79 @@
+[gd_scene load_steps=15 format=3 uid="uid://dduprqhs2ph1s"]
+
+[ext_resource type="ArrayMesh" uid="uid://chreufna6yfob" path="res://Assets/Projects/Lab/Lab.obj" id="1_v2sdd"]
+[ext_resource type="Material" uid="uid://i3pxgugn2hpt" path="res://Assets/Projects/Lab/WoodClay.tres" id="2_01fq0"]
+[ext_resource type="Material" uid="uid://ba25r8couko6l" path="res://Assets/Projects/Lab/PaperClay.tres" id="3_nwvg1"]
+[ext_resource type="Material" uid="uid://dg1djp0n4alsg" path="res://Assets/Projects/Lab/BookBinding1.tres" id="4_54muc"]
+[ext_resource type="Material" uid="uid://ccnf8o5g02u8e" path="res://Assets/Projects/Lab/BookBinding2.tres" id="5_heoxl"]
+[ext_resource type="Material" uid="uid://bg3agevsabw54" path="res://Assets/Projects/Lab/BookBinding3.tres" id="6_75xbu"]
+[ext_resource type="Material" uid="uid://dwmlwo4sot4p2" path="res://Assets/Projects/Lab/BookBinding4.tres" id="7_rdih7"]
+[ext_resource type="Material" uid="uid://r7d40etx1ctd" path="res://Assets/Projects/Lab/BookBinding5.tres" id="8_bs37x"]
+[ext_resource type="Material" uid="uid://bqcim6yvye6mr" path="res://Assets/Projects/Lab/BookBinding6.tres" id="9_oktvp"]
+[ext_resource type="Material" uid="uid://d0uomxsc8qeef" path="res://Assets/Projects/Lab/Glass.tres" id="10_q4rgk"]
+[ext_resource type="Material" uid="uid://c6btl8eh5heto" path="res://Assets/Projects/Lab/Stone.tres" id="11_7q1du"]
+[ext_resource type="Material" uid="uid://chfmrufkxqppf" path="res://Assets/Projects/Lab/Skull.tres" id="12_i4awa"]
+[ext_resource type="Material" uid="uid://g7qhh50k2as6" path="res://Assets/Projects/Lab/Cork.tres" id="13_6ktn1"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_db7e2"]
+size = Vector3(2, 0.861206, 2)
+
+[node name="Lab" type="Node3D"]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = ExtResource("1_v2sdd")
+surface_material_override/0 = ExtResource("2_01fq0")
+surface_material_override/1 = ExtResource("2_01fq0")
+surface_material_override/2 = ExtResource("3_nwvg1")
+surface_material_override/3 = ExtResource("3_nwvg1")
+surface_material_override/4 = ExtResource("3_nwvg1")
+surface_material_override/5 = ExtResource("2_01fq0")
+surface_material_override/6 = ExtResource("3_nwvg1")
+surface_material_override/7 = ExtResource("4_54muc")
+surface_material_override/8 = ExtResource("4_54muc")
+surface_material_override/9 = ExtResource("3_nwvg1")
+surface_material_override/10 = ExtResource("5_heoxl")
+surface_material_override/11 = ExtResource("3_nwvg1")
+surface_material_override/12 = ExtResource("3_nwvg1")
+surface_material_override/13 = ExtResource("6_75xbu")
+surface_material_override/14 = ExtResource("7_rdih7")
+surface_material_override/15 = ExtResource("3_nwvg1")
+surface_material_override/16 = ExtResource("3_nwvg1")
+surface_material_override/17 = ExtResource("8_bs37x")
+surface_material_override/18 = ExtResource("3_nwvg1")
+surface_material_override/19 = ExtResource("4_54muc")
+surface_material_override/20 = ExtResource("3_nwvg1")
+surface_material_override/21 = ExtResource("7_rdih7")
+surface_material_override/22 = ExtResource("3_nwvg1")
+surface_material_override/23 = ExtResource("9_oktvp")
+surface_material_override/24 = ExtResource("3_nwvg1")
+surface_material_override/25 = ExtResource("3_nwvg1")
+surface_material_override/26 = ExtResource("5_heoxl")
+surface_material_override/27 = ExtResource("3_nwvg1")
+surface_material_override/28 = ExtResource("6_75xbu")
+surface_material_override/29 = ExtResource("3_nwvg1")
+surface_material_override/30 = ExtResource("9_oktvp")
+surface_material_override/31 = ExtResource("3_nwvg1")
+surface_material_override/32 = ExtResource("10_q4rgk")
+surface_material_override/33 = ExtResource("11_7q1du")
+surface_material_override/34 = ExtResource("11_7q1du")
+surface_material_override/35 = ExtResource("3_nwvg1")
+surface_material_override/36 = ExtResource("7_rdih7")
+surface_material_override/37 = ExtResource("12_i4awa")
+surface_material_override/38 = ExtResource("10_q4rgk")
+surface_material_override/39 = ExtResource("13_6ktn1")
+surface_material_override/40 = ExtResource("3_nwvg1")
+surface_material_override/41 = ExtResource("8_bs37x")
+surface_material_override/42 = ExtResource("3_nwvg1")
+surface_material_override/43 = ExtResource("5_heoxl")
+surface_material_override/44 = ExtResource("3_nwvg1")
+surface_material_override/45 = ExtResource("9_oktvp")
+
+[node name="WorkAnchor" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.430603, 0)
+shape = SubResource("BoxShape3D_db7e2")
