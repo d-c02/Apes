@@ -34,13 +34,9 @@ public partial class ApeWorking : State
 
     public override void PhysicsUpdate(double delta)
     {
-        if (!m_Ape.IsWorking())
+        if (!m_Ape.IsWorking() || !m_Ape.IsReadyForNextPhase())
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "ApeWorkingExit");
-        }
-        if (!m_Ape.GetTargetProjectChanged() && !m_Ape.IsReadyForNextPhase())
-        {
-            m_Ape.SetReadyForNextPhase(true);
         }
     }
 

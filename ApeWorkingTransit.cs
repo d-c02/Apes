@@ -53,7 +53,15 @@ public partial class ApeWorkingTransit : State
         m_Map.SetPointSolid(FinalPos, true);
         m_Map.SetPointSolid(m_Ape.GetNavCoords(), true);
 
-        m_Ape.SetPrevNavCoords(m_Ape.GetNavCoords());
+
+        if (m_IDPath.Count > 2)
+        {
+            m_Ape.SetPrevNavCoords(m_IDPath[m_IDPath.Count - 2]);
+        }
+        else
+        {
+            m_Ape.SetPrevNavCoords(m_Ape.GetNavCoords());
+        }
         m_Ape.SetNavCoords(m_IDPath[m_IDPath.Count - 1]);
 
         if (m_IDPath.Count <= 1)

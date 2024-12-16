@@ -37,7 +37,7 @@ public partial class ApeManager : Node
 
 		SpawnInitialProjects();
 
-		for (int i = 0; i < 15; i++)
+		for (int i = 0; i < 1; i++)
 		{
 			SpawnApe();
 		}
@@ -144,6 +144,7 @@ public partial class ApeManager : Node
 				List<ProjectEnum> Projects = new List<ProjectEnum>();
 				int projectCount = 0;
 
+				ProjectEnum formerProject = m_Apes[i].GetTargetProject();
 				int numAvailableProjects = ProjectDict[m_Apes[i].GetAspect()].Count;
 				if (numAvailableProjects > 0)
 				{
@@ -163,6 +164,11 @@ public partial class ApeManager : Node
                         if (projectSelection <= SpiteProjects[j])
                         {
                             m_Apes[i].SetTargetProject(Projects[j]);
+
+							if (m_Apes[i].GetTargetProject() == formerProject)
+							{
+								m_Apes[i].SetReadyForNextPhase(true);
+							}
                             break;
                         }
                     }

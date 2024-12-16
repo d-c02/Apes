@@ -33,28 +33,70 @@ public partial class ApeWorkingExit : State
 
     const float m_WanderingVelocity = 1000.0f;
 
+    private ApeManager m_ApeManager;
+
     public override void Enter()
     {
-
-        //adjust pathfinding for other apes
-        m_Map.SetPointSolid(m_Ape.GetPrevNavCoords(), false);
-        m_Map.SetPointSolid(m_Ape.GetNavCoords(), false);
-        m_IDPath = m_Map.getIdPath(m_Ape.GetNavCoords(), m_Ape.GetPrevNavCoords(), true);
-        m_Map.SetPointSolid(m_Ape.GetNavCoords(), true);
-        m_Map.SetPointSolid(m_Ape.GetPrevNavCoords(), true);
-
-        if (m_IDPath.Count <= 1)
+        Vector2I SlotOffset = new Vector2I(-1, -1);
+        if (m_Ape.IsWorking())
         {
+            SlotOffset = m_ApeManager.GetOpenSlot(m_Ape.GetTargetProject());
+            if (SlotOffset.X == -1 || SlotOffset.Y == -1)
+            {
+                m_Ape.SetAction(DeckInterface.ActionEnum.Idle);
+            }
+        }
+
+        if (m_Ape.IsWorking())
+        {
+            m_Ape.SetSlot(SlotOffset);
+            m_ApeManager.SetOpenSlot(m_Ape.GetTargetProject(), SlotOffset, false);
+
+            Vector2I FinalPos = m_Map.PosCoordsToNavCoords(m_ApeManager.GetProjectLocation(m_Ape.GetTargetProject()) + SlotOffset);
+
+            //adjust pathfinding for other apes
+            m_Map.SetPointSolid(m_Ape.GetNavCoords(), false);
+            m_Map.SetPointSolid(FinalPos, false);
+            m_IDPath = m_Map.getIdPath(m_Ape.GetNavCoords(), FinalPos, true);
+            m_Map.SetPointSolid(FinalPos, true);
             m_Map.SetPointSolid(m_Ape.GetNavCoords(), true);
-            EmitSignal(SignalName.Transitioned, this.Name + "", "ApeIdle");
+
+            m_Ape.SetNavCoords(m_IDPath[m_IDPath.Count - 1]);
+
+            if (m_IDPath.Count <= 1)
+            {
+                EmitSignal(SignalName.Transitioned, this.Name + "", "ApeWorking");
+            }
+            else
+            {
+                m_NextPosCtr = 1;
+                m_NextPos = m_Map.GetPointPosition(m_IDPath[m_NextPosCtr]);
+                //Vector2 v2Pos = m_Map.GetPointPosition(FinalPos);
+                //m_Ape.GlobalPosition = new Vector3(v2Pos.X, m_ApeManager.GetGlobalPosition(m_Ape.GetTargetProject()).Y, v2Pos.Y);
+            }
         }
         else
         {
-            m_Map.SetPointSolid(m_IDPath[m_IDPath.Count - 1], true);
-            m_Ape.SetNavCoords(m_IDPath[m_IDPath.Count - 1]);
+            //adjust pathfinding for other apes
+            m_Map.SetPointSolid(m_Ape.GetPrevNavCoords(), false);
+            m_Map.SetPointSolid(m_Ape.GetNavCoords(), false);
+            m_IDPath = m_Map.getIdPath(m_Ape.GetNavCoords(), m_Ape.GetPrevNavCoords(), true);
+            m_Map.SetPointSolid(m_Ape.GetNavCoords(), true);
+            m_Map.SetPointSolid(m_Ape.GetPrevNavCoords(), true);
 
-            m_NextPosCtr = 1;
-            m_NextPos = m_Map.GetPointPosition(m_IDPath[m_NextPosCtr]);
+            if (m_IDPath.Count <= 1)
+            {
+                m_Map.SetPointSolid(m_Ape.GetNavCoords(), true);
+                EmitSignal(SignalName.Transitioned, this.Name + "", "ApeIdle");
+            }
+            else
+            {
+                m_Map.SetPointSolid(m_IDPath[m_IDPath.Count - 1], true);
+                m_Ape.SetNavCoords(m_IDPath[m_IDPath.Count - 1]);
+
+                m_NextPosCtr = 1;
+                m_NextPos = m_Map.GetPointPosition(m_IDPath[m_NextPosCtr]);
+            }
         }
     }
 
@@ -77,7 +119,14 @@ public partial class ApeWorkingExit : State
             if (m_NextPosCtr >= m_IDPath.Count)
             {
                 m_IDPath.Clear();
-                EmitSignal(SignalName.Transitioned, this.Name + "", "ApeIdle");
+                if (m_Ape.IsWorking())
+                {
+                    EmitSignal(SignalName.Transitioned, this.Name + "", "ApeWorking");
+                }
+                else
+                {
+                    EmitSignal(SignalName.Transitioned, this.Name + "", "ApeIdle");
+                }
             }
             else
             {
@@ -106,5 +155,10 @@ public partial class ApeWorkingExit : State
     public void SetMap(ref map Map)
     {
         m_Map = Map;
+    }
+
+    public void SetApeManager(ref ApeManager apeManager)
+    {
+        m_ApeManager = apeManager;
     }
 }

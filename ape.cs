@@ -135,6 +135,7 @@ public partial class ape : CharacterBody3D
     {
         m_ApeManager = apeManager;
         GetNode<ApeWorkingTransit>("StateMachine/ApeWorkingTransit").SetApeManager(ref m_ApeManager);
+        GetNode<ApeWorkingExit>("StateMachine/ApeWorkingExit").SetApeManager(ref m_ApeManager);
         GetNode<ApeWorking>("StateMachine/ApeWorking").SetApeManager(ref m_ApeManager);
     }
 
@@ -341,15 +342,5 @@ public partial class ape : CharacterBody3D
     public bool IsReadyForNextPhase()
     {
         return m_ReadyForNextPhase;
-    }
-
-    public bool GetTargetProjectChanged()
-    {
-        return m_TargetProjectChanged;
-    }
-
-    public void SetTargetProjectChanged(bool targetProjectChanged)
-    {
-        m_TargetProjectChanged = targetProjectChanged;
     }
 }
