@@ -37,7 +37,7 @@ public partial class ApeManager : Node
 
 		SpawnInitialProjects();
 
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 15; i++)
 		{
 			SpawnApe();
 		}
@@ -234,7 +234,22 @@ public partial class ApeManager : Node
             ProjectPath = "res://Scenes/Projects/FervorIdol.tscn";
         }
 
-		Debug.Assert(ProjectPath != "", "Invalid project! ID: " + project.ToString());
+        else if (project == ProjectEnum.Temple)
+        {
+            ProjectPath = "res://Scenes/Projects/Temple.tscn";
+        }
+
+        else if (project == ProjectEnum.Jail)
+        {
+            ProjectPath = "res://Scenes/Projects/Jail.tscn";
+        }
+
+        else if (project == ProjectEnum.Lab)
+        {
+            ProjectPath = "res://Scenes/Projects/Lab.tscn";
+        }
+
+        Debug.Assert(ProjectPath != "", "Invalid project! ID: " + project.ToString());
 
         var projectScene = new PackedScene();
 		projectScene = ResourceLoader.Load<PackedScene>(ProjectPath);
@@ -427,5 +442,8 @@ public partial class ApeManager : Node
     private void SpawnInitialProjects()
     {
         SpawnProject(ProjectEnum.Unfinished_Idol);
+		SpawnProject(ProjectEnum.Lab);
+        SpawnProject(ProjectEnum.Temple);
+        SpawnProject(ProjectEnum.Jail);
     }
 }

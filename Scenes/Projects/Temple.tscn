@@ -1,5 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://ovpt0u6fewta"]
+[gd_scene load_steps=6 format=3 uid="uid://ovpt0u6fewta"]
 
+[ext_resource type="Script" path="res://Scenes/Projects/Temple.cs" id="1_pnuux"]
 [ext_resource type="ArrayMesh" uid="uid://dgrqgkky8bnn5" path="res://Assets/Projects/Temple/TempleFirm.obj" id="1_vmfk3"]
 [ext_resource type="Material" uid="uid://doi6jeai8gy13" path="res://Assets/ClayTexture/Clay.tres" id="2_1ya8w"]
 
@@ -10,8 +11,13 @@ albedo_color = Color(0, 0, 0, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_sqmeo"]
 size = Vector3(2, 2.00482, 2)
 
-[node name="Temple" type="Node3D"]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+[node name="Temple" type="Node3D" node_paths=PackedStringArray("m_WorkAnchor")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+script = ExtResource("1_pnuux")
+m_MaxWork = 10
+m_WorkAnchor = NodePath("WorkAnchor")
+m_Dimensions = Vector2i(7, 7)
+m_WorkAspect = 2
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = ExtResource("1_vmfk3")
@@ -19,7 +25,7 @@ surface_material_override/0 = ExtResource("2_1ya8w")
 surface_material_override/1 = SubResource("StandardMaterial3D_uwum2")
 
 [node name="WorkAnchor" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 

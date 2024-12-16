@@ -1,5 +1,6 @@
-[gd_scene load_steps=15 format=3 uid="uid://dduprqhs2ph1s"]
+[gd_scene load_steps=16 format=3 uid="uid://dduprqhs2ph1s"]
 
+[ext_resource type="Script" path="res://Scenes/Projects/Lab.cs" id="1_5ksii"]
 [ext_resource type="ArrayMesh" uid="uid://chreufna6yfob" path="res://Assets/Projects/Lab/Lab.obj" id="1_v2sdd"]
 [ext_resource type="Material" uid="uid://i3pxgugn2hpt" path="res://Assets/Projects/Lab/WoodClay.tres" id="2_01fq0"]
 [ext_resource type="Material" uid="uid://ba25r8couko6l" path="res://Assets/Projects/Lab/PaperClay.tres" id="3_nwvg1"]
@@ -17,8 +18,13 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_db7e2"]
 size = Vector3(2, 0.861206, 2)
 
-[node name="Lab" type="Node3D"]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+[node name="Lab" type="Node3D" node_paths=PackedStringArray("m_WorkAnchor")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+script = ExtResource("1_5ksii")
+m_MaxWork = 10
+m_WorkAnchor = NodePath("WorkAnchor")
+m_Dimensions = Vector2i(7, 7)
+m_WorkAspect = 1
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = ExtResource("1_v2sdd")
@@ -70,7 +76,7 @@ surface_material_override/44 = ExtResource("3_nwvg1")
 surface_material_override/45 = ExtResource("9_oktvp")
 
 [node name="WorkAnchor" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 

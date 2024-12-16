@@ -29,9 +29,9 @@ public interface DeckInterface
         Fervor_Idol,
         Insight_Idol,
         Influence_Idol,
-        Fishery,
+        Jail,
         Temple,
-        Library
+        Lab
     };
 
     public struct Deck
