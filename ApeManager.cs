@@ -37,7 +37,7 @@ public partial class ApeManager : Node
 
 		SpawnInitialProjects();
 
-		for (int i = 0; i < 1; i++)
+		for (int i = 0; i < 15; i++)
 		{
 			SpawnApe();
 		}
@@ -146,7 +146,9 @@ public partial class ApeManager : Node
 
 				ProjectEnum formerProject = m_Apes[i].GetTargetProject();
 				int numAvailableProjects = ProjectDict[m_Apes[i].GetAspect()].Count;
-				if (numAvailableProjects > 0)
+				int numAvailableEnemyAspectProjects = ProjectDict[m_Apes[i].GetEnemyAspect()].Count;
+
+                if (numAvailableProjects > 0)
 				{
                     for (int j = 0; j < numAvailableProjects; j++)
                     {
@@ -155,6 +157,16 @@ public partial class ApeManager : Node
                         projectCount += (10 - Math.Abs((m_Apes[i].GetSpite() - projectSpite)));
                         SpiteProjects.Add(projectCount);
                         Projects.Add(ProjectDict[m_Apes[i].GetAspect()][j]);
+                    }
+
+					for (int j = 0; j < numAvailableEnemyAspectProjects; j++)
+					{
+                        int projectSpite = m_Projects[ProjectDict[m_Apes[i].GetEnemyAspect()][j]].GetSpite(); //Sickening line of code
+
+						//With this, an ape is more likely to counteract a non-spiteful project if they are spiteful and vice versa
+                        projectCount += (Math.Abs((m_Apes[i].GetSpite() - projectSpite) + 1));
+                        SpiteProjects.Add(projectCount);
+                        Projects.Add(ProjectDict[m_Apes[i].GetEnemyAspect()][j]);
                     }
 
                     int projectSelection = rnd.Next(1, projectCount + 1);
@@ -447,7 +459,7 @@ public partial class ApeManager : Node
 
     private void SpawnInitialProjects()
     {
-        SpawnProject(ProjectEnum.Unfinished_Idol);
+        //SpawnProject(ProjectEnum.Unfinished_Idol);
 		SpawnProject(ProjectEnum.Lab);
         SpawnProject(ProjectEnum.Temple);
         SpawnProject(ProjectEnum.Jail);

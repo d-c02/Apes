@@ -142,43 +142,118 @@ public abstract partial class Project : Node3D
 
 	public int QueueWork(AspectEnum aspect, int amount)
 	{
-		int remainder = 0;
-		int prevWork = m_QueuedWork;
-		if (amount + m_QueuedWork < m_MaxWork)
+        if (m_WorkAspect == WorkAspectEnum.Any)
+        {
+			return QueueAddWork(aspect, amount);
+        }
+        else if (m_WorkAspect == WorkAspectEnum.Fervor)
 		{
-            m_QueuedWork += amount;
-		}
-		else
-		{
-			remainder = amount + m_QueuedWork - m_MaxWork;
-            m_QueuedWork = m_MaxWork;
-		}
-
-		for (int i = prevWork; i < m_QueuedWork; i++)
-		{
-			string animation = "";
 			if (aspect == AspectEnum.Fervor)
 			{
-				animation = "fervor_queued";
+				return QueueAddWork(aspect, amount);
 			}
 			else if (aspect == AspectEnum.Influence)
 			{
-                animation = "influence_queued";
+				return QueueRemoveWork(aspect, amount);
+			}
+			else
+			{
+				throw new Exception("Invalid work being assigned!!!");
+			}
+		}
+        else if (m_WorkAspect == WorkAspectEnum.Insight)
+        {
+            if (aspect == AspectEnum.Insight)
+            {
+                return QueueAddWork(aspect, amount);
+            }
+            else if (aspect == AspectEnum.Fervor)
+            {
+                return QueueRemoveWork(aspect, amount);
+            }
+            else
+            {
+                throw new Exception("Invalid work being assigned!!!");
+            }
+        }
+        else if (m_WorkAspect == WorkAspectEnum.Influence)
+        {
+            if (aspect == AspectEnum.Influence)
+            {
+                return QueueAddWork(aspect, amount);
             }
             else if (aspect == AspectEnum.Insight)
             {
-                animation = "insight_queued";
+                return QueueRemoveWork(aspect, amount);
             }
+            else
+            {
+                throw new Exception("Invalid work being assigned!!!");
+            }
+        }
+		return 0;
+    }
 
-            m_WorkSprites[i].Animation = animation;
+	private int QueueAddWork(AspectEnum aspect, int amount)
+	{
+        int remainder = 0;
+        int prevWork = m_QueuedWork;
+        if (amount + m_QueuedWork < m_MaxWork)
+        {
+            m_QueuedWork += amount;
+        }
+        else
+        {
+            remainder = amount + m_QueuedWork - m_MaxWork;
+            m_QueuedWork = m_MaxWork;
         }
 
-		return remainder;
-	}
+        for (int i = prevWork; i < m_QueuedWork; i++)
+        {
+			if (i < m_Work)
+			{
+                if (m_WorkAspect == WorkAspectEnum.Any)
+                {
+                    m_WorkSprites[i].Animation = "any";
+                }
+                else if (m_WorkAspect == WorkAspectEnum.Insight)
+                {
+                    m_WorkSprites[i].Animation = "insight";
+                }
+                else if (m_WorkAspect == WorkAspectEnum.Influence)
+                {
+                    m_WorkSprites[i].Animation = "influence";
+                }
+                else if (m_WorkAspect == WorkAspectEnum.Fervor)
+                {
+                    m_WorkSprites[i].Animation = "fervor";
+                }
+            }
+			else
+			{
+                string animation = "";
+                if (aspect == AspectEnum.Fervor)
+                {
+                    animation = "fervor_queued";
+                }
+                else if (aspect == AspectEnum.Influence)
+                {
+                    animation = "influence_queued";
+                }
+                else if (aspect == AspectEnum.Insight)
+                {
+                    animation = "insight_queued";
+                }
+                m_WorkSprites[i].Animation = animation;
+            }
+        }
 
-	public int RemoveWork(int aspect, int amount)
+        return remainder;
+    }
+
+	private int QueueRemoveWork(AspectEnum aspect, int amount)
 	{
-		int remainder = 0;
+		int remainder = amount;
 		int prevWork = m_QueuedWork;
 		if (m_QueuedWork - amount >= 0)
 		{
@@ -190,11 +265,33 @@ public abstract partial class Project : Node3D
             m_QueuedWork = 0;
 		}
 
-		for (int i = prevWork - 1; i >= m_QueuedWork; i--)
+		for (int i = prevWork; i >= m_QueuedWork; i--)
 		{
-			m_WorkSprites[i].Frame = (int)WorkAspectEnum.Empty;
+			if (m_Work <= i)
+			{
+                m_WorkSprites[i].Animation = "empty";
+            }
+			else
+			{
+                string animation = "";
+                if (aspect == AspectEnum.Fervor)
+                {
+                    animation = "fervor_queued";
+                }
+                else if (aspect == AspectEnum.Influence)
+                {
+                    animation = "influence_queued";
+                }
+                else if (aspect == AspectEnum.Insight)
+                {
+                    animation = "insight_queued";
+                }
+
+                m_WorkSprites[i].Animation = animation;
+            }
 		}
-		return remainder;
+
+        return remainder;
 	}
 
 	public void ClearQueuedWork()

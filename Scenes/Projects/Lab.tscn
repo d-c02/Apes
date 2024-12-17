@@ -76,7 +76,7 @@ surface_material_override/44 = ExtResource("3_nwvg1")
 surface_material_override/45 = ExtResource("9_oktvp")
 
 [node name="WorkAnchor" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.75, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 

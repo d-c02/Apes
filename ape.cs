@@ -27,6 +27,7 @@ public partial class ape : CharacterBody3D
     private map m_Map;
 
     AspectEnum m_Aspect = AspectEnum.Insight;
+    AspectEnum m_EnemyAspect = AspectEnum.Influence;
 
     [Export]
     Sprite3D m_ActionSprite;
@@ -68,14 +69,17 @@ public partial class ape : CharacterBody3D
         if (aspectInt == 0)
         {
             m_Aspect = AspectEnum.Insight;
+            m_EnemyAspect = AspectEnum.Influence;
         }
         else if (aspectInt == 1)
         {
             m_Aspect = AspectEnum.Influence;
+            m_EnemyAspect = AspectEnum.Fervor;
         }
         else if (aspectInt == 2)
         {
             m_Aspect = AspectEnum.Fervor;
+            m_EnemyAspect = AspectEnum.Insight;
         }
 
         if (m_Aspect == AspectEnum.Insight)
@@ -342,5 +346,10 @@ public partial class ape : CharacterBody3D
     public bool IsReadyForNextPhase()
     {
         return m_ReadyForNextPhase;
+    }
+
+    public AspectEnum GetEnemyAspect()
+    {
+        return m_EnemyAspect;
     }
 }
