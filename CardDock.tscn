@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://dafw6s30x58fl"]
+
+[ext_resource type="Script" path="res://CardDock.cs" id="1_qdcei"]
+
+[node name="CardDock" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 580.0
+offset_top = 585.0
+offset_right = 580.0
+offset_bottom = 585.0
+script = ExtResource("1_qdcei")

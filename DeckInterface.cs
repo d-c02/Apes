@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public interface DeckInterface
 {
@@ -13,6 +14,14 @@ public interface DeckInterface
         Work_One,
         Work_Two,
         Work_Three
+    };
+
+    public enum PlayerActionEnum
+    { 
+        Fervor_Work_One,
+        Influence_Work_One,
+        Insight_Work_One,
+        Any_Work_One
     };
 
     public enum DeckEnum

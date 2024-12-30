@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://b1bslew5hf0jt"]
+[gd_scene load_steps=6 format=3 uid="uid://b1bslew5hf0jt"]
 
 [ext_resource type="PackedScene" uid="uid://dgkaq81xvvohp" path="res://map.tscn" id="1_v048q"]
 [ext_resource type="Script" path="res://CameraPivot.cs" id="2_cge44"]
 [ext_resource type="PackedScene" uid="uid://dumiofmipcedk" path="res://ape_manager.tscn" id="3_pgkky"]
 [ext_resource type="Script" path="res://FPSCounter.cs" id="4_6a7qh"]
+[ext_resource type="PackedScene" uid="uid://dafw6s30x58fl" path="res://CardDock.tscn" id="5_bx245"]
 
 [node name="Main" type="Node3D"]
 
@@ -41,3 +42,5 @@ text = "FPS:"
 
 [node name="ApeManager" parent="." node_paths=PackedStringArray("m_Map") instance=ExtResource("3_pgkky")]
 m_Map = NodePath("../Map")
+
+[node name="CardDock" parent="." instance=ExtResource("5_bx245")]

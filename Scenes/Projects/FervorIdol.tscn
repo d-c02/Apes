@@ -17,7 +17,7 @@ m_NextProject = 2
 m_MaxWork = 10
 m_WorkAnchor = NodePath("WorkAnchor")
 m_Dimensions = Vector2i(7, 7)
-m_WorkAspect = 3
+m_WorkAspect = 4
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
