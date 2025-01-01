@@ -30,21 +30,25 @@ public partial class Card : Area2D
 		if (Input.IsActionJustPressed("Select") && m_Active)
 		{
 			m_Held = true;
+			ZIndex = (int) RenderingServer.CanvasItemZMax;
 
 			//Unused. Implement in the future to have the card not snap to mouse pos.
 			m_ClickOffset = GetLocalMousePosition() - Position;
 		}
 		if (m_Held)
 		{
-			if (!Input.IsActionPressed("Select"))
+			if (!Input.IsActionPressed("Select") || Input.IsActionJustPressed("CancelSelect"))
 			{
 				m_Held = false;
                 m_Active = false;
+                ZIndex = (int)RenderingServer.CanvasItemZMin;
                 m_TargetPosition = m_BasePosition;
             }
 			else
 			{
 				//m_TargetPosition = ToLocal(GetViewport().GetMousePosition());
+
+				//Weird. Lags behind without the * 10 but seems like an inelegant solution. Will do for now.
 				m_TargetPosition = (GetLocalMousePosition()) * 10;
             }
 		}
