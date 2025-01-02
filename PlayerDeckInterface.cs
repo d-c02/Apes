@@ -96,8 +96,7 @@ namespace SmallApesv2
             if (node is Project)
             {
                 Project project = (Project)node;
-                //Add aspectenum any
-                project.QueueWork(AspectEnum.Fervor, 1);
+                project.QueueWork(AspectEnum.Any, 1);
                 return true;
             }
             else

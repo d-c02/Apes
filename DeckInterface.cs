@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public interface DeckInterface
 {
-    public enum AspectEnum { Insight, Influence, Fervor };
+    public enum AspectEnum { Insight, Influence, Fervor, Any };
 
     public enum WorkAspectEnum { Empty, Insight, Influence, Fervor, Any };
 

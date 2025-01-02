@@ -57,6 +57,6 @@ public partial class CardDock : Control
             }
         }
         m_Cards[m_Cards.Count - 1].Position += new Vector2(1000, 0);
-        m_Cards[m_Cards.Count - 1].SetDeckInterface(new pc_FervorWorkOne());
+        m_Cards[m_Cards.Count - 1].SetDeckInterface(new pc_AnyWorkOne());
     }
 }

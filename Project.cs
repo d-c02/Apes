@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using static DeckInterface;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 
 public abstract partial class Project : Node3D
 {
@@ -146,6 +147,10 @@ public abstract partial class Project : Node3D
 		{
 			QueueAddWork(aspect, amount);
 		}
+		else if (aspect == AspectEnum.Any)
+		{
+			QueueAddWork(aspect, amount);
+		}
 		else if (m_WorkAspect == WorkAspectEnum.Fervor)
 		{
 			if (aspect == AspectEnum.Fervor)
@@ -235,6 +240,10 @@ public abstract partial class Project : Node3D
 					else if (aspect == AspectEnum.Insight)
 					{
 						animation = "insight_queued";
+					}
+					else if (aspect == AspectEnum.Any)
+					{
+						animation = "any_queued";
 					}
 					m_WorkSprites[i].Animation = animation;
 				}

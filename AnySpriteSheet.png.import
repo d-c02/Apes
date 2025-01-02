@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qt5boo50m2kw"
-path.s3tc="res://.godot/imported/greendaniel.png-fbc16d4bbe56fbdb8066817ceb585d9b.s3tc.ctex"
+uid="uid://xr4o4s6scrya"
+path.s3tc="res://.godot/imported/AnySpriteSheet.png-da0232760117594f79bec52b570f21df.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Garbage/greendaniel.png"
-dest_files=["res://.godot/imported/greendaniel.png-fbc16d4bbe56fbdb8066817ceb585d9b.s3tc.ctex"]
+source_file="res://AnySpriteSheet.png"
+dest_files=["res://.godot/imported/AnySpriteSheet.png-da0232760117594f79bec52b570f21df.s3tc.ctex"]
 
 [params]
 
