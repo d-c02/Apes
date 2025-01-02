@@ -7,6 +7,7 @@ using System.Linq;
 using static DeckInterface;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using SmallApesv2;
 
 public partial class CardDock : Control
 {
@@ -56,5 +57,6 @@ public partial class CardDock : Control
             }
         }
         m_Cards[m_Cards.Count - 1].Position += new Vector2(1000, 0);
+        m_Cards[m_Cards.Count - 1].SetDeckInterface(new pc_FervorWorkOne());
     }
 }

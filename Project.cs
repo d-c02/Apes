@@ -313,7 +313,12 @@ public abstract partial class Project : Node3D
 
 	public void ProcessQueuedWork()
 	{
-		if (m_QueuedWork >= m_MaxWork)
+        if (m_QueuedWork < 0)
+        {
+            m_QueuedWork = 0;
+        }
+
+        if (m_QueuedWork >= m_MaxWork)
 		{
 			m_Finished = true;
 			OnFinish();

@@ -28,6 +28,7 @@ surface_material_override/1 = SubResource("StandardMaterial3D_uwum2")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
+collision_layer = 5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00241, 0)
