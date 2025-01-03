@@ -371,9 +371,9 @@ public partial class map : GridMap
             List<Vector3I> ValidSpaces = new List<Vector3I>();
             for (int y = m_BottomLevel; y <= m_TopLevel; y++)
                 {
-                    for (int x = m_MinX; x < m_MaxX - m_Markers[curMarker, 0]; x++)
+                    for (int x = m_MinX; x < m_MaxX; x++)
                     {
-                        for (int z = m_MinZ; z < m_MaxZ - m_Markers[curMarker, 1]; z++)
+                        for (int z = m_MinZ; z < m_MaxZ; z++)
                         {
                             bool ValidSpace = true;
                             for (int xOffset = 0; xOffset < m_Markers[curMarker, 0]; xOffset++)

@@ -256,7 +256,7 @@ public abstract partial class Project : Node3D
 		int prevWork = m_QueuedWork;
         m_QueuedWork -= amount;
 
-		if (m_QueuedWork > 0 && m_QueuedWork <= m_MaxWork)
+		if (m_QueuedWork >= 0 && m_QueuedWork <= m_MaxWork)
 		{
             for (int i = prevWork; i >= m_QueuedWork; i--)
             {
