@@ -57,6 +57,22 @@ public partial class CardDock : Control
             }
         }
         m_Cards[m_Cards.Count - 1].Position += new Vector2(1000, 0);
-        m_Cards[m_Cards.Count - 1].SetDeckInterface(new pc_AnyWorkOne());
+
+        if (m_Cards.Count == 1)
+        {
+            m_Cards[m_Cards.Count - 1].SetDeckInterface(new pc_InsightWorkOne());
+        }
+        else if (m_Cards.Count == 2)
+        {
+            m_Cards[m_Cards.Count - 1].SetDeckInterface(new pc_InfluenceWorkOne());
+        }
+        else if (m_Cards.Count == 3)
+        {
+            m_Cards[m_Cards.Count - 1].SetDeckInterface(new pc_FervorWorkOne());
+        }
+        else
+        {
+            m_Cards[m_Cards.Count - 1].SetDeckInterface(new pc_AnyWorkOne());
+        }
     }
 }
