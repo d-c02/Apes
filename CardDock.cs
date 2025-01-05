@@ -114,6 +114,13 @@ public partial class CardDock : Control
         {
             //Use an actual shuffle algorithm later
             m_Draw = new Stack<Card>(m_Discard.OrderBy((item) => rnd.Next()).ToList<Card>());
+            m_Discard.Clear();
+
+            m_Hand.Add(m_Draw.Pop());
+            m_Hand[m_Hand.Count - 1].Visible = true;
+            m_Hand[m_Hand.Count - 1].SetInHand(true);
+
+            OrderCards();
         }
 
         //m_Hand[m_Hand.Count - 1].Position += new Vector2(1000, 0);
