@@ -19,6 +19,9 @@ public partial class Card : Area2D
 	private ImmediateMesh m_DebugRaycastMesh;
 	[Export] MeshInstance3D m_MeshInstance3D;
 	private PlayerDeckInterface m_DeckInterface;
+	private bool m_InHand = false;
+
+	private Vector2 m_DrawPilePos = new Vector2(1000, 0);
 
 	public override void _Ready()
 	{
@@ -56,7 +59,10 @@ public partial class Card : Area2D
 				{
                     if (CheckCollision())
                     {
-
+						m_InHand = false;
+						Visible = false;
+						SetBasePosition(m_DrawPilePos);
+						Position = m_DrawPilePos;
                     }
                 }
 				m_Held = false;
@@ -165,5 +171,13 @@ public partial class Card : Area2D
         }
     }
 
-	
+	public bool GetInHand()
+	{
+		return m_InHand;
+	}
+
+	public void SetInHand(bool inHand)
+	{
+		m_InHand = inHand;
+	}
 }

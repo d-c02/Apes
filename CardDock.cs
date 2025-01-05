@@ -11,15 +11,53 @@ using SmallApesv2;
 
 public partial class CardDock : Control
 {
-    private List<Card> m_Cards;
-    private int m_HandSize = 5;
-    private int m_CardsInHand = 0;
     private float m_CardHorizontalDistance = 120;
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+    private List<Card> m_Deck;
+
+    private Stack<Card> m_Draw;
+
+    private List<Card> m_Hand;
+
+    private Stack<Card> m_Discard;
+
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
 	{
-        m_Cards = new List<Card>();
+        m_Deck = new List<Card>();
+        m_Draw = new Stack<Card>();
+        m_Hand = new List<Card>();
+        m_Discard = new Stack<Card>();
+
+        for (int i = 0; i < 4; i++)
+        {
+            //Instantiate
+            var cardScene = new PackedScene();
+            cardScene = ResourceLoader.Load<PackedScene>("res://Card.tscn");
+            Card card = cardScene.Instantiate<Card>();
+
+            if (i == 0)
+            {
+                card.SetDeckInterface(new pc_InsightWorkOne());
+                card.Modulate = new Color(0, 0, 1);
+            }
+            else if (i == 1)
+            {
+                card.SetDeckInterface(new pc_InfluenceWorkOne());
+                card.Modulate = new Color(0, 1, 0);
+            }
+            else if (i == 2)
+            {
+                card.SetDeckInterface(new pc_FervorWorkOne());
+                card.Modulate = new Color(1, 0, 0);
+            }
+            else
+            {
+                card.SetDeckInterface(new pc_AnyWorkOne());
+            }
+
+            AddCard(card);
+        }
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -31,48 +69,70 @@ public partial class CardDock : Control
         }
     }
 
+    public override void _PhysicsProcess(double delta)
+    {
+        for (int i = 0; i < m_Hand.Count; i++)
+        {
+            if (!m_Hand[i].GetInHand())
+            {
+                m_Discard.Push(m_Hand[i]);
+                m_Hand.RemoveAt(i);
+                OrderCards();
+            }
+        }
+    }
+
+    private static Random rnd = new Random(23);
+
+    public void AddCard(Card card)
+    {
+        AddChild(card);
+
+        card.Position = new Vector2(1000, 0);
+        card.SetBasePosition(new Vector2(1000, 0));
+        card.Visible = false;
+
+        //Messy, could be sped up
+        m_Deck.Add(card);
+        m_Draw.Push(card);
+        
+        //Use an actual shuffle algorithm later
+        m_Draw = new Stack<Card>(m_Draw.OrderBy((item) => rnd.Next()).ToList<Card>());
+    }
+
     private void DrawCard()
     {
-
-        //Instantiate
-        var cardScene = new PackedScene();
-        cardScene = ResourceLoader.Load<PackedScene>("res://Card.tscn");
-        Card card = cardScene.Instantiate<Card>();
-        AddChild(card);
-        m_Cards.Add(card);
-
-        m_HandSize++;
-
-        int center = (int)Math.Floor((double)m_Cards.Count / 2);
-
-        for (int i = 0; i < m_Cards.Count; i++)
+        if (m_Draw.Count > 0)
         {
-            if (m_Cards.Count % 2 == 0)
+            m_Hand.Add(m_Draw.Pop());
+            m_Hand[m_Hand.Count - 1].Visible = true;
+            m_Hand[m_Hand.Count - 1].SetInHand(true);
+
+            OrderCards();
+        }
+        else if (m_Discard.Count > 0)
+        {
+            //Use an actual shuffle algorithm later
+            m_Draw = new Stack<Card>(m_Discard.OrderBy((item) => rnd.Next()).ToList<Card>());
+        }
+
+        //m_Hand[m_Hand.Count - 1].Position += new Vector2(1000, 0);
+    }
+
+    private void OrderCards()
+    {
+        int center = (int)Math.Floor((double)m_Hand.Count / 2);
+
+        for (int i = 0; i < m_Hand.Count; i++)
+        {
+            if (m_Hand.Count % 2 == 0)
             {
-                m_Cards[i].SetBasePosition(new Vector2(m_CardHorizontalDistance * (i - center) + m_CardHorizontalDistance / 2, 0));
+                m_Hand[i].SetBasePosition(new Vector2(m_CardHorizontalDistance * (i - center) + m_CardHorizontalDistance / 2, 0));
             }
             else
             {
-                m_Cards[i].SetBasePosition(new Vector2(m_CardHorizontalDistance * (i - center), 0));
+                m_Hand[i].SetBasePosition(new Vector2(m_CardHorizontalDistance * (i - center), 0));
             }
-        }
-        m_Cards[m_Cards.Count - 1].Position += new Vector2(1000, 0);
-
-        if (m_Cards.Count == 1)
-        {
-            m_Cards[m_Cards.Count - 1].SetDeckInterface(new pc_InsightWorkOne());
-        }
-        else if (m_Cards.Count == 2)
-        {
-            m_Cards[m_Cards.Count - 1].SetDeckInterface(new pc_InfluenceWorkOne());
-        }
-        else if (m_Cards.Count == 3)
-        {
-            m_Cards[m_Cards.Count - 1].SetDeckInterface(new pc_FervorWorkOne());
-        }
-        else
-        {
-            m_Cards[m_Cards.Count - 1].SetDeckInterface(new pc_AnyWorkOne());
         }
     }
 }

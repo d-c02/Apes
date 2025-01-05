@@ -29,14 +29,6 @@ public partial class ApeManager : Node
 
     private int m_FervorProjectIndex;
 
-	private List<PlayerActionEnum> m_PlayerDeck;
-
-	private Stack<PlayerActionEnum> m_PlayerDraw;
-
-	private List<PlayerActionEnum> m_PlayerHand;
-
-	private Stack<PlayerActionEnum> m_PlayerDiscard;
-
     public override void _Ready()
 	{
 		m_Apes = new List<ape>();
@@ -331,9 +323,6 @@ public partial class ApeManager : Node
 	{
 		m_Decks = new System.Collections.Generic.Dictionary<DeckEnum, Deck>();
 
-		m_PlayerDeck = new List<PlayerActionEnum>();
-		ConfigurePlayerStarterDeck();
-
         //for (int i = 0; i < Enum.GetNames(typeof(DeckEnum)).Length; i++)
 		foreach (DeckEnum deck in Enum.GetValues(typeof(DeckEnum)))
 		{
@@ -476,17 +465,4 @@ public partial class ApeManager : Node
 		SpawnProject(ProjectEnum.Temple);
 		SpawnProject(ProjectEnum.Jail);
 	}
-
-	private void ConfigurePlayerStarterDeck()
-	{
-		m_PlayerDeck.Add(PlayerActionEnum.Any_Work_One);
-        m_PlayerDeck.Add(PlayerActionEnum.Any_Work_One);
-        m_PlayerDeck.Add(PlayerActionEnum.Any_Work_One);
-        m_PlayerDeck.Add(PlayerActionEnum.Fervor_Work_One);
-        m_PlayerDeck.Add(PlayerActionEnum.Insight_Work_One);
-        m_PlayerDeck.Add(PlayerActionEnum.Influence_Work_One);
-
-		//Randomly shuffles playerdraw
-        m_PlayerDraw = new Stack<PlayerActionEnum>(m_PlayerDeck.OrderBy(x => Random.Shared.Next()).ToList<PlayerActionEnum>());
-    }
 }
