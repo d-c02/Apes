@@ -43,6 +43,14 @@ public partial class CameraPivot : Node3D
         {
             _RotationSpeed += _TiltSpeed;
         }
+        if (Input.IsActionPressed("DEBUG_PAN_DOWN"))
+        {
+            _Camera.RotateX(-1.0f * (float) delta);
+        }
+        if (Input.IsActionPressed("DEBUG_PAN_UP"))
+        {
+            _Camera.RotateX(1.0f * (float)delta);
+        }
 
         _PanVelocity = _PanVelocity.Normalized() * _PanSpeed;
     }

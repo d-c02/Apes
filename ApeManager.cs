@@ -13,6 +13,8 @@ public partial class ApeManager : Node
 
 	// Called when the node enters the scene tree for the first time.
 
+	[Export] private TimeManager m_TimeManager;
+
 	[Export] private map m_Map;
 
 	private List<ape> m_Apes;
@@ -38,7 +40,7 @@ public partial class ApeManager : Node
 
 		SpawnInitialProjects();
 
-		for (int i = 0; i < 15; i++)
+		for (int i = 0; i < 0; i++)
 		{
 			SpawnApe();
 		}
@@ -75,6 +77,9 @@ public partial class ApeManager : Node
 
 	private void StartNewPhase()
 	{
+
+		m_TimeManager.IncrementTime();
+
         foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)
         {
             m_Projects[entry.Key].ProcessQueuedWork();
