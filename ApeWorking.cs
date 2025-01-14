@@ -10,6 +10,7 @@ public partial class ApeWorking : State
     public override void Enter()
     {
         m_Ape.SetReadyForNextPhase(true);
+        m_Ape.LookAt(m_ApeManager.GetGlobalPosition(m_Ape.GetTargetProject()));
     }
 
     public override void Exit()

@@ -722,6 +722,7 @@ public partial class map : GridMap
         m_AStarGrid = new AStarGrid2D();
         m_AStarGridSize = new Vector2I();
         m_AStarGrid.Offset = new Vector2(m_MinX, m_MinZ);
+        m_AStarGrid.DiagonalMode = AStarGrid2D.DiagonalModeEnum.Always;
 
         bool isDirty = m_AStarGrid.IsDirty();
         m_AStarGridxOffset = -m_MinX;

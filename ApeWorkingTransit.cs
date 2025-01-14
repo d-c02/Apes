@@ -91,7 +91,6 @@ public partial class ApeWorkingTransit : State
 
         Vector2I dims = m_ApeManager.GetProjectDimensions(m_Ape.GetTargetProject());
         Vector2I ProjectPos = FinalPos - SlotOffset + dims;
-        m_Ape.LookAt(m_ApeManager.GetGlobalPosition(m_Ape.GetTargetProject()));
     }
 
     public override void PhysicsUpdate(double delta)
@@ -125,6 +124,7 @@ public partial class ApeWorkingTransit : State
             }
 
             m_Ape.Velocity = m_TargetVelocity;
+            m_Ape.LookAt(m_Ape.GlobalPosition + m_TargetVelocity);
         }
     }
 

@@ -157,6 +157,7 @@ public partial class ApeWorkingExit : State
             }
 
             m_Ape.Velocity = m_TargetVelocity;
+            m_Ape.LookAt(m_Ape.GlobalPosition + m_TargetVelocity);
         }
     }
 
