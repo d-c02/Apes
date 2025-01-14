@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b1bslew5hf0jt"]
+[gd_scene load_steps=14 format=3 uid="uid://b1bslew5hf0jt"]
 
 [ext_resource type="PackedScene" uid="uid://dgkaq81xvvohp" path="res://map.tscn" id="1_v048q"]
 [ext_resource type="Script" path="res://CameraPivot.cs" id="2_cge44"]
@@ -14,6 +14,14 @@ colors = PackedColorArray(1, 0.641838, 0.187642, 1, 0.999127, 0.889101, 0.813798
 [sub_resource type="Curve" id="Curve_lscxy"]
 _data = [Vector2(0, 0.5), 0.0, 0.0, 0, 0, Vector2(0.25, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(0.75, 0.5), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 5
+
+[sub_resource type="Gradient" id="Gradient_q657r"]
+offsets = PackedFloat32Array(0, 0.25, 0.5, 0.75, 1)
+colors = PackedColorArray(0.384927, 0.517865, 1, 1, 0.326742, 0.68458, 0.992976, 1, 0.32549, 0.686275, 0.992157, 1, 0.384314, 0.517647, 1, 1, 0.282353, 0.196078, 1, 1)
+
+[sub_resource type="Gradient" id="Gradient_8rfvm"]
+offsets = PackedFloat32Array(0, 0.25, 0.5, 0.75, 1)
+colors = PackedColorArray(0.918826, 0.565766, 1.54018e-06, 1, 0.644107, 0.827242, 0.998019, 1, 0.643137, 0.827451, 0.996078, 1, 1, 0.507076, 0.469155, 1, 0.282353, 0.196078, 1, 1)
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_hm7jh"]
 sky_top_color = Color(0.323277, 0.493328, 0.812644, 1)
@@ -65,13 +73,16 @@ m_Map = NodePath("../Map")
 
 [node name="CardDock" parent="." instance=ExtResource("5_bx245")]
 
-[node name="TimeManager" type="Node3D" parent="." node_paths=PackedStringArray("m_Sun", "m_Moon")]
+[node name="TimeManager" type="Node3D" parent="." node_paths=PackedStringArray("m_Sun", "m_Moon", "m_WorldEnvironment")]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 script = ExtResource("6_wwxax")
 m_Sun = NodePath("Sun")
 m_Moon = NodePath("Moon")
+m_WorldEnvironment = NodePath("WorldEnvironment")
 m_SunColor = SubResource("Gradient_q2vqf")
 m_SunIntensity = SubResource("Curve_lscxy")
+m_SkyTopColor = SubResource("Gradient_q657r")
+m_SkyHorizonColor = SubResource("Gradient_8rfvm")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="TimeManager"]
 environment = SubResource("Environment_c7exl")

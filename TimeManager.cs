@@ -7,9 +7,13 @@ public partial class TimeManager : Node3D
 	private int m_MaxTime = 5;
 	[Export] private DirectionalLight3D m_Sun;
 	[Export] private DirectionalLight3D m_Moon;
+	[Export] private WorldEnvironment m_WorldEnvironment;
 
 	[Export] private Gradient m_SunColor;
     [Export] private Curve m_SunIntensity;
+
+	[Export] private Gradient m_SkyTopColor;
+    [Export] private Gradient m_SkyHorizonColor;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -62,7 +66,11 @@ public partial class TimeManager : Node3D
 		float curTime = (float) m_Time / (m_MaxTime - 1);
 		m_Sun.LightColor = m_SunColor.Sample(curTime);
 		m_Sun.LightEnergy = m_SunIntensity.Sample(curTime);
-	}
+		m_WorldEnvironment.Environment.Sky.SkyMaterial.Set("sky_top_color", m_SkyTopColor.Sample(curTime));
+        m_WorldEnvironment.Environment.Sky.SkyMaterial.Set("sky_horizon_color", m_SkyHorizonColor.Sample(curTime));
+        m_WorldEnvironment.Environment.Sky.SkyMaterial.Set("ground_bottom_color", m_SkyTopColor.Sample(curTime));
+        m_WorldEnvironment.Environment.Sky.SkyMaterial.Set("ground_horizon_color", m_SkyHorizonColor.Sample(curTime));
+    }
 
 	public void IncrementTime()
 	{

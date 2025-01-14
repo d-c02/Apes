@@ -1,13 +1,13 @@
-[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://bx1hbxh6hx757"]
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://dop0g1r0p6cxo"]
 
-[ext_resource type="Texture2D" uid="uid://jl64xtctw7ub" path="res://Assets/Apes/ApeClay_orm.png" id="2"]
-[ext_resource type="Texture2D" uid="uid://qmpc855vnb" path="res://Assets/Apes/ApeClay_normal.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://dx3prtvah43dw" path="res://Assets/ClayTexture/Clay_normal.png" id="1_oemhw"]
+[ext_resource type="Texture2D" uid="uid://d0p7an6vx7w2o" path="res://Assets/ClayTexture/Clay_orm.png" id="2_krpri"]
 
 [resource]
 albedo_color = Color(0.45098, 0.760784, 0.843137, 1)
-roughness = 0.6
-roughness_texture = ExtResource("2")
+roughness = 0.75
+roughness_texture = ExtResource("2_krpri")
 roughness_texture_channel = 1
 normal_enabled = true
-normal_scale = 0.15
-normal_texture = ExtResource("3")
+normal_scale = 0.2
+normal_texture = ExtResource("1_oemhw")

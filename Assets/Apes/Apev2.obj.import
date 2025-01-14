@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bacdtctgneam"
+path="res://.godot/imported/Apev2.obj-2236496e8e97678858c1db1595d68621.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Apev2.obj-2236496e8e97678858c1db1595d68621.mesh"]
+
+source_file="res://Assets/Apes/Apev2.obj"
+dest_files=["res://.godot/imported/Apev2.obj-2236496e8e97678858c1db1595d68621.mesh", "res://.godot/imported/Apev2.obj-2236496e8e97678858c1db1595d68621.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

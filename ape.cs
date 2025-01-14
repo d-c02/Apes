@@ -59,12 +59,13 @@ public partial class ape : CharacterBody3D
     {
 
         //_AnimationTree = GetChild<AnimationTree>(0);
-        _AnimationNodeStateMachinePlayback = _AnimationTree.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();
         Random rnd = new Random();
 
-        MeshInstance3D body = GetNode<MeshInstance3D>("Pivot/Character/Ape/Body");
-        MeshInstance3D mouth = GetNode<MeshInstance3D>("Pivot/Character/Ape/Mouth");
+        MeshInstance3D body = GetNode<MeshInstance3D>("Pivot/Ape/Armature/Skeleton3D/Body");
+        MeshInstance3D mouth = GetNode<MeshInstance3D>("Pivot/Ape/Armature/Skeleton3D/Mouth");
 
+        body.MaterialOverride = null;
+        mouth.MaterialOverride = null;
         int aspectInt = rnd.Next(0, 3);
         if (aspectInt == 0)
         {
@@ -84,16 +85,24 @@ public partial class ape : CharacterBody3D
 
         if (m_Aspect == AspectEnum.Insight)
         {
+            //body.MaterialOverride = InsightBody;
+            //mouth.MaterialOverride = InsightMouth;
             body.SetSurfaceOverrideMaterial(0, InsightBody);
             mouth.SetSurfaceOverrideMaterial(0, InsightMouth);
         }
         else if (m_Aspect == AspectEnum.Influence)
         {
+            //body.MaterialOverride = InfluenceBody;
+            //mouth.MaterialOverride = InfluenceMouth;
+            //body.SetSurfaceOverrideMaterial(0, InfluenceBody);
             body.SetSurfaceOverrideMaterial(0, InfluenceBody);
             mouth.SetSurfaceOverrideMaterial(0, InfluenceMouth);
         }
         else if (m_Aspect == AspectEnum.Fervor)
         {
+            //body.MaterialOverride = FervorBody;
+            //mouth.MaterialOverride = FervorMouth;
+
             body.SetSurfaceOverrideMaterial(0, FervorBody);
             mouth.SetSurfaceOverrideMaterial(0, FervorMouth);
         }
