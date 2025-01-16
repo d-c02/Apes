@@ -48,6 +48,8 @@ public partial class ApeWandering : State
 
     public override void Enter()
     {
+        m_Ape.SetAnimState("parameters/BodyAnimGate/transition_request", "Walking");
+
         Random rnd = new Random();
         int wanderRange = rnd.Next(m_MinWanderRange, m_MaxWanderRange);
         Vector2I NextPosDist = new Vector2I();

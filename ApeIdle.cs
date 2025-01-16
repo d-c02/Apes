@@ -6,7 +6,7 @@ public partial class ApeIdle : State
 {
 
     [Export]
-    ape Ape;
+    ape m_Ape;
 
     [Export]
     private int Gravity { get; set; } = 50;
@@ -27,9 +27,11 @@ public partial class ApeIdle : State
 
     public override void Enter()
     {
-        if (!Ape.IsWorking())
+        m_Ape.SetAnimState("parameters/BodyAnimGate/transition_request", "Idle");
+
+        if (!m_Ape.IsWorking())
         {
-            Ape.SetReadyForNextPhase(true);
+            m_Ape.SetReadyForNextPhase(true);
         }
         GenerateNextWanderTime();
     }
@@ -46,7 +48,7 @@ public partial class ApeIdle : State
 
     public override void PhysicsUpdate(double delta)
     {
-        if (!Ape.IsOnFloor())
+        if (!m_Ape.IsOnFloor())
         {
             TargetVelocity.Y -= Gravity * (float)delta;
         }
@@ -57,7 +59,7 @@ public partial class ApeIdle : State
 
         WanderCtr += delta;
 
-        if (Ape.CanWorkTransition())
+        if (m_Ape.CanWorkTransition())
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "ApeWorkingTransit");
         }
@@ -67,7 +69,7 @@ public partial class ApeIdle : State
             EmitSignal(SignalName.Transitioned, this.Name + "", "Wandering");
         }
 
-        Ape.Velocity = TargetVelocity;
+        m_Ape.Velocity = TargetVelocity;
     }
 
     private void GenerateNextWanderTime()

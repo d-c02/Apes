@@ -1,6 +1,6 @@
 using Godot;
 using System;
-
+using System.Diagnostics;
 
 public partial class ApeWorkingExit : State
 {
@@ -35,8 +35,13 @@ public partial class ApeWorkingExit : State
 
     private ApeManager m_ApeManager;
 
+    const float m_MaxStuckTime = 1.0f;
+    private float m_StuckTime = 0.0f;
+
     public override void Enter()
     {
+        m_Ape.SetAnimState("parameters/BodyAnimGate/transition_request", "Walking");
+
         Vector2I SlotOffset = new Vector2I(-1, -1);
         if (m_Ape.IsWorking())
         {
@@ -47,6 +52,7 @@ public partial class ApeWorkingExit : State
             }
         }
 
+        //We run this check again because we potentially set the ape's action in the previous call. Messy I know.
         if (m_Ape.IsWorking())
         {
             m_Ape.SetSlot(SlotOffset);
@@ -111,6 +117,7 @@ public partial class ApeWorkingExit : State
     public override void Exit()
     {
         m_Ape.Velocity = Vector3.Zero;
+        m_StuckTime = 0;
     }
 
     public override void Update(double delta)
@@ -143,21 +150,42 @@ public partial class ApeWorkingExit : State
         }
         else
         {
-            Vector3 direction = new Vector3(m_NextPos.X - m_Ape.GlobalPosition.X, 0, m_NextPos.Y - m_Ape.GlobalPosition.Z).Normalized();
-
-            m_TargetVelocity.X = direction.X * m_WanderingVelocity * (float)delta;
-            m_TargetVelocity.Z = direction.Z * m_WanderingVelocity * (float)delta;
-            if (!m_Ape.IsOnFloor())
+            if (m_StuckTime < m_MaxStuckTime)
             {
-                m_TargetVelocity.Y -= m_Gravity * (float)delta;
+                Vector3 direction = new Vector3(m_NextPos.X - m_Ape.GlobalPosition.X, 0, m_NextPos.Y - m_Ape.GlobalPosition.Z).Normalized();
+
+                m_TargetVelocity.X = direction.X * m_WanderingVelocity * (float)delta;
+                m_TargetVelocity.Z = direction.Z * m_WanderingVelocity * (float)delta;
+                if (!m_Ape.IsOnFloor())
+                {
+                    m_TargetVelocity.Y -= m_Gravity * (float)delta;
+                }
+                else
+                {
+                    m_TargetVelocity.Y = 0;
+                }
+
+                m_StuckTime = 0;
+                m_Ape.Velocity = m_TargetVelocity;
+                m_Ape.LookAt(m_Ape.GlobalPosition + m_TargetVelocity);
             }
             else
             {
-                m_TargetVelocity.Y = 0;
-            }
+                Debug.WriteLine("Teleported ape!");
 
-            m_Ape.Velocity = m_TargetVelocity;
-            m_Ape.LookAt(m_Ape.GlobalPosition + m_TargetVelocity);
+                //Teleport ape to next position
+                m_Ape.Velocity = Vector3.Zero;
+                m_StuckTime = 0;
+
+                Vector3 pos = new Vector3(m_NextPos.X, m_Ape.GlobalPosition.Y + 2, m_NextPos.Y);
+                PhysicsDirectSpaceState3D spaceState = m_Ape.GetWorld3D().DirectSpaceState;
+                PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(pos, new Vector3(pos.X, -1, pos.Z), 1);
+                var result = spaceState.IntersectRay(query);
+                if (result.Count > 0)
+                {
+                    m_Ape.GlobalPosition = (Vector3)result["position"];
+                }
+            }
         }
     }
 

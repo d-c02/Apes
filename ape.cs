@@ -9,9 +9,6 @@ using static DeckInterface;
 
 public partial class ape : CharacterBody3D
 {
-    [Export]
-    private AnimationTree _AnimationTree;
-
     private AnimationNodeStateMachinePlayback _AnimationNodeStateMachinePlayback;
 
     private AnimationNodeTimeScale _RunTimeScale;
@@ -49,11 +46,14 @@ public partial class ape : CharacterBody3D
 
     private int m_Spite = 5;
 
-    bool m_WorkTransition = false;
-    bool m_TargetProjectChanged = false;
+    private bool m_WorkTransition = false;
+    private bool m_TargetProjectChanged = false;
 
 
-    bool m_ReadyForNextPhase = false;
+    private bool m_ReadyForNextPhase = false;
+
+    [Export]
+    private AnimationTree m_AnimationTree;
 
     public override void _Ready()
     {
@@ -360,5 +360,10 @@ public partial class ape : CharacterBody3D
     public AspectEnum GetEnemyAspect()
     {
         return m_EnemyAspect;
+    }
+
+    public void SetAnimState(string path, string set)
+    {
+        m_AnimationTree.Set(path, set);
     }
 }
