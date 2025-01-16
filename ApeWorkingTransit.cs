@@ -32,7 +32,7 @@ public partial class ApeWorkingTransit : State
 
     int m_NextPosCtr;
 
-    const float m_MaxStuckTime = 30.0f;
+    const float m_MaxStuckTime = 1.0f;
     private float m_StuckTime = 0.0f;
 
     public override void Enter()

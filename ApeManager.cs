@@ -470,4 +470,9 @@ public partial class ApeManager : Node
 		SpawnProject(ProjectEnum.Temple);
 		SpawnProject(ProjectEnum.Jail);
 	}
+
+	public int GetTime()
+	{
+		return m_TimeManager.GetTime();
+	}
 }

@@ -55,6 +55,8 @@ public partial class ape : CharacterBody3D
     [Export]
     private AnimationTree m_AnimationTree;
 
+    private bool m_Sleeping = false;
+
     public override void _Ready()
     {
 
@@ -288,7 +290,18 @@ public partial class ape : CharacterBody3D
     {
         m_ReadyForNextPhase = false;
         
-        m_Action = DrawAction();
+        if (m_ApeManager.GetTime() == 4)
+        {
+            m_Action = ActionEnum.Idle;
+            SetActionSprite(ActionEnum.Idle);
+            m_WorkTransition = false;
+            m_Sleeping = true;
+        }
+        else
+        {
+            m_Action = DrawAction();
+            m_Sleeping = false;
+        }
 
         ////Eventually refactor to have a list of actionenums in a dict that are ready to work
         //if (m_Action == ActionEnum.Idle)
@@ -365,5 +378,10 @@ public partial class ape : CharacterBody3D
     public void SetAnimState(string path, string set)
     {
         m_AnimationTree.Set(path, set);
+    }
+
+    public bool GetSleeping()
+    {
+        return m_Sleeping;
     }
 }

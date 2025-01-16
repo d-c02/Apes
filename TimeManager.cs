@@ -82,4 +82,9 @@ public partial class TimeManager : Node3D
 
 		UpdateSky();
 	}
+
+	public int GetTime()
+	{
+		return m_Time;
+	}
 }
