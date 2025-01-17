@@ -165,9 +165,9 @@ public partial class ApeWorkingExit : State
                     m_TargetVelocity.Y = 0;
                 }
 
-                m_StuckTime = 0;
                 m_Ape.Velocity = m_TargetVelocity;
                 m_Ape.LookAt(m_Ape.GlobalPosition + m_TargetVelocity);
+                m_StuckTime += (float)delta;
             }
             else
             {
