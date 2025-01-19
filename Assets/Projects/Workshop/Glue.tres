@@ -1,0 +1,13 @@
+[gd_resource type="StandardMaterial3D" load_steps=3 format=3 uid="uid://cubfwfusntxfc"]
+
+[ext_resource type="Texture2D" uid="uid://dx3prtvah43dw" path="res://Assets/ClayTexture/Clay_normal.png" id="1_mv4re"]
+[ext_resource type="Texture2D" uid="uid://d0p7an6vx7w2o" path="res://Assets/ClayTexture/Clay_orm.png" id="2_bjjs0"]
+
+[resource]
+albedo_color = Color(0.921569, 0.941176, 0.94902, 1)
+roughness = 0.75
+roughness_texture = ExtResource("2_bjjs0")
+roughness_texture_channel = 1
+normal_enabled = true
+normal_scale = 0.2
+normal_texture = ExtResource("1_mv4re")

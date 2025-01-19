@@ -31,12 +31,17 @@ public partial class ApeManager : Node
 
     private int m_FervorProjectIndex;
 
+	private System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, ActionEnum> m_ActionTransformations;
+
     public override void _Ready()
 	{
 		m_Apes = new List<ape>();
 		m_Projects = new System.Collections.Generic.Dictionary<ProjectEnum, Project>();
 		m_DeadProjectIDs = new List<ProjectEnum>();
-		m_Map.Generate();
+		m_ActionTransformations = new System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, ActionEnum>();
+
+
+        m_Map.Generate();
 
 		SpawnInitialProjects();
 
@@ -73,7 +78,15 @@ public partial class ApeManager : Node
                 StartNewPhase();
             }
 		}
-	}
+
+		if (Input.IsActionJustPressed("DEBUG_CLEAR_APE_WORK"))
+		{
+			foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)
+			{
+				m_Projects[entry.Key].ClearApeWork();
+			}
+		}
+    }
 
 	private void StartNewPhase()
 	{
@@ -273,6 +286,11 @@ public partial class ApeManager : Node
             ProjectPath = "res://Scenes/Projects/Lab.tscn";
         }
 
+		else if (project == ProjectEnum.Workshop)
+		{
+			ProjectPath = "res://Scenes/Projects/workshop.tscn";
+		}
+
         Debug.Assert(ProjectPath != "", "Invalid project! ID: " + project.ToString());
 
         var projectScene = new PackedScene();
@@ -468,11 +486,43 @@ public partial class ApeManager : Node
 		SpawnProject(ProjectEnum.Unfinished_Idol);
 		SpawnProject(ProjectEnum.Lab);
 		SpawnProject(ProjectEnum.Temple);
-		SpawnProject(ProjectEnum.Jail);
+		SpawnProject(ProjectEnum.Workshop);
 	}
 
 	public int GetTime()
 	{
 		return m_TimeManager.GetTime();
+	}
+
+	public void CreateDayActionTransformation(AspectEnum aspect, ActionEnum action, ActionEnum resultAction)
+	{
+		m_ActionTransformations.Add(new Tuple<AspectEnum, ActionEnum>(aspect, action), resultAction);
+	}
+
+	public void RemoveDayActionTransformation(AspectEnum aspect, ActionEnum action)
+	{
+        Tuple<AspectEnum, ActionEnum> actionTuple = new Tuple<AspectEnum, ActionEnum>(aspect, action);
+        if (m_ActionTransformations.ContainsKey(actionTuple))
+        {
+            m_ActionTransformations.Remove(actionTuple);
+        }
+    }
+
+	public ActionEnum ApplyActionTransformations(AspectEnum aspect, ActionEnum action)
+	{
+		Tuple<AspectEnum, ActionEnum> actionTuple = new Tuple<AspectEnum, ActionEnum>(aspect, action);
+		if (m_ActionTransformations.ContainsKey(actionTuple))
+		{
+			return m_ActionTransformations[actionTuple];
+		}
+		else
+		{
+			return action;
+		}
+	}
+
+	private void RecalculateActions()
+	{
+		
 	}
 }

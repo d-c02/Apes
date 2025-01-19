@@ -21,6 +21,7 @@ size = Vector3(2, 0.861206, 2)
 [node name="Lab" type="Node3D" node_paths=PackedStringArray("m_WorkAnchor")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 script = ExtResource("1_5ksii")
+m_Persists = true
 m_MaxWork = 10
 m_WorkAnchor = NodePath("WorkAnchor")
 m_Dimensions = Vector2i(7, 7)

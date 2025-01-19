@@ -9,11 +9,12 @@ shading_mode = 0
 albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_sqmeo"]
-size = Vector3(2, 2.00482, 2)
+size = Vector3(2, 2.09311, 2)
 
 [node name="Temple" type="Node3D" node_paths=PackedStringArray("m_WorkAnchor")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
 script = ExtResource("1_pnuux")
+m_Persists = true
 m_MaxWork = 10
 m_WorkAnchor = NodePath("WorkAnchor")
 m_Dimensions = Vector2i(7, 7)
@@ -31,5 +32,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)
 collision_layer = 5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.00241, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04655, 0)
 shape = SubResource("BoxShape3D_sqmeo")

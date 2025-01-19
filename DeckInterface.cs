@@ -40,7 +40,8 @@ public interface DeckInterface
         Influence_Idol,
         Jail,
         Temple,
-        Lab
+        Lab,
+        Workshop
     };
 
     public struct Deck

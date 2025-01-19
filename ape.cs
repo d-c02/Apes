@@ -203,6 +203,8 @@ public partial class ape : CharacterBody3D
             }
         }
 
+        result = m_ApeManager.ApplyActionTransformations(m_Aspect, result);
+
         SetActionSprite(result);
         return result;
     }

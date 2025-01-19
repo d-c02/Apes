@@ -30,7 +30,7 @@ namespace SmallApesv2
                 }
                 else
                 {
-                    project.QueueWork(AspectEnum.Fervor, 1);
+                    project.QueueWork(AspectEnum.Fervor, 1, true);
                     return true;
                 }
             }
@@ -54,7 +54,7 @@ namespace SmallApesv2
                 }
                 else
                 {
-                    project.QueueWork(AspectEnum.Insight, 1);
+                    project.QueueWork(AspectEnum.Insight, 1, true);
                     return true;
                 }
             }
@@ -78,7 +78,7 @@ namespace SmallApesv2
                 }
                 else
                 {
-                    project.QueueWork(AspectEnum.Influence, 1);
+                    project.QueueWork(AspectEnum.Influence, 1, true);
                     return true;
                 }
             }
@@ -96,7 +96,7 @@ namespace SmallApesv2
             if (node is Project)
             {
                 Project project = (Project)node;
-                project.QueueWork(AspectEnum.Any, 1);
+                project.QueueWork(AspectEnum.Any, 1, true);
                 return true;
             }
             else

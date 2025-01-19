@@ -34,6 +34,9 @@ public abstract partial class Project : Node3D
 
     protected Dictionary<Vector2I, bool> m_ApeSlots;
 
+	//Aspect, amount, bool true for add false for remove
+	List<Tuple<AspectEnum, int, bool>> m_PlayerActions;
+
 	//In range of 1-10
 	[Export(PropertyHint.Range, "1,10,")] 
 	protected int m_Spite = 5;
@@ -43,7 +46,8 @@ public abstract partial class Project : Node3D
 	{
         ConfigureWork();
         m_ApeSlots = new Dictionary<Vector2I, bool>();
-		ConfigureSlots();
+		m_PlayerActions = new List<Tuple<AspectEnum, int, bool>>();
+        ConfigureSlots();
     }
 
 	public void UpdateVerticalPosition()
@@ -150,25 +154,46 @@ public abstract partial class Project : Node3D
 		BillboardWork();
 	}
 
-	public void QueueWork(AspectEnum aspect, int amount)
+	public void QueueWork(AspectEnum aspect, int amount, bool PlayerAction = false)
 	{
+		bool valid = true;
 		if (m_WorkAspect == WorkAspectEnum.Any)
 		{
-			QueueAddWork(aspect, amount);
+            if (PlayerAction)
+            {
+                m_PlayerActions.Add(new Tuple<AspectEnum, int, bool>(aspect, amount, true));
+            }
+
+            QueueAddWork(aspect, amount);
 		}
 		else if (aspect == AspectEnum.Any)
 		{
-			QueueAddWork(aspect, amount);
+            if (PlayerAction)
+            {
+                m_PlayerActions.Add(new Tuple<AspectEnum, int, bool>(aspect, amount, true));
+            }
+
+            QueueAddWork(aspect, amount);
 		}
 		else if (m_WorkAspect == WorkAspectEnum.Fervor)
 		{
 			if (aspect == AspectEnum.Fervor)
 			{
-				QueueAddWork(aspect, amount);
+                if (PlayerAction)
+                {
+                    m_PlayerActions.Add(new Tuple<AspectEnum, int, bool>(aspect, amount, true));
+                }
+
+                QueueAddWork(aspect, amount);
 			}
 			else if (aspect == AspectEnum.Influence)
 			{
-				QueueRemoveWork(aspect, amount);
+                if (PlayerAction)
+                {
+                    m_PlayerActions.Add(new Tuple<AspectEnum, int, bool>(aspect, amount, false));
+                }
+
+                QueueRemoveWork(aspect, amount);
 			}
 			else
 			{
@@ -179,11 +204,21 @@ public abstract partial class Project : Node3D
 		{
 			if (aspect == AspectEnum.Insight)
 			{
-				QueueAddWork(aspect, amount);
+                if (PlayerAction)
+                {
+                    m_PlayerActions.Add(new Tuple<AspectEnum, int, bool>(aspect, amount, true));
+                }
+
+                QueueAddWork(aspect, amount);
 			}
 			else if (aspect == AspectEnum.Fervor)
 			{
-				QueueRemoveWork(aspect, amount);
+                if (PlayerAction)
+                {
+                    m_PlayerActions.Add(new Tuple<AspectEnum, int, bool>(aspect, amount, false));
+                }
+
+                QueueRemoveWork(aspect, amount);
 			}
 			else
 			{
@@ -194,11 +229,21 @@ public abstract partial class Project : Node3D
 		{
 			if (aspect == AspectEnum.Influence)
 			{
-				QueueAddWork(aspect, amount);
+                if (PlayerAction)
+                {
+                    m_PlayerActions.Add(new Tuple<AspectEnum, int, bool>(aspect, amount, true));
+                }
+
+                QueueAddWork(aspect, amount);
 			}
 			else if (aspect == AspectEnum.Insight)
 			{
-				QueueRemoveWork(aspect, amount);
+                if (PlayerAction)
+                {
+                    m_PlayerActions.Add(new Tuple<AspectEnum, int, bool>(aspect, amount, false));
+                }
+
+                QueueRemoveWork(aspect, amount);
 			}
 			else
 			{
@@ -299,7 +344,7 @@ public abstract partial class Project : Node3D
 	{
         if (m_QueuedWork > m_Work)
         {
-            for (int i = m_Work; i < m_QueuedWork; i++)
+            for (int i = m_Work; i < Math.Min(m_QueuedWork, m_MaxWork); i++)
             {
 				m_WorkSprites[i].Animation = "empty";
             }
@@ -473,10 +518,28 @@ public abstract partial class Project : Node3D
 		m_Finished = false;
 		m_Work = 0;
 		m_QueuedWork = 0;
+		m_PlayerActions.Clear();
         for (int i = 0; i < m_MaxWork; i++)
 		{
             m_WorkSprites[i].Animation = "empty";
         }
 
     }
+
+	public void ClearApeWork()
+	{
+		ClearQueuedWork();
+		for (int i = 0; i < m_PlayerActions.Count; i++)
+		{
+			//Add
+			if (m_PlayerActions[i].Item3)
+			{
+				QueueAddWork(m_PlayerActions[i].Item1, m_PlayerActions[i].Item2);
+			}
+			else
+			{
+                QueueRemoveWork(m_PlayerActions[i].Item1, m_PlayerActions[i].Item2);
+            }
+		}
+	}
 }
