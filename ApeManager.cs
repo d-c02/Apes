@@ -40,7 +40,6 @@ public partial class ApeManager : Node
 		m_DeadProjectIDs = new List<ProjectEnum>();
 		m_ActionTransformations = new System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, ActionEnum>();
 
-
         m_Map.Generate();
 
 		SpawnInitialProjects();
@@ -51,7 +50,7 @@ public partial class ApeManager : Node
 		}
 
 		ConfigureDecks();
-	}
+    }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
@@ -59,7 +58,7 @@ public partial class ApeManager : Node
 		
 		if (Input.IsActionJustPressed("DEBUG_SPAWN_APE"))
 		{
-
+			SpawnApe();
 		}
 
 
@@ -521,8 +520,18 @@ public partial class ApeManager : Node
 		}
 	}
 
-	private void RecalculateActions()
+	public void RecalculateActions()
 	{
-		
-	}
+        foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)
+        {
+            m_Projects[entry.Key].ClearQueuedWork();
+        }
+
+		QueueActions();
+
+        foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)
+        {
+            m_Projects[entry.Key].ReAddPlayerWork();
+        }
+    }
 }

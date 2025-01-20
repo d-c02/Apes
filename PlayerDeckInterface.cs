@@ -10,16 +10,15 @@ namespace SmallApesv2
 {
     public interface PlayerDeckInterface
     {
-        public bool DoCardAction(Node node)
+        public bool DoCardAction(Card card, Node node)
         {
             return false;
         }
-
     }
 
     public class pc_FervorWorkOne : PlayerDeckInterface
     {
-        bool PlayerDeckInterface.DoCardAction(Node node)
+        bool PlayerDeckInterface.DoCardAction(Card card, Node node)
         {
             if (node is Project)
             {
@@ -43,7 +42,7 @@ namespace SmallApesv2
 
     public class pc_InsightWorkOne : PlayerDeckInterface
     {
-        bool PlayerDeckInterface.DoCardAction(Node node)
+        bool PlayerDeckInterface.DoCardAction(Card card, Node node)
         {
             if (node is Project)
             {
@@ -67,7 +66,7 @@ namespace SmallApesv2
 
     public class pc_InfluenceWorkOne : PlayerDeckInterface
     {
-        bool PlayerDeckInterface.DoCardAction(Node node)
+        bool PlayerDeckInterface.DoCardAction(Card card, Node node)
         {
             if (node is Project)
             {
@@ -91,12 +90,30 @@ namespace SmallApesv2
 
     public class pc_AnyWorkOne : PlayerDeckInterface
     {
-        bool PlayerDeckInterface.DoCardAction(Node node)
+        bool PlayerDeckInterface.DoCardAction(Card card, Node node)
         {
             if (node is Project)
             {
                 Project project = (Project)node;
                 project.QueueWork(AspectEnum.Any, 1, true);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    public class pc_MakeApeIdle : PlayerDeckInterface
+    {
+        bool PlayerDeckInterface.DoCardAction(Card card, Godot.Node node)
+        {
+            if (node is ape)
+            {
+                ape target = (ape)node;
+                target.SetAction(ActionEnum.Idle);
+                card.RecalculateWork();
                 return true;
             }
             else

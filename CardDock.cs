@@ -21,6 +21,9 @@ public partial class CardDock : Control
 
     private Stack<Card> m_Discard;
 
+    [Export]
+    ApeManager m_ApeManager;
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
 	{
@@ -29,7 +32,7 @@ public partial class CardDock : Control
         m_Hand = new List<Card>();
         m_Discard = new Stack<Card>();
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 5; i++)
         {
             //Instantiate
             var cardScene = new PackedScene();
@@ -51,11 +54,17 @@ public partial class CardDock : Control
                 card.SetDeckInterface(new pc_FervorWorkOne());
                 card.Modulate = new Color(1, 0, 0);
             }
-            else
+            else if (i ==3)
             {
                 card.SetDeckInterface(new pc_AnyWorkOne());
             }
+            else
+            {
+                card.SetDeckInterface(new pc_MakeApeIdle());
+                card.Modulate = new Color(0, 0, 0);
+            }
 
+            card.SetApeManager(ref m_ApeManager);
             AddCard(card);
         }
     }

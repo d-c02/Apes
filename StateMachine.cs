@@ -15,6 +15,7 @@ public partial class StateMachine : Node
             if (Children[i] is State)
             {
                 State TmpState = (State)Children[i];
+                
                 //TmpState.Transitioned += OnChildTransition;
                 TmpState.Connect(State.SignalName.Transitioned, new Callable(this, StateMachine.MethodName.OnChildTransition));
                 _States[TmpState.Name] = TmpState;

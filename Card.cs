@@ -23,11 +23,18 @@ public partial class Card : Area2D
 
 	private Vector2 m_DrawPilePos = new Vector2(1000, 0);
 
-	public override void _Ready()
+	private ApeManager m_ApeManager;
+
+    public override void _Ready()
 	{
 		m_BasePosition = Position;
 		m_TargetPosition = m_BasePosition;
 		m_ClickOffset = new Vector2(0, 0);
+    }
+
+	public void SetApeManager(ref ApeManager apeManager)
+	{
+		m_ApeManager = apeManager;
 	}
 
 	public void SetDeckInterface(PlayerDeckInterface deckInterface)
@@ -141,7 +148,8 @@ public partial class Card : Area2D
 				throw new Exception("Invalid card target, provide implementation");
 			}
 
-			return m_DeckInterface.DoCardAction(target);
+			
+			return m_DeckInterface.DoCardAction(this, target);
         }
 
         return false;
@@ -179,5 +187,10 @@ public partial class Card : Area2D
 	public void SetInHand(bool inHand)
 	{
 		m_InHand = inHand;
+	}
+
+	public void RecalculateWork()
+	{
+		m_ApeManager.RecalculateActions();
 	}
 }

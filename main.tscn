@@ -71,7 +71,8 @@ text = "FPS:"
 m_TimeManager = NodePath("../TimeManager")
 m_Map = NodePath("../Map")
 
-[node name="CardDock" parent="." instance=ExtResource("5_bx245")]
+[node name="CardDock" parent="." node_paths=PackedStringArray("m_ApeManager") instance=ExtResource("5_bx245")]
+m_ApeManager = NodePath("../ApeManager")
 
 [node name="TimeManager" type="Node3D" parent="." node_paths=PackedStringArray("m_Sun", "m_Moon", "m_WorldEnvironment")]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)

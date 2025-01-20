@@ -526,20 +526,25 @@ public abstract partial class Project : Node3D
 
     }
 
+	public void ReAddPlayerWork()
+	{
+        for (int i = 0; i < m_PlayerActions.Count; i++)
+        {
+            //Add
+            if (m_PlayerActions[i].Item3)
+            {
+                QueueAddWork(m_PlayerActions[i].Item1, m_PlayerActions[i].Item2);
+            }
+            else
+            {
+                QueueRemoveWork(m_PlayerActions[i].Item1, m_PlayerActions[i].Item2);
+            }
+        }
+    }
+
 	public void ClearApeWork()
 	{
 		ClearQueuedWork();
-		for (int i = 0; i < m_PlayerActions.Count; i++)
-		{
-			//Add
-			if (m_PlayerActions[i].Item3)
-			{
-				QueueAddWork(m_PlayerActions[i].Item1, m_PlayerActions[i].Item2);
-			}
-			else
-			{
-                QueueRemoveWork(m_PlayerActions[i].Item1, m_PlayerActions[i].Item2);
-            }
-		}
+		ReAddPlayerWork();
 	}
 }
