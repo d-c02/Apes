@@ -113,6 +113,26 @@ namespace SmallApesv2
             {
                 ape target = (ape)node;
                 target.SetAction(ActionEnum.Idle);
+                target.SetSleeping(true);
+                card.RecalculateWork();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    public class pc_KillApe : PlayerDeckInterface
+    {
+        bool PlayerDeckInterface.DoCardAction(Card card, Godot.Node node)
+        {
+            if (node is ape)
+            {
+                ape target = (ape)node;
+                target.SetDead(true);
+                card.ProcessKilledApes();
                 card.RecalculateWork();
                 return true;
             }

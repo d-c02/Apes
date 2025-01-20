@@ -57,6 +57,8 @@ public partial class ape : CharacterBody3D
 
     private bool m_Sleeping = false;
 
+    private bool m_Dead = false;
+
     public override void _Ready()
     {
 
@@ -385,5 +387,20 @@ public partial class ape : CharacterBody3D
     public bool GetSleeping()
     {
         return m_Sleeping;
+    }
+
+    public void SetSleeping(bool sleeping)
+    {
+        m_Sleeping = sleeping;
+    }
+
+    public bool GetDead()
+    {
+        return m_Dead;
+    }
+
+    public void SetDead(bool dead)
+    {
+        m_Dead = dead;
     }
 }

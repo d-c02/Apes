@@ -193,4 +193,9 @@ public partial class Card : Area2D
 	{
 		m_ApeManager.RecalculateActions();
 	}
+
+	public void ProcessKilledApes()
+	{
+		m_ApeManager.ProcessKilledApes();
+	}
 }

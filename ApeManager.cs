@@ -534,4 +534,23 @@ public partial class ApeManager : Node
             m_Projects[entry.Key].ReAddPlayerWork();
         }
     }
+
+	public void ProcessKilledApes()
+	{
+		Stack<int> deadApes = new Stack<int>();
+		for (int i = 0; i < m_Apes.Count; i++)
+		{
+			if (m_Apes[i].GetDead())
+			{
+				deadApes.Push(i);
+			}
+		}
+
+		while (deadApes.Count > 0)
+		{
+			int ape = deadApes.Pop();
+			m_Apes[ape].QueueFree();
+			m_Apes.RemoveAt(ape);
+		}
+	}
 }

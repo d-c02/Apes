@@ -54,13 +54,13 @@ public partial class CardDock : Control
                 card.SetDeckInterface(new pc_FervorWorkOne());
                 card.Modulate = new Color(1, 0, 0);
             }
-            else if (i ==3)
+            else if (i == 3)
             {
                 card.SetDeckInterface(new pc_AnyWorkOne());
             }
             else
             {
-                card.SetDeckInterface(new pc_MakeApeIdle());
+                card.SetDeckInterface(new pc_KillApe());
                 card.Modulate = new Color(0, 0, 0);
             }
 
