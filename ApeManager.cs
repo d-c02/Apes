@@ -33,6 +33,17 @@ public partial class ApeManager : Node
 
 	private System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, ActionEnum> m_ActionTransformations;
 
+	[Export]
+	private GpuParticles3D m_FervorApeDeathParticles;
+
+    [Export]
+    private GpuParticles3D m_InsightApeDeathParticles;
+
+    [Export]
+    private GpuParticles3D m_InfluenceApeDeathParticles;
+
+	private const float m_ApeDeathParticlesVerticalOffset = 3.0f;
+
     public override void _Ready()
 	{
 		m_Apes = new List<ape>();
@@ -549,8 +560,48 @@ public partial class ApeManager : Node
 		while (deadApes.Count > 0)
 		{
 			int ape = deadApes.Pop();
-			m_Apes[ape].QueueFree();
+
+            m_Apes[ape].QueueFree();
 			m_Apes.RemoveAt(ape);
 		}
+	}
+
+	public void PlayApeDeathParticles(Transform3D transform, AspectEnum aspect)
+	{
+		Color col = new Godot.Color(0x000000);
+
+        Random rng = new Random();
+        transform = transform.Translated(new Vector3(0, m_ApeDeathParticlesVerticalOffset, 0));
+        if (aspect == AspectEnum.Fervor)
+		{
+			for (int i = 0; i < 20; i++)
+			{
+				m_FervorApeDeathParticles.Preprocess = 0.0f;
+				Vector3 Velocity = new Vector3((float)((rng.Next() / int.MaxValue) - 0.5) * 5, (float)(rng.Next() / int.MaxValue) * 5, (float)((rng.Next() / int.MaxValue) - 0.5) * 5);
+				m_FervorApeDeathParticles.EmitParticle(transform, Velocity, col, col, 1);
+			}
+		}
+		else if (aspect == AspectEnum.Insight)
+		{
+			for (int i = 0; i < 20; i++)
+			{
+                m_InsightApeDeathParticles.Preprocess = 0.0f;
+                Vector3 Velocity = new Vector3((float)((rng.Next() / int.MaxValue) - 0.5) * 5, (float)(rng.Next() / int.MaxValue) * 5, (float)((rng.Next() / int.MaxValue) - 0.5) * 5);
+                m_InsightApeDeathParticles.EmitParticle(transform, Velocity, col, col, 1);
+			}
+		}
+		else if (aspect == AspectEnum.Influence)
+		{
+			for (int i = 0; i < 20; i++)
+			{
+				m_InfluenceApeDeathParticles.Preprocess = 0.0f;
+				Vector3 Velocity = new Vector3((float)((rng.Next() / int.MaxValue) - 0.5) * 5, (float)(rng.Next() / int.MaxValue) * 5, (float)((rng.Next() / int.MaxValue) - 0.5) * 5);
+                m_InfluenceApeDeathParticles.EmitParticle(transform, Velocity, col, col, 1);
+			}
+		}
+		//m_ApeDeathParticles.GlobalPosition = position + new Vector3(0, m_ApeDeathParticlesVerticalOffset, 0);
+		//m_ApeDeathParticles.Emitting = true;
+
+
 	}
 }

@@ -2,6 +2,7 @@ using Godot;
 using SmallApesv2;
 using System;
 using System.Diagnostics;
+using static DeckInterface;
 using static SmallApesv2.PlayerDeckInterface;
 
 public partial class Card : Area2D
@@ -197,5 +198,10 @@ public partial class Card : Area2D
 	public void ProcessKilledApes()
 	{
 		m_ApeManager.ProcessKilledApes();
+	}
+
+	public void PlayApeDeathParticles(Transform3D transform, AspectEnum aspect)
+	{
+		m_ApeManager.PlayApeDeathParticles(transform, aspect);
 	}
 }

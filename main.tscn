@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://b1bslew5hf0jt"]
+[gd_scene load_steps=17 format=3 uid="uid://b1bslew5hf0jt"]
 
 [ext_resource type="PackedScene" uid="uid://dgkaq81xvvohp" path="res://map.tscn" id="1_v048q"]
 [ext_resource type="Script" path="res://CameraPivot.cs" id="2_cge44"]
@@ -6,6 +6,9 @@
 [ext_resource type="Script" path="res://FPSCounter.cs" id="4_6a7qh"]
 [ext_resource type="PackedScene" uid="uid://dafw6s30x58fl" path="res://CardDock.tscn" id="5_bx245"]
 [ext_resource type="Script" path="res://TimeManager.cs" id="6_wwxax"]
+[ext_resource type="PackedScene" uid="uid://ck6tj3ddlt7oi" path="res://Assets/Particles/FervorApeDeathParticles.tscn" id="7_4lnrj"]
+[ext_resource type="PackedScene" uid="uid://b5nf66fun2ymk" path="res://Assets/Particles/InfluenceApeDeathParticles.tscn" id="8_76nb3"]
+[ext_resource type="PackedScene" uid="uid://c1pw751b8ef02" path="res://Assets/Particles/InsightApeDeathParticles.tscn" id="9_0mrg6"]
 
 [sub_resource type="Gradient" id="Gradient_q2vqf"]
 offsets = PackedFloat32Array(0, 0.25, 0.5, 0.75, 1)
@@ -67,9 +70,12 @@ scale = Vector2(0.995, 0.995)
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "FPS:"
 
-[node name="ApeManager" parent="." node_paths=PackedStringArray("m_TimeManager", "m_Map") instance=ExtResource("3_pgkky")]
+[node name="ApeManager" parent="." node_paths=PackedStringArray("m_TimeManager", "m_Map", "m_FervorApeDeathParticles", "m_InsightApeDeathParticles", "m_InfluenceApeDeathParticles") instance=ExtResource("3_pgkky")]
 m_TimeManager = NodePath("../TimeManager")
 m_Map = NodePath("../Map")
+m_FervorApeDeathParticles = NodePath("../FervorApeDeathParticles")
+m_InsightApeDeathParticles = NodePath("../InsightApeDeathParticles")
+m_InfluenceApeDeathParticles = NodePath("../InfluenceApeDeathParticles")
 
 [node name="CardDock" parent="." node_paths=PackedStringArray("m_ApeManager") instance=ExtResource("5_bx245")]
 m_ApeManager = NodePath("../ApeManager")
@@ -98,3 +104,9 @@ visible = false
 light_color = Color(0.185661, 0.423302, 1, 1)
 shadow_enabled = true
 sky_mode = 1
+
+[node name="FervorApeDeathParticles" parent="." instance=ExtResource("7_4lnrj")]
+
+[node name="InfluenceApeDeathParticles" parent="." instance=ExtResource("8_76nb3")]
+
+[node name="InsightApeDeathParticles" parent="." instance=ExtResource("9_0mrg6")]

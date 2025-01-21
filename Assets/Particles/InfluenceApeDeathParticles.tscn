@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5nf66fun2ymk"]
+
+[ext_resource type="Material" uid="uid://nx53hj1u3xgb" path="res://Assets/Apes/InfluenceApeClay.tres" id="1_y7al6"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_edbek"]
+direction = Vector3(0, 1, 0)
+spread = 90.0
+initial_velocity_min = 1.0
+initial_velocity_max = 10.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_4l1po"]
+lightmap_size_hint = Vector2i(3, 2)
+material = ExtResource("1_y7al6")
+radius = 0.1
+height = 0.2
+
+[node name="InfluenceApeDeathParticles" type="GPUParticles3D"]
+emitting = false
+amount = 20
+lifetime = 0.5
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_edbek")
+draw_pass_1 = SubResource("SphereMesh_4l1po")

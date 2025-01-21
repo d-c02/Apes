@@ -132,6 +132,7 @@ namespace SmallApesv2
             {
                 ape target = (ape)node;
                 target.SetDead(true);
+                card.PlayApeDeathParticles(target.GlobalTransform, target.GetAspect());
                 card.ProcessKilledApes();
                 card.RecalculateWork();
                 return true;
