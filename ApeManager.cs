@@ -504,7 +504,8 @@ public partial class ApeManager : Node
 					ActionEnum.Work_One,
 					ActionEnum.Stun
 				};
-				m_Decks[deck] = new Deck(actions);
+				int[] time = { };
+				m_Decks[deck] = new Deck(actions, time);
 			}
 			else if (deck == DeckEnum.Insight_Default)
 			{
@@ -512,7 +513,8 @@ public partial class ApeManager : Node
                     ActionEnum.Idle,
                     ActionEnum.Work_One
                 };
-                m_Decks[deck] = new Deck(actions);
+                int[] time = { };
+                m_Decks[deck] = new Deck(actions, time);
             }
 			else if (deck == DeckEnum.Influence_Default)
 			{
@@ -520,7 +522,8 @@ public partial class ApeManager : Node
                     ActionEnum.Idle,
                     ActionEnum.Work_One
                 };
-                m_Decks[deck] = new Deck(actions);
+                int[] time = { };
+                m_Decks[deck] = new Deck(actions, time);
             }
 		}
 	}
@@ -533,6 +536,22 @@ public partial class ApeManager : Node
 	public int GetDeckSize(DeckEnum deck)
 	{
 		return m_Decks[deck].size;
+	}
+
+	public bool GetDeckActive(DeckEnum deck)
+	{
+		if (m_Decks[deck].timeIncrements.Length == 0)
+		{
+			return true;
+		}
+
+		if (m_Decks[deck].timeIncrements.Contains(m_TimeManager.GetTime()))
+		{
+			return true;
+		}
+
+		return false;
+		
 	}
 
 	public ActionEnum GetAction(DeckEnum deck, int action)

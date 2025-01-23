@@ -192,7 +192,10 @@ public partial class ape : CharacterBody3D
         ActionEnum result = ActionEnum.Idle;
         for (int i = 0; i < m_Decks.Count; i++)
         {
-            deckSum += m_ApeManager.GetDeckSize(m_Decks[i]);
+            if (m_ApeManager.GetDeckActive(m_Decks[i]))
+            {
+                deckSum += m_ApeManager.GetDeckSize(m_Decks[i]);
+            }
         }
 
         Random rnd = new Random();
@@ -201,11 +204,14 @@ public partial class ape : CharacterBody3D
 
         for (int i = 0; i < m_Decks.Count; i++)
         {
-            curSum += m_ApeManager.GetDeckSize(m_Decks[i]);
-            if (action < curSum)
+            if (m_ApeManager.GetDeckActive(m_Decks[i]))
             {
-                result = m_ApeManager.GetAction(m_Decks[i], action - (curSum - m_ApeManager.GetDeckSize(m_Decks[i])));
-                break;
+                curSum += m_ApeManager.GetDeckSize(m_Decks[i]);
+                if (action < curSum)
+                {
+                    result = m_ApeManager.GetAction(m_Decks[i], action - (curSum - m_ApeManager.GetDeckSize(m_Decks[i])));
+                    break;
+                }
             }
         }
 
@@ -367,7 +373,7 @@ public partial class ape : CharacterBody3D
 
     public bool IsWorking()
     {
-        return (m_Action == ActionEnum.Work_One || m_Action == ActionEnum.Work_Two || m_Action == ActionEnum.Work_Three);
+        return (GetAction() == ActionEnum.Work_One || GetAction() == ActionEnum.Work_Two || GetAction() == ActionEnum.Work_Three);
         //return m_ApeManager.HasTargetProject(m_Action);
     }
 
@@ -472,6 +478,7 @@ public partial class ape : CharacterBody3D
         if (m_ActionOverride != ActionEnum.None)
         {
             m_Sleeping = false;
+            SetActionSprite(m_Action);
         }
         SetActionOverride(ActionEnum.None);
     }

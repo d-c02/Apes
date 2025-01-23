@@ -48,10 +48,11 @@ public interface DeckInterface
 
     public struct Deck
     {
-        public Deck(ActionEnum[] actions)
+        public Deck(ActionEnum[] actions, int[] time)
         {
             Actions = actions;
             size = Actions.Length;
+            timeIncrements = time;
         }
 
         public ActionEnum GetAction(int action)
@@ -62,5 +63,7 @@ public interface DeckInterface
         ActionEnum[] Actions;
 
         public int size;
+
+        public int[] timeIncrements;
     }
 }
