@@ -42,7 +42,11 @@ public partial class ape : CharacterBody3D
 
     private ActionEnum m_Action = ActionEnum.Idle;
 
+    private ActionEnum m_ActionOverride = ActionEnum.None;
+
     private ProjectEnum m_TargetProject;
+
+    private ape m_TargetApe;
 
     private int m_Spite = 5;
 
@@ -207,7 +211,14 @@ public partial class ape : CharacterBody3D
 
         result = m_ApeManager.ApplyActionTransformations(m_Aspect, result);
 
-        SetActionSprite(result);
+        if (m_ActionOverride == ActionEnum.None)
+        {
+            SetActionSprite(result);
+        }
+        else
+        {
+            SetActionSprite(m_ActionOverride);
+        }
         return result;
     }
 
@@ -262,16 +273,25 @@ public partial class ape : CharacterBody3D
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InsightThree.png");
             }
         }
+        else if (action == ActionEnum.Stun)
+        {
+            m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/Stun.png");
+        }
     }
 
 
     public ActionEnum GetAction()
     {
+        if (m_ActionOverride != ActionEnum.None)
+        {
+            return m_ActionOverride;
+        }
         return m_Action;
     }
     
     public void SetAction(ActionEnum action)
     {
+        SetActionOverride(ActionEnum.None);
         m_Action = action;
         SetActionSprite(m_Action);
     }
@@ -293,7 +313,8 @@ public partial class ape : CharacterBody3D
     public void StartNewPhase()
     {
         m_ReadyForNextPhase = false;
-        
+        m_ActionOverride = ActionEnum.None;
+
         if (m_ApeManager.GetTime() == 4)
         {
             m_Action = ActionEnum.Idle;
@@ -347,6 +368,7 @@ public partial class ape : CharacterBody3D
     public bool IsWorking()
     {
         return (m_Action == ActionEnum.Work_One || m_Action == ActionEnum.Work_Two || m_Action == ActionEnum.Work_Three);
+        //return m_ApeManager.HasTargetProject(m_Action);
     }
 
     public bool CanWorkTransition()
@@ -379,6 +401,24 @@ public partial class ape : CharacterBody3D
         return m_EnemyAspect;
     }
 
+    public AspectEnum GetWeakAspect()
+    {
+        if (m_Aspect == AspectEnum.Insight)
+        {
+            return AspectEnum.Fervor;
+        }
+        else if (m_Aspect == AspectEnum.Influence)
+        {
+            return AspectEnum.Insight;
+        }
+        else if (m_Aspect == AspectEnum.Fervor)
+        {
+            return AspectEnum.Fervor;
+        }
+
+        throw new Exception("No weak aspect");
+    }
+
     public void SetAnimState(string path, string set)
     {
         m_AnimationTree.Set(path, set);
@@ -402,5 +442,37 @@ public partial class ape : CharacterBody3D
     public void SetDead(bool dead)
     {
         m_Dead = dead;
+    }
+
+    public void SetTargetApe(ape Ape)
+    {
+        m_TargetApe = Ape;
+    }
+
+    public ape GetTargetApe()
+    {
+        return m_TargetApe;
+    }
+
+    public void SetActionOverride(ActionEnum actionOverride)
+    {
+        if (actionOverride == ActionEnum.None)
+        {
+            SetActionSprite(m_Action);
+        }
+        else
+        {
+            SetActionSprite(actionOverride);
+        }
+        m_ActionOverride = actionOverride;
+    }
+
+    public void ResetActionOverride()
+    {
+        if (m_ActionOverride != ActionEnum.None)
+        {
+            m_Sleeping = false;
+        }
+        SetActionOverride(ActionEnum.None);
     }
 }

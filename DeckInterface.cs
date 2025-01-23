@@ -10,10 +10,12 @@ public interface DeckInterface
 
     public enum ActionEnum
     {
+        None,
         Idle,
         Work_One,
         Work_Two,
-        Work_Three
+        Work_Three,
+        Stun
     };
 
     public enum PlayerActionEnum

@@ -106,7 +106,10 @@ shadow_enabled = true
 sky_mode = 1
 
 [node name="FervorApeDeathParticles" parent="." instance=ExtResource("7_4lnrj")]
+visibility_aabb = AABB(-400, -400, -400, 800, 800, 800)
 
 [node name="InfluenceApeDeathParticles" parent="." instance=ExtResource("8_76nb3")]
+visibility_aabb = AABB(-400, -400, -400, 800, 800, 800)
 
 [node name="InsightApeDeathParticles" parent="." instance=ExtResource("9_0mrg6")]
+visibility_aabb = AABB(-400, -400, -400, 800, 800, 800)
