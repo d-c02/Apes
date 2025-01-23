@@ -413,7 +413,7 @@ public partial class ape : CharacterBody3D
         }
         else if (m_Aspect == AspectEnum.Fervor)
         {
-            return AspectEnum.Fervor;
+            return AspectEnum.Influence;
         }
 
         throw new Exception("No weak aspect");

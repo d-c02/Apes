@@ -100,7 +100,7 @@ public partial class ApeManager : Node
 
 		m_TargetApes[ActionEnum.Stun] = new List<ApeTargetAspectEnum>();
 		m_TargetApes[ActionEnum.Stun].Add(ApeTargetAspectEnum.Enemy);
-        m_TargetApes[ActionEnum.Stun].Add(ApeTargetAspectEnum.Self);
+        m_TargetApes[ActionEnum.Stun].Add(ApeTargetAspectEnum.Weak);
     }
 
 	public bool HasTargetProject(ActionEnum action)
