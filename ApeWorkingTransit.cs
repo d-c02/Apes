@@ -37,6 +37,7 @@ public partial class ApeWorkingTransit : State
 
     public override void Enter()
     {
+        m_Ape.SetReadyForNextPhase(false);
         m_Ape.SetAnimState("parameters/BodyAnimGate/transition_request", "Walking");
         Vector2I SlotOffset = m_ApeManager.GetOpenSlot(m_Ape.GetTargetProject());
         if (SlotOffset.X == -1 || SlotOffset.Y == -1)

@@ -215,7 +215,10 @@ public partial class ape : CharacterBody3D
             }
         }
 
-        result = m_ApeManager.ApplyActionTransformations(m_Aspect, result);
+        if (m_ApeManager.ApplyActionTransformations(m_Aspect, result) != ActionEnum.None)
+        {
+            m_ActionOverride = m_ApeManager.ApplyActionTransformations(m_Aspect, result);
+        }
 
         if (m_ActionOverride == ActionEnum.None)
         {

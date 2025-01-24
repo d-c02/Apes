@@ -33,7 +33,7 @@ public partial class ApeManager : Node
 
     private int m_FervorProjectIndex;
 
-	private System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, ActionEnum> m_ActionTransformations;
+	private System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>> m_ActionTransformations;
 
 	private enum ActionTargetsEnum { None, Project, Ape, Project_All, Ape_All };
 
@@ -60,7 +60,7 @@ public partial class ApeManager : Node
 		m_ApesWorkOrder = new List<int>();
 		m_Projects = new System.Collections.Generic.Dictionary<ProjectEnum, Project>();
 		m_DeadProjectIDs = new List<ProjectEnum>();
-		m_ActionTransformations = new System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, ActionEnum>();
+		m_ActionTransformations = new System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>>();
 
 		PrepareActionTargets();
 		PrepareTargetApes();
@@ -154,6 +154,7 @@ public partial class ApeManager : Node
 	{
 
 		m_TimeManager.IncrementTime();
+		UpdateActionTransformations();
 
         foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)
         {
@@ -737,9 +738,9 @@ public partial class ApeManager : Node
 		return m_TimeManager.GetTime();
 	}
 
-	public void CreateDayActionTransformation(AspectEnum aspect, ActionEnum action, ActionEnum resultAction)
+	public void CreateDayActionTransformation(AspectEnum aspect, ActionEnum action, ActionEnum resultAction, int lifetime)
 	{
-		m_ActionTransformations.Add(new Tuple<AspectEnum, ActionEnum>(aspect, action), resultAction);
+		m_ActionTransformations.Add(new Tuple<AspectEnum, ActionEnum>(aspect, action), new Tuple<ActionEnum, int>(resultAction, lifetime));
 	}
 
 	public void RemoveDayActionTransformation(AspectEnum aspect, ActionEnum action)
@@ -756,11 +757,32 @@ public partial class ApeManager : Node
 		Tuple<AspectEnum, ActionEnum> actionTuple = new Tuple<AspectEnum, ActionEnum>(aspect, action);
 		if (m_ActionTransformations.ContainsKey(actionTuple))
 		{
-			return m_ActionTransformations[actionTuple];
+			return m_ActionTransformations[actionTuple].Item1;
 		}
 		else
 		{
-			return action;
+			return ActionEnum.None;
+		}
+	}
+
+	public void UpdateActionTransformations()
+	{
+		List<Tuple<AspectEnum, ActionEnum>> transforms = new List<Tuple<AspectEnum, ActionEnum>>();
+        foreach (KeyValuePair<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>> entry in m_ActionTransformations)
+		{
+			if (entry.Value.Item2 >= 0)
+			{
+				transforms.Add(entry.Key);
+			}
+			else
+			{
+				m_ActionTransformations[entry.Key] = new Tuple<ActionEnum, int>(entry.Value.Item1, entry.Value.Item2 - 1);
+			}
+		}
+
+		for (int i = 0; i < transforms.Count; i++)
+		{
+			m_ActionTransformations.Remove(transforms[i]);
 		}
 	}
 

@@ -38,6 +38,7 @@ sky_material = SubResource("ProceduralSkyMaterial_hm7jh")
 [sub_resource type="Environment" id="Environment_c7exl"]
 background_mode = 2
 sky = SubResource("Sky_qc7si")
+fog_sky_affect = 0.385
 
 [node name="Main" type="Node3D"]
 
