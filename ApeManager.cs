@@ -328,7 +328,7 @@ public partial class ApeManager : Node
                 {
                     if (value == ApeTargetAspectEnum.Self)
                     {
-                        if (index > ApeDict[m_Apes[i].GetAspect()].Count)
+                        if (index >= ApeDict[m_Apes[i].GetAspect()].Count)
 						{
 							index -= ApeDict[m_Apes[i].GetAspect()].Count;
                         }
@@ -340,7 +340,7 @@ public partial class ApeManager : Node
                     }
                     else if (value == ApeTargetAspectEnum.Enemy)
                     {
-                        if (index > ApeDict[m_Apes[i].GetEnemyAspect()].Count)
+                        if (index >= ApeDict[m_Apes[i].GetEnemyAspect()].Count)
                         {
                             index -= ApeDict[m_Apes[i].GetEnemyAspect()].Count;
                         }
@@ -352,7 +352,7 @@ public partial class ApeManager : Node
                     }
                     else if (value == ApeTargetAspectEnum.Weak)
                     {
-                        if (index > ApeDict[m_Apes[i].GetWeakAspect()].Count)
+                        if (index >= ApeDict[m_Apes[i].GetWeakAspect()].Count)
                         {
                             index -= ApeDict[m_Apes[i].GetWeakAspect()].Count;
                         }
