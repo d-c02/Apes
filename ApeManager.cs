@@ -19,6 +19,8 @@ public partial class ApeManager : Node
 
 	private List<ape> m_Apes;
 
+	private List<int> m_ApesWorkOrder;
+
 	private System.Collections.Generic.Dictionary<ProjectEnum, Project> m_Projects;
 
 	private List<ProjectEnum> m_DeadProjectIDs;
@@ -33,7 +35,7 @@ public partial class ApeManager : Node
 
 	private System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, ActionEnum> m_ActionTransformations;
 
-	private enum ActionTargetsEnum {None,  Project, Ape};
+	private enum ActionTargetsEnum { None, Project, Ape, Project_All, Ape_All };
 
 	private enum ApeTargetAspectEnum {Self, Enemy, Weak}
 
@@ -55,6 +57,7 @@ public partial class ApeManager : Node
     public override void _Ready()
 	{
 		m_Apes = new List<ape>();
+		m_ApesWorkOrder = new List<int>();
 		m_Projects = new System.Collections.Generic.Dictionary<ProjectEnum, Project>();
 		m_DeadProjectIDs = new List<ProjectEnum>();
 		m_ActionTransformations = new System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, ActionEnum>();
@@ -92,6 +95,10 @@ public partial class ApeManager : Node
 
 		//Ape
 		m_ActionTargets[ActionEnum.Stun] = ActionTargetsEnum.Ape;
+
+		//Project_All
+
+		//Ape_All
     }
 
 	private void PrepareTargetApes()
@@ -173,12 +180,13 @@ public partial class ApeManager : Node
             m_Apes[i].StartNewPhase();
         }
 		DrawTargets();
+		OrderApes();
         QueueActions();
     }
 
-	//This function REALLY REALLY sucks. Fix it later
+    //This function REALLY REALLY sucks. Fix it later
 
-	private void DrawTargets()
+    private void DrawTargets()
 	{
         System.Collections.Generic.Dictionary<AspectEnum, List<ProjectEnum>> ProjectDict = new System.Collections.Generic.Dictionary<AspectEnum, List<ProjectEnum>>();
 
@@ -357,10 +365,71 @@ public partial class ApeManager : Node
 
 				m_Apes[i].SetTargetApe(m_Apes[targetApe]);
             }
+			else if (m_ActionTargets[m_Apes[i].GetAction()] == ActionTargetsEnum.Project_All)
+			{
+
+			}
+			else if (m_ActionTargets[m_Apes[i].GetAction()] == ActionTargetsEnum.Ape_All)
+			{
+
+			}
         }
     }
 
-	private void PruneProjects()
+    private void OrderApes()
+    {
+		m_ApesWorkOrder.Clear();
+
+		System.Collections.Generic.Dictionary<ActionTargetsEnum, List<int>> apeTargetsDict = new System.Collections.Generic.Dictionary<ActionTargetsEnum, List<int>>();
+
+		//In order for no particular reason
+		apeTargetsDict[ActionTargetsEnum.Ape_All] = new List<int>();
+        apeTargetsDict[ActionTargetsEnum.Project_All] = new List<int>();
+        apeTargetsDict[ActionTargetsEnum.Ape] = new List<int>();
+        apeTargetsDict[ActionTargetsEnum.Project] = new List<int>();
+        apeTargetsDict[ActionTargetsEnum.None] = new List<int>();
+
+		List<int> apes = new List<int>();
+
+        for (int i = 0; i < m_Apes.Count; i++)
+		{
+			apes.Add(i);
+		}
+
+        Random rnd = new Random();
+		apes.OrderBy(x => rnd.Next());
+		for (int i = 0; i < apes.Count; i++)
+		{
+			apeTargetsDict[m_ActionTargets[m_Apes[apes[i]].GetAction()]].Add(apes[i]);
+		}
+
+		for (int i = 0; i < apeTargetsDict[ActionTargetsEnum.Ape_All].Count; i++)
+		{
+			m_ApesWorkOrder.Add(apeTargetsDict[ActionTargetsEnum.Ape_All][i]);
+		}
+
+        for (int i = 0; i < apeTargetsDict[ActionTargetsEnum.Project_All].Count; i++)
+        {
+            m_ApesWorkOrder.Add(apeTargetsDict[ActionTargetsEnum.Project_All][i]);
+        }
+
+        for (int i = 0; i < apeTargetsDict[ActionTargetsEnum.Ape].Count; i++)
+        {
+            m_ApesWorkOrder.Add(apeTargetsDict[ActionTargetsEnum.Ape][i]);
+        }
+
+        for (int i = 0; i < apeTargetsDict[ActionTargetsEnum.Project].Count; i++)
+        {
+            m_ApesWorkOrder.Add(apeTargetsDict[ActionTargetsEnum.Project][i]);
+        }
+
+        for (int i = 0; i < apeTargetsDict[ActionTargetsEnum.None].Count; i++)
+        {
+            m_ApesWorkOrder.Add(apeTargetsDict[ActionTargetsEnum.None][i]);
+        }
+    }
+
+    private void PruneProjects()
 	{
 
 		for (int i = 0; i < m_DeadProjectIDs.Count; i++)
@@ -621,14 +690,14 @@ public partial class ApeManager : Node
 	//Fix inevitably big if statement chain
     public void QueueActions()
     {
-        for (int i = 0; i < m_Apes.Count; i++)
+        for (int i = 0; i < m_ApesWorkOrder.Count; i++)
         {
-            ActionEnum action = m_Apes[i].GetAction();
-            AspectEnum aspect = m_Apes[i].GetAspect();
+            ActionEnum action = m_Apes[m_ApesWorkOrder[i]].GetAction();
+            AspectEnum aspect = m_Apes[m_ApesWorkOrder[i]].GetAspect();
 
-			if (m_Apes[i].IsWorking())
+			if (m_Apes[m_ApesWorkOrder[i]].IsWorking())
 			{
-				m_Apes[i].SetWorkTransition(true);
+                m_Apes[m_ApesWorkOrder[i]].SetWorkTransition(true);
 			}
 
             if (action == ActionEnum.Idle)
@@ -637,20 +706,20 @@ public partial class ApeManager : Node
             }
             else if (action == ActionEnum.Work_One)
             {
-                QueueWork(aspect, 1, m_Apes[i].GetTargetProject());
+                QueueWork(aspect, 1, m_Apes[m_ApesWorkOrder[i]].GetTargetProject());
             }
             else if (action == ActionEnum.Work_Two)
             {
-                QueueWork(aspect, 2, m_Apes[i].GetTargetProject());
+                QueueWork(aspect, 2, m_Apes[m_ApesWorkOrder[i]].GetTargetProject());
             }
             else if (action == ActionEnum.Work_Three)
             {
-                QueueWork(aspect, 3, m_Apes[i].GetTargetProject());
+                QueueWork(aspect, 3, m_Apes[m_ApesWorkOrder[i]].GetTargetProject());
             }
 			else if (action == ActionEnum.Stun)
 			{
-				m_Apes[i].GetTargetApe().SetActionOverride(ActionEnum.Idle);
-				m_Apes[i].GetTargetApe().SetSleeping(true);
+                m_Apes[m_ApesWorkOrder[i]].GetTargetApe().SetActionOverride(ActionEnum.Idle);
+                m_Apes[m_ApesWorkOrder[i]].GetTargetApe().SetSleeping(true);
 			}
 		}
 	}
@@ -732,7 +801,15 @@ public partial class ApeManager : Node
 
             m_Apes[ape].QueueFree();
 			m_Apes.RemoveAt(ape);
-		}
+            m_ApesWorkOrder.Remove(ape);
+            for (int i = 0; i < m_ApesWorkOrder.Count; i++)
+            {
+                if (m_ApesWorkOrder[i] > ape)
+                {
+                    m_ApesWorkOrder[i]--;
+                }
+            }
+        }
 	}
 
 	public void PlayApeDeathParticles(Transform3D transform, AspectEnum aspect)
