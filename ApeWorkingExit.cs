@@ -35,7 +35,7 @@ public partial class ApeWorkingExit : State
 
     private ApeManager m_ApeManager;
 
-    const float m_MaxStuckTime = 1.0f;
+    const float m_MaxStuckTime = 2.0f;
     private float m_StuckTime = 0.0f;
 
     public override void Enter()

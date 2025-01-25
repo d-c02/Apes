@@ -34,8 +34,9 @@ public partial class ApeManager : Node
     private int m_FervorProjectIndex;
 
 	private System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>> m_ActionTransformations;
+    private System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>> m_ThisTurnActionTransformations;
 
-	private enum ActionTargetsEnum { None, Project, Ape, Project_All, Ape_All };
+    private enum ActionTargetsEnum { None, Project, Ape, Project_All, Ape_All };
 
 	private enum ApeTargetAspectEnum {Self, Enemy, Weak}
 
@@ -61,8 +62,9 @@ public partial class ApeManager : Node
 		m_Projects = new System.Collections.Generic.Dictionary<ProjectEnum, Project>();
 		m_DeadProjectIDs = new List<ProjectEnum>();
 		m_ActionTransformations = new System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>>();
+		m_ThisTurnActionTransformations = new System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>>();
 
-		PrepareActionTargets();
+        PrepareActionTargets();
 		PrepareTargetApes();
 
         m_Map.Generate();
@@ -99,6 +101,7 @@ public partial class ApeManager : Node
 		//Project_All
 
 		//Ape_All
+		m_ActionTargets[ActionEnum.Idle_To_One_Transformation] = ActionTargetsEnum.Ape_All;
     }
 
 	private void PrepareTargetApes()
@@ -108,6 +111,9 @@ public partial class ApeManager : Node
 		m_TargetApes[ActionEnum.Stun] = new List<ApeTargetAspectEnum>();
 		m_TargetApes[ActionEnum.Stun].Add(ApeTargetAspectEnum.Enemy);
         m_TargetApes[ActionEnum.Stun].Add(ApeTargetAspectEnum.Weak);
+
+		m_TargetApes[ActionEnum.Idle_To_One_Transformation] = new List<ApeTargetAspectEnum>();
+        m_TargetApes[ActionEnum.Stun].Add(ApeTargetAspectEnum.Self);
     }
 
 	public bool HasTargetProject(ActionEnum action)
@@ -571,8 +577,7 @@ public partial class ApeManager : Node
 			{
 				ActionEnum[] actions = {
 					ActionEnum.Idle,
-					ActionEnum.Work_One,
-					ActionEnum.Stun
+					ActionEnum.Work_One
 				};
 				int[] time = { };
 				m_Decks[deck] = new Deck(actions, time);
@@ -581,7 +586,8 @@ public partial class ApeManager : Node
 			{
                 ActionEnum[] actions = {
                     ActionEnum.Idle,
-                    ActionEnum.Work_One
+                    ActionEnum.Work_One,
+					ActionEnum.Idle_To_One_Transformation
                 };
                 int[] time = { };
                 m_Decks[deck] = new Deck(actions, time);
@@ -696,7 +702,12 @@ public partial class ApeManager : Node
             ActionEnum action = m_Apes[m_ApesWorkOrder[i]].GetAction();
             AspectEnum aspect = m_Apes[m_ApesWorkOrder[i]].GetAspect();
 
-			if (m_Apes[m_ApesWorkOrder[i]].IsWorking())
+            if (ApplyActionTransformations(aspect, action) != ActionEnum.None)
+            {
+				m_Apes[m_ApesWorkOrder[i]].SetActionOverride(ApplyActionTransformations(aspect, action));
+            }
+
+            if (m_Apes[m_ApesWorkOrder[i]].IsWorking())
 			{
                 m_Apes[m_ApesWorkOrder[i]].SetWorkTransition(true);
 			}
@@ -721,6 +732,15 @@ public partial class ApeManager : Node
 			{
                 m_Apes[m_ApesWorkOrder[i]].GetTargetApe().SetActionOverride(ActionEnum.Idle);
                 m_Apes[m_ApesWorkOrder[i]].GetTargetApe().SetSleeping(true);
+				m_Apes[m_ApesWorkOrder[i]].GetTargetApe().SetReadyForNextPhase(true);
+
+            }
+			else if (action == ActionEnum.Idle_To_One_Transformation)
+			{
+				if (!m_ThisTurnActionTransformations.ContainsKey(new Tuple<AspectEnum, ActionEnum>(m_Apes[m_ApesWorkOrder[i]].GetAspect(), ActionEnum.Idle)))
+				{
+                    CreateActionTransformation(m_Apes[m_ApesWorkOrder[i]].GetAspect(), ActionEnum.Idle, ActionEnum.Work_One, 1);
+                }
 			}
 		}
 	}
@@ -738,9 +758,9 @@ public partial class ApeManager : Node
 		return m_TimeManager.GetTime();
 	}
 
-	public void CreateDayActionTransformation(AspectEnum aspect, ActionEnum action, ActionEnum resultAction, int lifetime)
+	public void CreateActionTransformation(AspectEnum aspect, ActionEnum action, ActionEnum resultAction, int lifetime)
 	{
-		m_ActionTransformations.Add(new Tuple<AspectEnum, ActionEnum>(aspect, action), new Tuple<ActionEnum, int>(resultAction, lifetime));
+		m_ThisTurnActionTransformations.Add(new Tuple<AspectEnum, ActionEnum>(aspect, action), new Tuple<ActionEnum, int>(resultAction, lifetime));
 	}
 
 	public void RemoveDayActionTransformation(AspectEnum aspect, ActionEnum action)
@@ -759,6 +779,10 @@ public partial class ApeManager : Node
 		{
 			return m_ActionTransformations[actionTuple].Item1;
 		}
+		else if (m_ThisTurnActionTransformations.ContainsKey(actionTuple))
+		{
+            return m_ThisTurnActionTransformations[actionTuple].Item1;
+        }
 		else
 		{
 			return ActionEnum.None;
@@ -767,7 +791,13 @@ public partial class ApeManager : Node
 
 	public void UpdateActionTransformations()
 	{
-		List<Tuple<AspectEnum, ActionEnum>> transforms = new List<Tuple<AspectEnum, ActionEnum>>();
+        foreach (KeyValuePair<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>> entry in m_ThisTurnActionTransformations)
+		{
+			m_ActionTransformations[entry.Key] = entry.Value;
+		}
+		m_ThisTurnActionTransformations.Clear();
+
+        List<Tuple<AspectEnum, ActionEnum>> transforms = new List<Tuple<AspectEnum, ActionEnum>>();
         foreach (KeyValuePair<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>> entry in m_ActionTransformations)
 		{
 			if (entry.Value.Item2 >= 0)
@@ -788,6 +818,8 @@ public partial class ApeManager : Node
 
 	public void RecalculateActions()
 	{
+		m_ThisTurnActionTransformations.Clear();
+
         foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)
         {
             m_Projects[entry.Key].ClearQueuedWork();
@@ -798,6 +830,7 @@ public partial class ApeManager : Node
 			m_Apes[i].ResetActionOverride();
 		}
 
+		UpdateActionTransformations();
 		QueueActions();
 
         foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)

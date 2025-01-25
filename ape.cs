@@ -215,10 +215,10 @@ public partial class ape : CharacterBody3D
             }
         }
 
-        if (m_ApeManager.ApplyActionTransformations(m_Aspect, result) != ActionEnum.None)
-        {
-            m_ActionOverride = m_ApeManager.ApplyActionTransformations(m_Aspect, result);
-        }
+        //if (m_ApeManager.ApplyActionTransformations(m_Aspect, result) != ActionEnum.None)
+        //{
+        //    m_ActionOverride = m_ApeManager.ApplyActionTransformations(m_Aspect, result);
+        //}
 
         if (m_ActionOverride == ActionEnum.None)
         {
@@ -286,6 +286,10 @@ public partial class ape : CharacterBody3D
         {
             m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/Stun.png");
         }
+        else if (action == ActionEnum.Idle_To_One_Transformation)
+        {
+            m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/IdleToWorkOne.png");
+        }
     }
 
 
@@ -328,6 +332,7 @@ public partial class ape : CharacterBody3D
         {
             m_Action = ActionEnum.Idle;
             SetActionSprite(ActionEnum.Idle);
+            SetReadyForNextPhase(true);
             m_WorkTransition = false;
             m_Sleeping = true;
         }
@@ -336,6 +341,8 @@ public partial class ape : CharacterBody3D
             m_Action = DrawAction();
             m_Sleeping = false;
         }
+
+
 
         ////Eventually refactor to have a list of actionenums in a dict that are ready to work
         //if (m_Action == ActionEnum.Idle)

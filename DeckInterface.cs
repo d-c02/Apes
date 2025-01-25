@@ -15,7 +15,8 @@ public interface DeckInterface
         Work_One,
         Work_Two,
         Work_Three,
-        Stun
+        Stun,
+        Idle_To_One_Transformation
     };
 
     public enum PlayerActionEnum

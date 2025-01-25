@@ -61,8 +61,8 @@ public partial class ApeIdle : State
     {
         if (!m_PrevSleeping && m_Ape.GetSleeping())
         {
-            m_PrevSleeping = true;
             m_Ape.SetReadyForNextPhase(true);
+            m_PrevSleeping = true;
             m_Ape.SetAnimState("parameters/BodyAnimGate/transition_request", "Sleeping");
             m_Ape.SetAnimState("parameters/EyeAnimGate/transition_request", "EyesClosed");
         }
