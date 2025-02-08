@@ -25,16 +25,8 @@ public partial class ApeManager : Node
 
 	private List<ProjectEnum> m_DeadProjectIDs;
 
-	private int m_IdolStatueProjectIndex;
-
-	private int m_InfluenceProjectIndex;
-
-    private int m_InsightProjectIndex;
-
-    private int m_FervorProjectIndex;
-
-	private System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>> m_ActionTransformations;
-    private System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>> m_ThisTurnActionTransformations;
+	private System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int, AspectEnum>> m_ActionTransformations;
+    private System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int, AspectEnum>> m_ThisTurnActionTransformations;
 
     private enum ActionTargetsEnum { None, Project, Ape, Project_All, Ape_All };
 
@@ -61,8 +53,8 @@ public partial class ApeManager : Node
 		m_ApesWorkOrder = new List<int>();
 		m_Projects = new System.Collections.Generic.Dictionary<ProjectEnum, Project>();
 		m_DeadProjectIDs = new List<ProjectEnum>();
-		m_ActionTransformations = new System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>>();
-		m_ThisTurnActionTransformations = new System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>>();
+		m_ActionTransformations = new System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int, AspectEnum>>();
+		m_ThisTurnActionTransformations = new System.Collections.Generic.Dictionary<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int, AspectEnum>>();
 
         PrepareActionTargets();
 		PrepareTargetApes();
@@ -78,7 +70,10 @@ public partial class ApeManager : Node
 
 		ConfigureDecks();
 
-		//DisplayServer.WindowSetMode(DisplayServer.WindowMode.ExclusiveFullscreen);
+        AssignJob(AspectEnum.Influence, DeckInterface.JobEnum.Influence_Priest);
+        AssignJob(AspectEnum.Insight, DeckInterface.JobEnum.Insight_Scientist);
+
+        //DisplayServer.WindowSetMode(DisplayServer.WindowMode.ExclusiveFullscreen);
     }
 
     private void PrepareActionTargets()
@@ -102,6 +97,7 @@ public partial class ApeManager : Node
 
 		//Ape_All
 		m_ActionTargets[ActionEnum.Idle_To_One_Transformation] = ActionTargetsEnum.Ape_All;
+		m_ActionTargets[ActionEnum.Fervor_To_Influence_Work_Transformation] = ActionTargetsEnum.Ape_All;
     }
 
 	private void PrepareTargetApes()
@@ -113,7 +109,10 @@ public partial class ApeManager : Node
         m_TargetApes[ActionEnum.Stun].Add(ApeTargetAspectEnum.Weak);
 
 		m_TargetApes[ActionEnum.Idle_To_One_Transformation] = new List<ApeTargetAspectEnum>();
-        m_TargetApes[ActionEnum.Stun].Add(ApeTargetAspectEnum.Self);
+        m_TargetApes[ActionEnum.Idle_To_One_Transformation].Add(ApeTargetAspectEnum.Self);
+
+		m_TargetApes[ActionEnum.Fervor_To_Influence_Work_Transformation] = new List<ApeTargetAspectEnum>();
+		m_TargetApes[ActionEnum.Fervor_To_Influence_Work_Transformation].Add(ApeTargetAspectEnum.Enemy);
     }
 
 	public bool HasTargetProject(ActionEnum action)
@@ -250,7 +249,6 @@ public partial class ApeManager : Node
         Random rnd = new Random();
         for (int i = 0; i < m_Apes.Count; i++)
         {
-
 			if (!m_ActionTargets.ContainsKey(m_Apes[i].GetAction()))
 			{
 				throw new Exception("No target for action " + m_Apes[i].GetAction().ToString());
@@ -258,54 +256,63 @@ public partial class ApeManager : Node
 
             if (m_ActionTargets[m_Apes[i].GetAction()] == ActionTargetsEnum.Project)
             {
-                List<int> SpiteProjects = new List<int>();
-                List<ProjectEnum> Projects = new List<ProjectEnum>();
-                int projectCount = 0;
-
-                ProjectEnum formerProject = m_Apes[i].GetTargetProject();
-                int numAvailableProjects = ProjectDict[m_Apes[i].GetAspect()].Count;
-                int numAvailableEnemyAspectProjects = ProjectDict[m_Apes[i].GetEnemyAspect()].Count;
-
-                if (numAvailableProjects > 0)
+                foreach (AspectEnum aspect in Enum.GetValues(typeof(AspectEnum)))
                 {
-                    for (int j = 0; j < numAvailableProjects; j++)
-                    {
-                        int projectSpite = m_Projects[ProjectDict[m_Apes[i].GetAspect()][j]].GetSpite(); //Sickening line of code
+					if (aspect != AspectEnum.Any)
+					{
+                        List<int> SpiteProjects = new List<int>();
+                        List<ProjectEnum> Projects = new List<ProjectEnum>();
+                        int projectCount = 0;
 
-                        projectCount += (10 - Math.Abs((m_Apes[i].GetSpite() - projectSpite)));
-                        SpiteProjects.Add(projectCount);
-                        Projects.Add(ProjectDict[m_Apes[i].GetAspect()][j]);
-                    }
+                        ProjectEnum formerProject = m_Apes[i].GetTargetProject();
+                        int numAvailableProjects = ProjectDict[aspect].Count;
+                        int numAvailableEnemyAspectProjects = ProjectDict[GetEnemyAspect(aspect)].Count;
 
-                    for (int j = 0; j < numAvailableEnemyAspectProjects; j++)
-                    {
-                        int projectSpite = m_Projects[ProjectDict[m_Apes[i].GetEnemyAspect()][j]].GetSpite(); //Sickening line of code
-
-                        //With this, an ape is more likely to counteract a non-spiteful project if they are spiteful and vice versa
-                        projectCount += (Math.Abs((m_Apes[i].GetSpite() - projectSpite) + 1));
-                        SpiteProjects.Add(projectCount);
-                        Projects.Add(ProjectDict[m_Apes[i].GetEnemyAspect()][j]);
-                    }
-
-                    int projectSelection = rnd.Next(1, projectCount + 1);
-
-                    for (int j = 0; j < SpiteProjects.Count; j++)
-                    {
-                        if (projectSelection <= SpiteProjects[j])
+                        if (numAvailableProjects > 0)
                         {
-                            m_Apes[i].SetTargetProject(Projects[j]);
-
-                            if (m_Apes[i].GetTargetProject() == formerProject)
+                            for (int j = 0; j < numAvailableProjects; j++)
                             {
-                                m_Apes[i].SetReadyForNextPhase(true);
+                                int projectSpite = m_Projects[ProjectDict[aspect][j]].GetSpite(); //Sickening line of code
+
+                                projectCount += (10 - Math.Abs((m_Apes[i].GetSpite() - projectSpite)));
+                                SpiteProjects.Add(projectCount);
+                                Projects.Add(ProjectDict[aspect][j]);
                             }
-                            break;
+
+                            for (int j = 0; j < numAvailableEnemyAspectProjects; j++)
+                            {
+                                int projectSpite = m_Projects[ProjectDict[GetEnemyAspect(aspect)][j]].GetSpite(); //Sickening line of code
+
+                                //With this, an ape is more likely to counteract a non-spiteful project if they are spiteful and vice versa
+                                projectCount += (Math.Abs((m_Apes[i].GetSpite() - projectSpite) + 1));
+                                SpiteProjects.Add(projectCount);
+                                Projects.Add(ProjectDict[GetEnemyAspect(aspect)][j]);
+                            }
+
+                            int projectSelection = rnd.Next(1, projectCount + 1);
+
+                            for (int j = 0; j < SpiteProjects.Count; j++)
+                            {
+                                if (projectSelection <= SpiteProjects[j])
+                                {
+                                    m_Apes[i].SetTargetProject(aspect, Projects[j]);
+
+									if (aspect == m_Apes[i].GetAspect())
+									{
+                                        if (m_Apes[i].GetTargetProject() == formerProject)
+                                        {
+                                            m_Apes[i].SetReadyForNextPhase(true);
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            m_Apes[i].SetAction(ActionEnum.Idle);
                         }
                     }
-                }
-                else
-                {
-                    m_Apes[i].SetAction(ActionEnum.Idle);
                 }
             }
 			if (m_ActionTargets[m_Apes[i].GetAction()] == ActionTargetsEnum.Ape)
@@ -555,6 +562,7 @@ public partial class ApeManager : Node
 
         projectInstance.GlobalPosition = new Vector3(projectInstance.GlobalPosition.X + projectInstance.GetDimensions().X - 1, projectInstance.GlobalPosition.Y, projectInstance.GlobalPosition.Z + projectInstance.GetDimensions().Y - 1);
 
+		projectInstance.SetApeManager(this);
         //projectInstance.UpdateVerticalPosition();
 
         m_Projects[project] = projectInstance;
@@ -570,7 +578,7 @@ public partial class ApeManager : Node
 	{
 		m_Decks = new System.Collections.Generic.Dictionary<DeckEnum, Deck>();
 
-        //for (int i = 0; i < Enum.GetNames(typeof(DeckEnum)).Length; i++)
+		//Instantiate decks here!
 		foreach (DeckEnum deck in Enum.GetValues(typeof(DeckEnum)))
 		{
 			if (deck == DeckEnum.Fervor_Default)
@@ -586,8 +594,7 @@ public partial class ApeManager : Node
 			{
                 ActionEnum[] actions = {
                     ActionEnum.Idle,
-                    ActionEnum.Work_One,
-					ActionEnum.Idle_To_One_Transformation
+                    ActionEnum.Work_One
                 };
                 int[] time = { };
                 m_Decks[deck] = new Deck(actions, time);
@@ -598,6 +605,24 @@ public partial class ApeManager : Node
                     ActionEnum.Idle,
                     ActionEnum.Work_One
                 };
+                int[] time = { };
+                m_Decks[deck] = new Deck(actions, time);
+            }
+			else if (deck == DeckEnum.Insight_Scientist)
+			{
+				ActionEnum[] actions =
+				{
+					ActionEnum.Idle_To_One_Transformation
+				};
+				int[] time = { };
+				m_Decks[deck] = new Deck(actions, time);
+			}
+			else if (deck == DeckEnum.Influence_Priest)
+			{
+				ActionEnum[] actions =
+				{
+					ActionEnum.Fervor_To_Influence_Work_Transformation
+				};
                 int[] time = { };
                 m_Decks[deck] = new Deck(actions, time);
             }
@@ -647,17 +672,27 @@ public partial class ApeManager : Node
             {
 				if (hasNextProject)
 				{
-                    m_Apes[i].SetTargetProject(nextProject);
+                    m_Apes[i].SetTargetProject(m_Apes[i].GetAspect(), nextProject);
                 }
 				else
 				{
-					m_Apes[i].SetTargetProject(ProjectEnum.None);
+					m_Apes[i].SetTargetProject(m_Apes[i].GetAspect(), ProjectEnum.None);
 				}
             }
         }
 
-        m_Projects[ID].QueueFree();
-        bool remove = m_Projects.Remove(ID);
+		if (m_Projects[ID].GetDestroyOnFinish())
+		{
+            m_Projects[ID].QueueFree();
+        }
+		else
+		{
+			m_Projects[ID].CompleteProject();
+
+        }
+        
+		
+		m_Projects.Remove(ID);
 		if (hasNextProject)
 		{
 			SpawnProject(nextProject, Coords);
@@ -707,10 +742,18 @@ public partial class ApeManager : Node
 				m_Apes[m_ApesWorkOrder[i]].SetActionOverride(ApplyActionTransformations(aspect, action));
             }
 
+			if (ApplyAspectTransformations(aspect, action) != AspectEnum.Any)
+			{
+				aspect = ApplyAspectTransformations(aspect, action);
+                m_Apes[m_ApesWorkOrder[i]].SetAspectOverride(aspect);
+            }
+
             if (m_Apes[m_ApesWorkOrder[i]].IsWorking())
 			{
                 m_Apes[m_ApesWorkOrder[i]].SetWorkTransition(true);
 			}
+
+            m_Apes[m_ApesWorkOrder[i]].UpdateActionSprite();
 
             if (action == ActionEnum.Idle)
             {
@@ -739,8 +782,15 @@ public partial class ApeManager : Node
 			{
 				if (!m_ThisTurnActionTransformations.ContainsKey(new Tuple<AspectEnum, ActionEnum>(m_Apes[m_ApesWorkOrder[i]].GetAspect(), ActionEnum.Idle)))
 				{
-                    CreateActionTransformation(m_Apes[m_ApesWorkOrder[i]].GetAspect(), ActionEnum.Idle, ActionEnum.Work_One, 1);
+                    CreateActionTransformation(m_Apes[m_ApesWorkOrder[i]].GetAspect(), ActionEnum.Idle, ActionEnum.Work_One, 1, AspectEnum.Any);
                 }
+			}
+			else if (action == ActionEnum.Fervor_To_Influence_Work_Transformation)
+			{
+				if (!m_ThisTurnActionTransformations.ContainsKey(new Tuple<AspectEnum, ActionEnum>(AspectEnum.Fervor, ActionEnum.Work_One)))
+				{
+					CreateActionTransformation(AspectEnum.Fervor, ActionEnum.Work_One, ActionEnum.Work_One, 1, AspectEnum.Influence);
+				}
 			}
 		}
 	}
@@ -758,9 +808,9 @@ public partial class ApeManager : Node
 		return m_TimeManager.GetTime();
 	}
 
-	public void CreateActionTransformation(AspectEnum aspect, ActionEnum action, ActionEnum resultAction, int lifetime)
+	public void CreateActionTransformation(AspectEnum aspect, ActionEnum action, ActionEnum resultAction, int lifetime, AspectEnum resultAspect)
 	{
-		m_ThisTurnActionTransformations.Add(new Tuple<AspectEnum, ActionEnum>(aspect, action), new Tuple<ActionEnum, int>(resultAction, lifetime));
+		m_ThisTurnActionTransformations.Add(new Tuple<AspectEnum, ActionEnum>(aspect, action), new Tuple<ActionEnum, int, AspectEnum>(resultAction, lifetime, resultAspect));
 	}
 
 	public void RemoveDayActionTransformation(AspectEnum aspect, ActionEnum action)
@@ -789,16 +839,34 @@ public partial class ApeManager : Node
 		}
 	}
 
+	public AspectEnum ApplyAspectTransformations(AspectEnum aspect, ActionEnum action)
+	{
+        Tuple<AspectEnum, ActionEnum> actionTuple = new Tuple<AspectEnum, ActionEnum>(aspect, action);
+        if (m_ActionTransformations.ContainsKey(actionTuple))
+        {
+            return m_ActionTransformations[actionTuple].Item3;
+        }
+        else if (m_ThisTurnActionTransformations.ContainsKey(actionTuple))
+        {
+            return m_ThisTurnActionTransformations[actionTuple].Item3;
+        }
+        else
+        {
+            return AspectEnum.Any;
+        }
+
+    }
+
 	public void UpdateActionTransformations()
 	{
-        foreach (KeyValuePair<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>> entry in m_ThisTurnActionTransformations)
+        foreach (KeyValuePair<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int, AspectEnum>> entry in m_ThisTurnActionTransformations)
 		{
 			m_ActionTransformations[entry.Key] = entry.Value;
 		}
 		m_ThisTurnActionTransformations.Clear();
 
         List<Tuple<AspectEnum, ActionEnum>> transforms = new List<Tuple<AspectEnum, ActionEnum>>();
-        foreach (KeyValuePair<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int>> entry in m_ActionTransformations)
+        foreach (KeyValuePair<Tuple<AspectEnum, ActionEnum>, Tuple<ActionEnum, int, AspectEnum>> entry in m_ActionTransformations)
 		{
 			if (entry.Value.Item2 >= 0)
 			{
@@ -806,7 +874,7 @@ public partial class ApeManager : Node
 			}
 			else
 			{
-				m_ActionTransformations[entry.Key] = new Tuple<ActionEnum, int>(entry.Value.Item1, entry.Value.Item2 - 1);
+				m_ActionTransformations[entry.Key] = new Tuple<ActionEnum, int, AspectEnum>(entry.Value.Item1, entry.Value.Item2 - 1, entry.Value.Item3);
 			}
 		}
 
@@ -828,10 +896,16 @@ public partial class ApeManager : Node
 		for (int i = 0; i < m_Apes.Count; i++)
 		{
 			m_Apes[i].ResetActionOverride();
+			m_Apes[i].ResetAspectOverride();
 		}
 
 		UpdateActionTransformations();
 		QueueActions();
+
+		for (int i = 0; i < m_Apes.Count; i++)
+		{
+            m_Apes[i].UpdateActionSprite();
+        }
 
         foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)
         {
@@ -908,4 +982,39 @@ public partial class ApeManager : Node
 
 
 	}
+
+	public bool AssignJob(AspectEnum aspect, JobEnum job)
+	{
+		
+		for (int i = 0; i < m_Apes.Count; i++)
+		{
+			if (m_Apes[i].GetAspect() == aspect && m_Apes[i].GetJob() == JobEnum.Unemployed)
+			{
+				m_Apes[i].SetJob(job);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public AspectEnum GetEnemyAspect(AspectEnum aspect)
+	{
+		if (aspect == AspectEnum.Fervor)
+		{
+			return AspectEnum.Insight;
+		}
+        else if (aspect == AspectEnum.Insight)
+        {
+            return AspectEnum.Influence;
+        }
+        else if (aspect == AspectEnum.Influence)
+        {
+            return AspectEnum.Fervor;
+        }
+		else
+		{
+			throw new Exception("No enemy aspect! Grahhh!!!");
+		}
+    }
 }

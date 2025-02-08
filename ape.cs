@@ -26,6 +26,8 @@ public partial class ape : CharacterBody3D
     AspectEnum m_Aspect = AspectEnum.Insight;
     AspectEnum m_EnemyAspect = AspectEnum.Influence;
 
+    AspectEnum m_AspectOverride = AspectEnum.Insight;
+
     [Export]
     Sprite3D m_ActionSprite;
 
@@ -44,14 +46,16 @@ public partial class ape : CharacterBody3D
 
     private ActionEnum m_ActionOverride = ActionEnum.None;
 
-    private ProjectEnum m_TargetProject;
+    //private ProjectEnum m_TargetProject;
+
+    private System.Collections.Generic.Dictionary<AspectEnum, ProjectEnum> m_TargetProjects;
 
     private ape m_TargetApe;
 
     private int m_Spite = 5;
 
     private bool m_WorkTransition = false;
-    private bool m_TargetProjectChanged = false;
+    //private bool m_TargetProjectChanged = false;
 
 
     private bool m_ReadyForNextPhase = false;
@@ -62,6 +66,8 @@ public partial class ape : CharacterBody3D
     private bool m_Sleeping = false;
 
     private bool m_Dead = false;
+
+    private JobEnum m_Job = JobEnum.Unemployed;
 
     public override void _Ready()
     {
@@ -115,9 +121,13 @@ public partial class ape : CharacterBody3D
             mouth.SetSurfaceOverrideMaterial(0, FervorMouth);
         }
 
+        m_AspectOverride = m_Aspect;
+
         m_Decks = new List<DeckEnum>();
         //_RunTimeScale = _AnimationTree.Get("parameters/Run/TimeScale/scale").As<AnimationNodeTimeScale>();
-        m_TargetProject = ProjectEnum.Unfinished_Idol;
+        //m_TargetProject = ProjectEnum.Unfinished_Idol;
+
+        m_TargetProjects = new Dictionary<AspectEnum, ProjectEnum>();
 
         SetAction(ActionEnum.Idle);
         m_ReadyForNextPhase = true;
@@ -239,45 +249,45 @@ public partial class ape : CharacterBody3D
         }
         else if (action == ActionEnum.Work_One)
         {
-            if (m_Aspect == AspectEnum.Fervor)
+            if (m_AspectOverride == AspectEnum.Fervor)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/FervorOne.png");
             }
-            if (m_Aspect == AspectEnum.Influence)
+            if (m_AspectOverride == AspectEnum.Influence)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InfluenceOne.png");
             }
-            if (m_Aspect == AspectEnum.Insight)
+            if (m_AspectOverride == AspectEnum.Insight)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InsightOne.png");
             }
         }
         else if (action == ActionEnum.Work_Two)
         {
-            if (m_Aspect == AspectEnum.Fervor)
+            if (m_AspectOverride == AspectEnum.Fervor)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/FervorTwo.png");
             }
-            if (m_Aspect == AspectEnum.Influence)
+            if (m_AspectOverride == AspectEnum.Influence)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InfluenceTwo.png");
             }
-            if (m_Aspect == AspectEnum.Insight)
+            if (m_AspectOverride == AspectEnum.Insight)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InsightTwo.png");
             }
         }
         else if (action == ActionEnum.Work_Three)
         {
-            if (m_Aspect == AspectEnum.Fervor)
+            if (m_AspectOverride == AspectEnum.Fervor)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/FervorThree.png");
             }
-            if (m_Aspect == AspectEnum.Influence)
+            if (m_AspectOverride == AspectEnum.Influence)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InfluenceThree.png");
             }
-            if (m_Aspect == AspectEnum.Insight)
+            if (m_AspectOverride == AspectEnum.Insight)
             {
                 m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/WorkIcons/InsightThree.png");
             }
@@ -290,8 +300,17 @@ public partial class ape : CharacterBody3D
         {
             m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/IdleToWorkOne.png");
         }
+        else if (action == ActionEnum.Fervor_To_Influence_Work_Transformation)
+        {
+            m_ActionSprite.Texture = (Texture2D)GD.Load("res://Assets/Apes/UI_Icons/FervorToInfluence.png");
+        }
     }
 
+
+    public void UpdateActionSprite()
+    {
+        SetActionSprite(m_ActionOverride);
+    }
 
     public ActionEnum GetAction()
     {
@@ -311,16 +330,21 @@ public partial class ape : CharacterBody3D
 
     public ProjectEnum GetTargetProject()
     {
-        return m_TargetProject;
+        if (!m_TargetProjects.ContainsKey(m_AspectOverride))
+        {
+            return ProjectEnum.None;
+        }
+        return m_TargetProjects[m_AspectOverride];
     }
 
-    public void SetTargetProject(ProjectEnum project)
+    public void SetTargetProject(AspectEnum aspect, ProjectEnum project)
     {
-        if (!(m_TargetProject == project))
+        if (!m_TargetProjects.ContainsKey(aspect) || !(m_TargetProjects[aspect] == project) && m_AspectOverride == aspect)
         {
-            m_TargetProjectChanged = true;
+            //m_TargetProjectChanged = true;
         }
-        m_TargetProject = project;
+
+        m_TargetProjects[aspect] = project;
     }
 
     public void StartNewPhase()
@@ -491,5 +515,42 @@ public partial class ape : CharacterBody3D
             SetActionSprite(m_Action);
         }
         SetActionOverride(ActionEnum.None);
+    }
+
+    
+
+
+    public void SetAspectOverride(AspectEnum aspect)
+    {
+        m_AspectOverride = aspect;
+    }
+
+    public void ResetAspectOverride()
+    {
+        m_AspectOverride = m_Aspect;
+        SetActionSprite(m_Action);
+    }
+
+    public void SetJob(JobEnum job)
+    {
+        if (job == JobEnum.Unemployed)
+        {
+
+        }
+        else if (job == JobEnum.Insight_Scientist)
+        {
+            AddDeck(DeckEnum.Insight_Scientist);
+            GetNode<Node3D>("Pivot/Ape/Armature/Skeleton3D/Head/Glasses2").Visible = true;
+        }
+        else if (job == JobEnum.Influence_Priest)
+        {
+            AddDeck(DeckEnum.Influence_Priest);
+            GetNode<Node3D>("Pivot/Ape/Armature/Skeleton3D/Head/PriestHat2").Visible = true;
+        }
+    }
+
+    public JobEnum GetJob()
+    {
+        return m_Job;
     }
 }

@@ -9,6 +9,7 @@ using System.ComponentModel.Design;
 public abstract partial class Project : Node3D
 {
     [Export] protected bool m_Persists = false;
+	[Export] protected bool m_DestroyOnFinish;
 	[Export] protected ProjectEnum m_NextProject = ProjectEnum.None;
     [Export] protected bool m_Destructible = false;
 	protected bool m_Finished = false;
@@ -16,6 +17,7 @@ public abstract partial class Project : Node3D
     protected int m_MaxStage = 1;
     protected int m_QueuedWork = 0;
 	protected int m_Work = 0;
+	protected ApeManager m_ApeManager;
 
 	[Export] protected int m_MaxWork = 1;
 	[Export] protected int m_NumWorkPerRow = 5;
@@ -151,7 +153,10 @@ public abstract partial class Project : Node3D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
-		BillboardWork();
+		if (m_Finished == false)
+		{
+			BillboardWork();
+		}
 	}
 
 	public void QueueWork(AspectEnum aspect, int amount, bool PlayerAction = false)
@@ -478,29 +483,27 @@ public abstract partial class Project : Node3D
 
 	protected void BillboardWork()
 	{
+            Vector3 CameraPos = GetViewport().GetCamera3D().GlobalPosition;
+
+            //Faces camera no matter what 
+            //m_WorkAnchor.LookAt(CameraPos);
+
+            //Faces camera rotation but not position
+            Vector3 cameraBasisZ = GetViewport().GetCamera3D().GlobalTransform.Basis.Z;
+            float cameraPosY = GetViewport().GetCamera3D().GlobalPosition.Y;
+            m_WorkAnchor.LookAt(new Vector3(m_WorkAnchor.GlobalPosition.X - cameraBasisZ.X, m_WorkAnchor.GlobalPosition.Y, m_WorkAnchor.GlobalPosition.Z - cameraBasisZ.Z));
 
 
-        Vector3 CameraPos = GetViewport().GetCamera3D().GlobalPosition;
-
-		//Faces camera no matter what 
-		//m_WorkAnchor.LookAt(CameraPos);
-
-        //Faces camera rotation but not position
-        Vector3 cameraBasisZ = GetViewport().GetCamera3D().GlobalTransform.Basis.Z;
-        float cameraPosY = GetViewport().GetCamera3D().GlobalPosition.Y;
-        m_WorkAnchor.LookAt(new Vector3(m_WorkAnchor.GlobalPosition.X - cameraBasisZ.X, m_WorkAnchor.GlobalPosition.Y, m_WorkAnchor.GlobalPosition.Z - cameraBasisZ.Z));
-
-
-		//Makes work disappear when camera comes close
-        Vector2 CameraDist = new Vector2(GlobalPosition.X - CameraPos.X, GlobalPosition.Z - CameraPos.Z);
-        if (CameraDist.Length() < m_DisappearProximity)
-        {
-            m_WorkAnchor.Visible = false;
-        }
-        else
-        {
-            m_WorkAnchor.Visible = true;
-        }
+            //Makes work disappear when camera comes close
+            Vector2 CameraDist = new Vector2(GlobalPosition.X - CameraPos.X, GlobalPosition.Z - CameraPos.Z);
+            if (CameraDist.Length() < m_DisappearProximity)
+            {
+                m_WorkAnchor.Visible = false;
+            }
+            else
+            {
+                m_WorkAnchor.Visible = true;
+            }
     }
 
 	public WorkAspectEnum GetWorkAspect()
@@ -546,5 +549,20 @@ public abstract partial class Project : Node3D
 	{
 		ClearQueuedWork();
 		ReAddPlayerWork();
+	}
+
+	public void SetApeManager(ApeManager apeManager)
+	{
+		m_ApeManager = apeManager;
+	}
+
+	public bool GetDestroyOnFinish()
+	{
+		return m_DestroyOnFinish;
+	}
+
+	public void CompleteProject()
+	{
+		m_WorkAnchor.Visible = false;
 	}
 }

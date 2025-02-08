@@ -23,7 +23,7 @@ namespace SmallApesv2
             if (node is Project)
             {
                 Project project = (Project)node;
-                if (project.GetWorkAspect() == WorkAspectEnum.Influence)
+                if (project.GetWorkAspect() == WorkAspectEnum.Influence || project.IsFinished())
                 {
                     return false;
                 }
@@ -47,7 +47,7 @@ namespace SmallApesv2
             if (node is Project)
             {
                 Project project = (Project)node;
-                if (project.GetWorkAspect() == WorkAspectEnum.Fervor)
+                if (project.GetWorkAspect() == WorkAspectEnum.Fervor || project.IsFinished())
                 {
                     return false;
                 }
@@ -71,7 +71,7 @@ namespace SmallApesv2
             if (node is Project)
             {
                 Project project = (Project)node;
-                if (project.GetWorkAspect() == WorkAspectEnum.Insight)
+                if (project.GetWorkAspect() == WorkAspectEnum.Insight || project.IsFinished())
                 {
                     return false;
                 }
@@ -95,6 +95,10 @@ namespace SmallApesv2
             if (node is Project)
             {
                 Project project = (Project)node;
+                if (project.IsFinished())
+                {
+                    return false;
+                }
                 project.QueueWork(AspectEnum.Any, 1, true);
                 return true;
             }

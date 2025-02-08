@@ -7,11 +7,14 @@ public partial class ApeWorking : State
     [Export] ape m_Ape;
     private ApeManager m_ApeManager;
 
+    ProjectEnum m_TargetProject = ProjectEnum.None;
+
     public override void Enter()
     {
         m_Ape.SetReadyForNextPhase(true);
         m_Ape.LookAt(m_ApeManager.GetGlobalPosition(m_Ape.GetTargetProject()));
         SetWorkAnim();
+        m_TargetProject = m_Ape.GetTargetProject();
     }
 
     public override void Exit()
@@ -37,7 +40,7 @@ public partial class ApeWorking : State
 
     public override void PhysicsUpdate(double delta)
     {
-        if (!m_Ape.IsWorking() || !m_Ape.IsReadyForNextPhase())
+        if (!m_Ape.IsWorking() || !m_Ape.IsReadyForNextPhase() || m_TargetProject != m_Ape.GetTargetProject())
         {
             EmitSignal(SignalName.Transitioned, this.Name + "", "ApeWorkingExit");
         }

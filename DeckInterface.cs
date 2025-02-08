@@ -16,7 +16,8 @@ public interface DeckInterface
         Work_Two,
         Work_Three,
         Stun,
-        Idle_To_One_Transformation
+        Idle_To_One_Transformation,
+        Fervor_To_Influence_Work_Transformation
     };
 
     public enum PlayerActionEnum
@@ -31,7 +32,9 @@ public interface DeckInterface
     {
         Fervor_Default,
         Insight_Default,
-        Influence_Default
+        Influence_Default,
+        Insight_Scientist,
+        Influence_Priest
     };
 
     public enum ProjectEnum
@@ -46,6 +49,14 @@ public interface DeckInterface
         Lab,
         Workshop
     };
+
+    public enum JobEnum
+    {
+        Unemployed,
+        Insight_Scientist,
+        Influence_Priest,
+        Fervor_Craftsman
+    }
 
     public struct Deck
     {
