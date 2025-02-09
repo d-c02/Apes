@@ -17,7 +17,8 @@ public interface DeckInterface
         Work_Three,
         Stun,
         Idle_To_One_Transformation,
-        Fervor_To_Influence_Work_Transformation
+        Fervor_To_Influence_Work_Transformation,
+        Work_Two_All
     };
 
     public enum PlayerActionEnum
@@ -34,7 +35,8 @@ public interface DeckInterface
         Insight_Default,
         Influence_Default,
         Insight_Scientist,
-        Influence_Priest
+        Influence_Priest,
+        Fervor_Craftsman
     };
 
     public enum ProjectEnum

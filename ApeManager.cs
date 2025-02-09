@@ -70,9 +70,6 @@ public partial class ApeManager : Node
 
 		ConfigureDecks();
 
-        AssignJob(AspectEnum.Influence, DeckInterface.JobEnum.Influence_Priest);
-        AssignJob(AspectEnum.Insight, DeckInterface.JobEnum.Insight_Scientist);
-
         //DisplayServer.WindowSetMode(DisplayServer.WindowMode.ExclusiveFullscreen);
     }
 
@@ -94,6 +91,7 @@ public partial class ApeManager : Node
 		m_ActionTargets[ActionEnum.Stun] = ActionTargetsEnum.Ape;
 
 		//Project_All
+		m_ActionTargets[ActionEnum.Work_Two_All] = ActionTargetsEnum.Project_All;
 
 		//Ape_All
 		m_ActionTargets[ActionEnum.Idle_To_One_Transformation] = ActionTargetsEnum.Ape_All;
@@ -585,7 +583,8 @@ public partial class ApeManager : Node
 			{
 				ActionEnum[] actions = {
 					ActionEnum.Idle,
-					ActionEnum.Work_One
+					ActionEnum.Work_One,
+					ActionEnum.Work_Two_All
 				};
 				int[] time = { };
 				m_Decks[deck] = new Deck(actions, time);
@@ -626,6 +625,15 @@ public partial class ApeManager : Node
                 int[] time = { };
                 m_Decks[deck] = new Deck(actions, time);
             }
+			else if (deck == DeckEnum.Fervor_Craftsman)
+			{
+				ActionEnum[] actions = 
+				{ 
+					ActionEnum.Work_Two_All 
+				};
+				int[] time = { };
+				m_Decks[deck] = new Deck(actions, time);
+			}
 		}
 	}
 
@@ -791,6 +799,37 @@ public partial class ApeManager : Node
 				{
 					CreateActionTransformation(AspectEnum.Fervor, ActionEnum.Work_One, ActionEnum.Work_One, 1, AspectEnum.Influence);
 				}
+			}
+			else if (action == ActionEnum.Work_Two_All)
+			{
+				foreach (KeyValuePair<ProjectEnum, Project> entry in m_Projects)
+				{
+					if (aspect == AspectEnum.Insight)
+					{
+						if (entry.Value.GetWorkAspect() != WorkAspectEnum.Fervor)
+						{
+							QueueWork(aspect, 2, entry.Key);
+						}
+					}
+					else if (aspect == AspectEnum.Influence)
+                    {
+                        if (entry.Value.GetWorkAspect() != WorkAspectEnum.Insight)
+                        {
+                            QueueWork(aspect, 2, entry.Key);
+                        }
+                    }
+                    else if (aspect == AspectEnum.Fervor)
+                    {
+                        if (entry.Value.GetWorkAspect() != WorkAspectEnum.Influence)
+                        {
+                            QueueWork(aspect, 2, entry.Key);
+                        }
+                    }
+					else if (aspect == AspectEnum.Any)
+					{
+                        QueueWork(aspect, 2, entry.Key);
+                    }
+                }
 			}
 		}
 	}
